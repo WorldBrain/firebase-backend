@@ -1,0 +1,16 @@
+{
+  "name": "firebase-backend",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "firebase-tools": "^7.0.0"
+  },
+  "scripts": {
+    "firebase": "cd firebase && firebase"
+  },
+  "dependencies": {
+    "bcrypt": "^3.0.6"
+  }
+}
