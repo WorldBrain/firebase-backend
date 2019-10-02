@@ -7,10 +7,11 @@
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "emulate": "export GOOGLE_APPLICATION_CREDENTIALS=\"worldbrain-staging-firebase-adminsdk-y7kdm-cea7236e59.json\" npm run build && firebase emulators:start --project worldbrain-staging"
   },
   "engines": {
-    "node": "8"
+    "node": "10"
   },
   "main": "lib/index.js",
   "dependencies": {

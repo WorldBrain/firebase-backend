@@ -2,10 +2,12 @@ import * as bcrypt from 'bcrypt'
 import * as admin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 import {CallableContext, Request} from 'firebase-functions/lib/providers/https'
+
 const chargebee = require('chargebee')
 
 const runningInEmulator = process.env.FUNCTIONS_EMULATOR
 const emulatedConfig = {
+    credential: admin.credential.applicationDefault(),
     databaseURL: "https://worldbrain-staging.firebaseio.com",
     projectId: "worldbrain-staging",
 }
@@ -17,12 +19,12 @@ admin.initializeApp((runningInEmulator) ? emulatedConfig : undefined);
  */
 
 export interface WPToken {
-    userId : number
-    createdWhen : number
-    hash : string
+    userId: number
+    createdWhen: number
+    hash: string
 }
 
-export const generateAuthToken = functions.https.onCall(async (wpToken : WPToken, context) => {
+export const generateAuthToken = functions.https.onCall(async (wpToken: WPToken, context) => {
     if (!await validateWPToken(wpToken)) {
         return null
     }
@@ -31,10 +33,10 @@ export const generateAuthToken = functions.https.onCall(async (wpToken : WPToken
         wpId: `wp:${wpToken.userId}`,
         premiumUntil: new Date(Date.now() + 1000 * 60 * 60 * 24 * 10)
     })
-    return { customToken }
+    return {customToken}
 })
 
-async function validateWPToken(token : WPToken) : Promise<boolean> {
+async function validateWPToken(token: WPToken): Promise<boolean> {
     const secret = functions.config().auth ? functions.config().auth.secret : process.env.AUTH_SECRET
     const plainText = [token.userId, token.createdWhen, secret].join('|')
     const result = await bcrypt.compare(plainText, token.hash.replace(/^\$2y\$/, '$2b$'))
@@ -64,7 +66,7 @@ const helpTesting = (context: any) => {
     return context;
 }
 const testUserDetails = {
-    uid: 'TEST_UID',
+    uid: 'CGPoLZClUlh1pIejEFwKjv3lCl32',
     token: {"email": "test@example.com"},
 }
 
@@ -100,7 +102,7 @@ const resultFormatter = (error: any, result: any) => {
         )
     }
 
-    return { result };
+    return {result};
 }
 
 /**
@@ -120,7 +122,7 @@ const getCheckoutLink = functions.https.onCall(
         chargebee.configure(getChargebeeOptions())
 
         const checkoutOptions = {
-            subscription: { plan_id: data.planId },
+            subscription: {plan_id: data.planId},
             customer: getUser(context),
         }
 
@@ -167,12 +169,12 @@ const getManageLink = functions.https.onCall(
  * then updates the value in the JWT auth token's user claims.
  *
  */
-// todo: Question: do we need to store this in a Firestore user database too?
 interface Claims {
-    subscriptions: { [key: string]: { refreshAt: number } }
+    subscriptions: { [key: string]: { expiry: number } }
     features: string[]
     lastSubscribed: number | null
 }
+
 const _refreshUserSubscriptionStatus = async (userId: string) => {
     chargebee.configure(getChargebeeOptions())
 
@@ -183,44 +185,69 @@ const _refreshUserSubscriptionStatus = async (userId: string) => {
     }
 
     const subscriptionQuery = {
-        customer_id: userId,
-        'sort_by[asc]': 'created_at',
+        'customer_id[is]': userId,
+        'sort_by[desc]': 'created_at',
+        'limit': 100,
     }
 
     // Query the Chargebee API for this user's subscriptions, adding every active/in_trial sub to the claims object.
     // any past subscription updates the lastSubscribed property to know whether a user has subscribed in the past.
     await chargebee.subscription
         .list(subscriptionQuery)
-        .request(function(error: any, result: any) {
+        .request(function (error: any, resp: any) {
             if (error) {
-                return errorResponse('Provider', error)
+                console.error(error)
             } else {
-                for (const entry of result.list) {
-                    if (
-                        entry.subscription.status === 'active' ||
-                        entry.subscription.status === 'in_trial'
-                    ) {
-                        // TODO: verify `next_billing_at` is the right thing to refresh on and not `current_term_end`
-                        claims.subscriptions[entry.subscription.plan_id] = {
-                            refreshAt: entry.subscription.next_billing_at,
+                const subsList = resp.list;
+                if (resp && subsList && Object.entries(subsList).length > 0) {
+
+                    claims.lastSubscribed = subsList[0].subscription.createdAt
+
+                    for (const entry of subsList) {
+                        if (
+                            entry.subscription.status === 'active' ||
+                            entry.subscription.status === 'in_trial' ||
+                            entry.subscription.status === 'cancelled' ||
+                            entry.subscription.status === 'non_renewing'
+                        ) {
+                            // N.B. `current_term_end` will be present for the case of a cancelled or non_renewing subscription that still has 'time left' being subscribed
+                            // next_billing_at will be present when a subscription is active or in trial, and will
+                            // indicate up till when we can trust the the user is subscribed.
+                            const expiry = entry.subscription['current_term_end'] || entry.subscription['next_billing_at']
+
+                            const subPlanId = entry.subscription.plan_id
+                            const existingSubscription = claims.subscriptions[subPlanId];
+
+                            // N.B. In case a user has more than one subscription, e.g. new plan or old trial
+                            // make sure that the last expiry date is given to them.
+                            if (existingSubscription == null || existingSubscription.expiry == null || existingSubscription.expiry < expiry) {
+                                claims.subscriptions[subPlanId] = {expiry}
+                            }
                         }
                     }
-
-                    claims.lastSubscribed = entry.subscription.createdAt
-                    addSubscribedFeatures(claims)
                 }
-                return
+                addSubscribedFeatures(claims);
             }
-        })
+        });
 
     // N.B. Claims are always reset, not additive
     await admin.auth().setCustomUserClaims(userId, claims)
 
-    return { result: true }
+    return {"result": claims};
 }
 
 function addSubscribedFeatures(claims: Claims) {
-    claims.features = ['backup', 'sync'];
+    for (const subscriptionKey of Object.keys(claims.subscriptions)) {
+        const features = subscriptionToFeatures[subscriptionKey]
+        if (features != null) {
+            claims.features.push(...features);
+        }
+    }
+}
+
+const subscriptionToFeatures: { [key: string]: string[] } = {
+    pro: ['backup', 'sync'],
+    free: [],
 }
 
 /**
@@ -238,19 +265,6 @@ const refreshUserClaims = functions.https.onCall(
         // Enhancement: add rate limiting to this function
 
         return _refreshUserSubscriptionStatus(context.auth.uid)
-
-        const claims: Claims = {
-            subscriptions: {},
-            lastSubscribed: null,
-            features: [],
-        }
-        claims.subscriptions['pro'] = {
-            refreshAt: Date.now()+1000,
-        }
-        addSubscribedFeatures(claims);
-        await admin.auth().setCustomUserClaims(getUser(context).id, claims)
-
-        return { result: true }
     },
 )
 
@@ -261,14 +275,16 @@ const refreshUserClaims = functions.https.onCall(
  * Calls the refresh function above with the specified user's details
  *
  */
-// TODO: Implement Tests and Implementation for this webhook
 const userSubscriptionChanged = functions.https.onRequest(
-    (req: Request, resp: any) => {
+    async (req: Request, resp: any) => {
         // TODO: Verify secret or host
         // TODO: Filter types of subscription change
-        // TODO: Get userId
-        const userId = ''
-        return _refreshUserSubscriptionStatus(userId)
+
+        if (req.is('json') && req.body != null && req.body.content != null && req.body.content.customer != null) {
+            const userId = req.body.content.customer.id
+            await _refreshUserSubscriptionStatus(userId)
+        }
+
     },
 )
 
