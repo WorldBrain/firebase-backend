@@ -44,6 +44,10 @@ async function validateWPToken(token: WPToken): Promise<boolean> {
     return result
 }
 
+/**
+ * New Auth functionality
+ */
+
 
 /**
  * Helper to format consistent error responses from this API
@@ -207,10 +211,11 @@ const _refreshUserSubscriptionStatus = async (userId: string) => {
                         if (
                             entry.subscription.status === 'active' ||
                             entry.subscription.status === 'in_trial' ||
-                            entry.subscription.status === 'cancelled' ||
-                            entry.subscription.status === 'non_renewing'
+                            entry.subscription.status === 'cancelled' || // Cancelled subscriptions may still have days left
+                            entry.subscription.status === 'non_renewing' // Non-renewing subscriptions may still have days left
                         ) {
-                            // N.B. `current_term_end` will be present for the case of a cancelled or non_renewing subscription that still has 'time left' being subscribed
+                            // N.B. `current_term_end` will be present for the case of a cancelled or non_renewing subscription
+                            // that still has 'time left' being subscribed.
                             // next_billing_at will be present when a subscription is active or in trial, and will
                             // indicate up till when we can trust the the user is subscribed.
                             const expiry = entry.subscription['current_term_end'] || entry.subscription['next_billing_at']
@@ -218,8 +223,8 @@ const _refreshUserSubscriptionStatus = async (userId: string) => {
                             const subPlanId = entry.subscription.plan_id
                             const existingSubscription = claims.subscriptions[subPlanId];
 
-                            // N.B. In case a user has more than one subscription, e.g. new plan or old trial
-                            // make sure that the last expiry date is given to them.
+                            // N.B. In case a user has more than one subscription to the same plan,
+                            // (e.g. newly configured plan or an old trial) make sure that the furthest expiry date is set.
                             if (existingSubscription == null || existingSubscription.expiry == null || existingSubscription.expiry < expiry) {
                                 claims.subscriptions[subPlanId] = {expiry}
                             }
