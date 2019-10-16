@@ -175,7 +175,7 @@ const getManageLink = functions.https.onCall(
  */
 interface Claims {
     subscriptions: { [key: string]: { expiry: number } }
-    features: string[]
+    features: { [key: string]: { expiry: number } }
     lastSubscribed: number | null
 }
 
@@ -184,7 +184,7 @@ const _refreshUserSubscriptionStatus = async (userId: string) => {
 
     const claims: Claims = {
         subscriptions: {},
-        features: [],
+        features: {},
         lastSubscribed: null,
     }
 
@@ -196,56 +196,52 @@ const _refreshUserSubscriptionStatus = async (userId: string) => {
 
     // Query the Chargebee API for this user's subscriptions, adding every active/in_trial sub to the claims object.
     // any past subscription updates the lastSubscribed property to know whether a user has subscribed in the past.
-    await chargebee.subscription
-        .list(subscriptionQuery)
-        .request(function (error: any, resp: any) {
-            if (error) {
-                console.error(error)
-            } else {
-                const subsList = resp.list;
-                if (resp && subsList && Object.entries(subsList).length > 0) {
+    const resp = await chargebee.subscription.list(subscriptionQuery).request()
+    const subsList = resp.list;
+    if (resp && subsList && Object.entries(subsList).length > 0) {
 
-                    claims.lastSubscribed = subsList[0].subscription.createdAt
+        claims.lastSubscribed = subsList[0].subscription.createdAt
 
-                    for (const entry of subsList) {
-                        if (
-                            entry.subscription.status === 'active' ||
-                            entry.subscription.status === 'in_trial' ||
-                            entry.subscription.status === 'cancelled' || // Cancelled subscriptions may still have days left
-                            entry.subscription.status === 'non_renewing' // Non-renewing subscriptions may still have days left
-                        ) {
-                            // N.B. `current_term_end` will be present for the case of a cancelled or non_renewing subscription
-                            // that still has 'time left' being subscribed.
-                            // next_billing_at will be present when a subscription is active or in trial, and will
-                            // indicate up till when we can trust the the user is subscribed.
-                            const expiry = entry.subscription['current_term_end'] || entry.subscription['next_billing_at']
+        for (const entry of subsList) {
+            if (
+                entry.subscription.status === 'active' ||
+                entry.subscription.status === 'in_trial' ||
+                entry.subscription.status === 'cancelled' || // Cancelled subscriptions may still have days left
+                entry.subscription.status === 'non_renewing' // Non-renewing subscriptions may still have days left
+            ) {
+                // N.B. `current_term_end` will be present for the case of a cancelled or non_renewing subscription
+                // that still has 'time left' being subscribed.
+                // next_billing_at will be present when a subscription is active or in trial, and will
+                // indicate up till when we can trust the the user is subscribed.
+                const expiry = entry.subscription['current_term_end'] || entry.subscription['next_billing_at']
 
-                            const subPlanId = entry.subscription.plan_id
-                            const existingSubscription = claims.subscriptions[subPlanId];
+                const subPlanId = entry.subscription.plan_id
+                const existingSubscription = claims.subscriptions[subPlanId];
 
-                            // N.B. In case a user has more than one subscription to the same plan,
-                            // (e.g. newly configured plan or an old trial) make sure that the furthest expiry date is set.
-                            if (existingSubscription == null || existingSubscription.expiry == null || existingSubscription.expiry < expiry) {
-                                claims.subscriptions[subPlanId] = {expiry}
-                            }
-                        }
-                    }
+                // N.B. In case a user has more than one subscription to the same plan,
+                // (e.g. newly configured plan or an old trial) make sure that the furthest expiry date is set.
+                if (typeof existingSubscription == 'undefined' || existingSubscription.expiry < expiry) {
+                    console.log(`Valid subscription for UserId:${userId}, planId:${subPlanId}, expiry:${expiry}`);
+                    claims.subscriptions[subPlanId] = {expiry}
                 }
-                addSubscribedFeatures(claims);
             }
-        });
-
+        }
+    }
+    addSubscribedFeatures(claims);
+            
     // N.B. Claims are always reset, not additive
-    await admin.auth().setCustomUserClaims(userId, claims)
-
-    return {"result": claims};
+    console.log(`setCustomUserClaims(${userId},${JSON.stringify(claims)})`)
+    const setClaimResult = await admin.auth().setCustomUserClaims(userId, claims)
+    return {"result": {claims, setClaimResult}};
 }
 
 function addSubscribedFeatures(claims: Claims) {
     for (const subscriptionKey of Object.keys(claims.subscriptions)) {
         const features = subscriptionToFeatures[subscriptionKey]
         if (features != null) {
-            claims.features.push(...features);
+            for (const feature of features) {
+                claims.features[feature] = {expiry: claims.subscriptions[subscriptionKey].expiry}                
+            }
         }
     }
 }
@@ -253,6 +249,10 @@ function addSubscribedFeatures(claims: Claims) {
 const subscriptionToFeatures: { [key: string]: string[] } = {
     pro: ['backup', 'sync'],
     free: [],
+    backup_monthly: ['backup'],
+    backup_yearly: ['backup'],
+    sync_monthly: ['backup','sync'],
+    sync_yearly: ['backup','sync']
 }
 
 /**
