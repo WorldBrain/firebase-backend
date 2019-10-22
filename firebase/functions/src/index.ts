@@ -2,6 +2,7 @@ import * as bcrypt from 'bcrypt'
 import * as admin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 import {CallableContext, Request} from 'firebase-functions/lib/providers/https'
+import {Claims, FeaturesMap, SubscriptionMap, UserFeatures, UserPlans} from "./types";
 
 const chargebee = require('chargebee')
 
@@ -24,7 +25,7 @@ export interface WPToken {
     hash: string
 }
 
-export const generateAuthToken = functions.https.onCall(async (wpToken: WPToken, context) => {
+export const generateAuthToken = functions.https.onCall(async (wpToken: WPToken, context: any) => {
     if (!await validateWPToken(wpToken)) {
         return null
     }
@@ -83,7 +84,7 @@ const getUser = (context: any) => ({
 })
 
 /**
- * Helper function to extract Chargebee config from firebase function config
+ * Helper function to extract Chargebee config from firebase function config, requires config to be set from cli.
  */
 const getChargebeeOptions = () => ({
     site: functions.config().chargebee.site,
@@ -122,7 +123,6 @@ const getCheckoutLink = functions.https.onCall(
             return notAuthenticatedResponse
         }
 
-        // todo: move this up to the global import runtime context if the tests are okay with it
         chargebee.configure(getChargebeeOptions())
 
         const checkoutOptions = {
@@ -173,18 +173,13 @@ const getManageLink = functions.https.onCall(
  * then updates the value in the JWT auth token's user claims.
  *
  */
-interface Claims {
-    subscriptions: { [key: string]: { expiry: number } }
-    features: { [key: string]: { expiry: number } }
-    lastSubscribed: number | null
-}
 
 const _refreshUserSubscriptionStatus = async (userId: string) => {
     chargebee.configure(getChargebeeOptions())
 
     const claims: Claims = {
-        subscriptions: {},
-        features: {},
+        subscriptions: new Map() as SubscriptionMap,
+        features: new Map() as FeaturesMap,
         lastSubscribed: null,
     }
 
@@ -216,13 +211,13 @@ const _refreshUserSubscriptionStatus = async (userId: string) => {
                 const expiry = entry.subscription['current_term_end'] || entry.subscription['next_billing_at']
 
                 const subPlanId = entry.subscription.plan_id
-                const existingSubscription = claims.subscriptions[subPlanId];
+                const existingSubscription = claims.subscriptions.get(subPlanId);
 
                 // N.B. In case a user has more than one subscription to the same plan,
                 // (e.g. newly configured plan or an old trial) make sure that the furthest expiry date is set.
                 if (typeof existingSubscription == 'undefined' || existingSubscription.expiry < expiry) {
                     console.log(`Valid subscription for UserId:${userId}, planId:${subPlanId}, expiry:${expiry}`);
-                    claims.subscriptions[subPlanId] = {expiry}
+                    claims.subscriptions.set(subPlanId, {expiry})
                 }
             }
         }
@@ -236,24 +231,24 @@ const _refreshUserSubscriptionStatus = async (userId: string) => {
 }
 
 function addSubscribedFeatures(claims: Claims) {
-    for (const subscriptionKey of Object.keys(claims.subscriptions)) {
-        const features = subscriptionToFeatures[subscriptionKey]
-        if (features != null) {
-            for (const feature of features) {
-                claims.features[feature] = {expiry: claims.subscriptions[subscriptionKey].expiry}                
+    for (const subscriptionKey of claims.subscriptions.keys()) {
+        const subscription = claims.subscriptions.get(subscriptionKey)
+        const subscriptionFeatures = subscriptionToFeatures.get(subscriptionKey)
+        if (subscriptionFeatures != null && subscription != null) {
+            for (const feature of subscriptionFeatures) {
+                claims.features.set(feature,{expiry: subscription.expiry} )
             }
         }
     }
 }
 
-const subscriptionToFeatures: { [key: string]: string[] } = {
-    pro: ['backup', 'sync'],
-    free: [],
-    backup_monthly: ['backup'],
-    backup_yearly: ['backup'],
-    sync_monthly: ['backup','sync'],
-    sync_yearly: ['backup','sync']
-}
+const subscriptionToFeatures = new Map<UserPlans,UserFeatures[]>([
+    ["free", []],
+    ["backup-monthly",  ['backup']],
+    ["backup-yearly",  ['backup']],
+    ["sync-monthly",  ['backup','sync']],
+    ["sync-yearly",  ['backup','sync']]
+])
 
 /**
  * Firebase Function
@@ -268,7 +263,6 @@ const refreshUserClaims = functions.https.onCall(
         }
 
         // Enhancement: add rate limiting to this function
-
         return _refreshUserSubscriptionStatus(context.auth.uid)
     },
 )
