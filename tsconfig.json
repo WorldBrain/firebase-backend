@@ -1,0 +1,38 @@
+{
+    "version": "2.5",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noImplicitAny": false,
+        "removeComments": true,
+        "lib": [
+            "es2017",
+            "dom"
+        ],
+        "noLib": false,
+        "preserveConstEnums": true,
+        "declaration": true,
+        "sourceMap": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "typeRoots": [
+            "./node_modules/@types"
+        ],
+        "downlevelIteration": true,
+        "outDir": "lib",
+        "paths": {
+            "@worldbrain/storex-pattern-modules": [
+                "external/@worldbrain/storex-pattern-modules/ts"
+            ],
+            "@worldbrain/memex-url-utils": [
+                "external/@worldbrain/memex-url-utils/ts"
+            ],
+            "src/*": ["ts/*"]
+        }
+    },
+    "filesGlob": [
+        "./ts/**/*.ts",
+        "!./node_modules/**/*.ts"
+    ]
+}
