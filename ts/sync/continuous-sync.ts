@@ -35,6 +35,10 @@ export const _preSendProcessor: SyncPreSendProcessor = async ({
     ...params
 }) => {
     if (entry.operation === 'create') {
+        if (!Object.keys(entry.value).length) {
+            return { entry }
+        }
+
         for (const field of Object.keys(entry.value)) {
             if (isTermsField({ field, collection: entry.collection })) {
                 delete entry.value[field]

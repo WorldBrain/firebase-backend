@@ -4,7 +4,7 @@ import { jsonDateParser } from 'json-date-parser'
 import { SyncSecretStore } from './secrets'
 
 export class EncryptedSyncSerializer implements SyncSerializer {
-    constructor(private options: { secretStore: SyncSecretStore }) {}
+    constructor(private options: { secretStore: SyncSecretStore }) { }
 
     serializeSharedSyncLogEntryData = async (
         data: SharedSyncLogEntryData,
@@ -25,6 +25,7 @@ export class EncryptedSyncSerializer implements SyncSerializer {
         const jsonString = await this.options.secretStore.decryptSyncMessage({
             message,
         })
+
         return JSON.parse(jsonString, jsonDateParser)
     }
 }
