@@ -1,10 +1,7 @@
 import * as openpgp from 'openpgp'
 import nacl from 'tweetnacl'
-import { SyncSettingStore } from '@worldbrain/storex-sync/lib/integration/settings'
-import { LimitedBrowserStorage } from 'src/util/tests/browser-storage'
-import { MemexSyncSetting } from './types';
-import { SYNC_STORAGE_AREA_KEYS } from './constants'
 import { ab2str } from './utils'
+import { MemexSyncSettingsStore } from './settings';
 
 export class SyncSecretStore {
     private key: string | null = null
@@ -12,12 +9,12 @@ export class SyncSecretStore {
 
     constructor(
         private options: {
-            settingStore: SyncSettingStore<MemexSyncSetting>
+            settingStore: MemexSyncSettingsStore
         },
     ) { }
 
     async generateSyncEncryptionKey(): Promise<void> {
-        this.key = ab2str(nacl.randomBytes(nacl.secretbox.keyLength))
+        this.key = ab2str(nacl.randomBytes(nacl.secretbox.keyLength).buffer)
         await this._storeKey()
     }
 
@@ -67,12 +64,12 @@ export class SyncSecretStore {
 
     async _storeKey() {
         await this.options.settingStore.storeSetting(
-            SYNC_STORAGE_AREA_KEYS.encryptionKey, this.key,
+            'encryptionKey', this.key,
         )
     }
 
     async _loadKey() {
-        const retrievedKey: string | null = await this.options.settingStore.retrieveSetting('encryptionKey')
+        const retrievedKey: string | null = await this.options.settingStore.retrieveSetting('encryptionKey') as string | null
         if (retrievedKey) {
             this.key = retrievedKey
             this.loaded = true
