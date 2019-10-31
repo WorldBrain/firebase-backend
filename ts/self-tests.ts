@@ -65,7 +65,9 @@ export function createSelfTests(dependencies: {
             await services.sync.continuousSync.initDevice()
             await services.sync.continuousSync.setupContinuousSync()
             console['log']('Starting incremental Sync')
-            await services.sync.continuousSync.forceIncrementalSync({ debug: true })
+            await new Promise(resolve => setTimeout(resolve, 5000))
+            await services.sync.continuousSync.forceIncrementalSync()
+            await services.sync.continuousSync.forceIncrementalSync()
             console['log']('After incremental Sync', await getStorageContents(storage.manager))
         },
     }
