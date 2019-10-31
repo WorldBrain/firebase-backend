@@ -5,7 +5,6 @@ import { MemexSyncSettingsStore } from './sync/settings';
 
 export function createSelfTests(dependencies: {
     auth: {
-        getUser: () => Promise<{ id: number | string } | null>
         setUser: (user: { id: number | string }) => Promise<void>
     },
     services: {
@@ -51,17 +50,22 @@ export function createSelfTests(dependencies: {
 
             await services.sync.continuousSync.initDevice()
             await services.sync.continuousSync.setupContinuousSync()
+            await dependencies.intergrationTestData.insert()
+            console['log']('Starting incremental Sync')
             await services.sync.continuousSync.forceIncrementalSync()
+            console['log']('Finished incremental Sync')
         },
         incrementalSyncReceive: async (userId: string, initialMessage: string) => {
             dependencies.auth.setUser({ id: userId })
             await services.sync.settingStore.storeSetting('deviceId', null)
 
+            console['log']('Starting initial Sync')
             await tests.initialSyncReceive({ initialMessage })
 
             await services.sync.continuousSync.initDevice()
             await services.sync.continuousSync.setupContinuousSync()
-            await services.sync.continuousSync.forceIncrementalSync()
+            console['log']('Starting incremental Sync')
+            await services.sync.continuousSync.forceIncrementalSync({ debug: true })
             console['log']('After incremental Sync', await getStorageContents(storage.manager))
         },
     }
