@@ -14,6 +14,7 @@ export {
 } from '@worldbrain/storex-sync/lib/integration/initial-sync'
 
 export class MemexInitialSync extends InitialSync {
+    public filterBlobs = true
     public filterPassiveData = false
 
     constructor(
@@ -25,12 +26,27 @@ export class MemexInitialSync extends InitialSync {
     }
 
     protected getPreSendProcessor() {
-        return (
-            this.filterPassiveData &&
-            _createExcludePassivePreSendFilter({
-                storageManager: this.dependencies.storageManager,
-            })
-        )
+        const passiveDataFilter = _createExcludePassivePreSendFilter({
+            storageManager: this.dependencies.storageManager,
+        })
+        const blobFilter = _createBlobPreSendFilter({
+            storageManager: this.dependencies.storageManager,
+        })
+        const processor: FastSyncPreSendProcessor = async (params) => {
+            let filteredObject = params.object
+            if (this.filterBlobs) {
+                filteredObject = (await blobFilter({
+                    ...params, filteredObject
+                })).object
+            }
+            if (this.filterPassiveData) {
+                filteredObject = (await passiveDataFilter({
+                    ...params, filteredObject
+                })).object
+            }
+            return { ...params, object: filteredObject }
+        }
+        return processor
     }
 
     protected async preSync(options: InitialSyncInfo) {
@@ -55,6 +71,22 @@ export class MemexInitialSync extends InitialSync {
             }
             await secrectStore.setSyncEncryptionKey(userPackage.key)
         }
+    }
+}
+
+export function _createBlobPreSendFilter(dependencies: {
+    storageManager: StorageManager
+}): FastSyncPreSendProcessor {
+    const registry = dependencies.storageManager.registry;
+    return async params => {
+        const collectionDefinition = registry.collections[params.collection]
+        const object = { ...params.object }
+        for (const [fieldName, fieldDefinition] of Object.entries(collectionDefinition.fields)) {
+            if (fieldDefinition.type === 'blob') {
+                object[fieldName] = null
+            }
+        }
+        return { object }
     }
 }
 
