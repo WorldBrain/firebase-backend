@@ -1,8 +1,7 @@
-import * as bcrypt from 'bcrypt'
 import * as admin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 import {CallableContext, Request} from 'firebase-functions/lib/providers/https'
-import {Claims, FeaturesMap, SubscriptionMap, UserFeatures, UserPlans} from "./types";
+import {ChargebeeSubscriptionAPIClient, CustomClaimsSetter, refreshUserSubscriptionStatus} from "./subscriptions";
 
 const chargebee = require('chargebee')
 
@@ -16,39 +15,17 @@ admin.initializeApp((runningInEmulator) ? emulatedConfig : undefined);
 
 
 /**
- * Legacy WordPress Auth Token functionality
- */
-
-export interface WPToken {
-    userId: number
-    createdWhen: number
-    hash: string
-}
-
-export const generateAuthToken = functions.https.onCall(async (wpToken: WPToken, context: any) => {
-    if (!await validateWPToken(wpToken)) {
-        return null
-    }
-
-    const customToken = await admin.auth().createCustomToken('test', {
-        wpId: `wp:${wpToken.userId}`,
-        premiumUntil: new Date(Date.now() + 1000 * 60 * 60 * 24 * 10)
-    })
-    return {customToken}
-})
-
-async function validateWPToken(token: WPToken): Promise<boolean> {
-    const secret = functions.config().auth ? functions.config().auth.secret : process.env.AUTH_SECRET
-    const plainText = [token.userId, token.createdWhen, secret].join('|')
-    const result = await bcrypt.compare(plainText, token.hash.replace(/^\$2y\$/, '$2b$'))
-    console.log(secret, plainText, result)
-    return result
-}
-
-/**
  * New Auth functionality
  */
 
+/**
+ * Helper function to extract Chargebee config from firebase function config, requires config to be set from cli.
+ */
+const getChargebeeOptions = () => ({
+    site: functions.config().chargebee.site,
+    api_key: functions.config().chargebee.api_key,
+})
+chargebee.configure(getChargebeeOptions())
 
 /**
  * Helper to format consistent error responses from this API
@@ -83,13 +60,7 @@ const getUser = (context: any) => ({
     email: context.auth.token.email,
 })
 
-/**
- * Helper function to extract Chargebee config from firebase function config, requires config to be set from cli.
- */
-const getChargebeeOptions = () => ({
-    site: functions.config().chargebee.site,
-    api_key: functions.config().chargebee.api_key,
-})
+
 
 /**
  *  Creates a function to return Chargebee API responses consistently
@@ -166,90 +137,15 @@ const getManageLink = functions.https.onCall(
     },
 )
 
-/**
- * Shared Function
- *
- * Refresh a user's subscription status - Asks Chargebee for the subscription status for this user,
- * then updates the value in the JWT auth token's user claims.
- *
- */
-
-const _refreshUserSubscriptionStatus = async (userId: string) => {
-    chargebee.configure(getChargebeeOptions())
-
-    const claims: Claims = {
-        subscriptions: new Map() as SubscriptionMap,
-        features: new Map() as FeaturesMap,
-        lastSubscribed: null,
-    }
-
-    const subscriptionQuery = {
-        'customer_id[is]': userId,
-        'sort_by[desc]': 'created_at',
-        'limit': 100,
-    }
-
-    // Query the Chargebee API for this user's subscriptions, adding every active/in_trial sub to the claims object.
-    // any past subscription updates the lastSubscribed property to know whether a user has subscribed in the past.
-    const resp = await chargebee.subscription.list(subscriptionQuery).request()
-    const subsList = resp.list;
-    if (resp && subsList && Object.entries(subsList).length > 0) {
-
-        claims.lastSubscribed = subsList[0].subscription.createdAt
-
-        for (const entry of subsList) {
-            if (
-                entry.subscription.status === 'active' ||
-                entry.subscription.status === 'in_trial' ||
-                entry.subscription.status === 'cancelled' || // Cancelled subscriptions may still have days left
-                entry.subscription.status === 'non_renewing' // Non-renewing subscriptions may still have days left
-            ) {
-                // N.B. `current_term_end` will be present for the case of a cancelled or non_renewing subscription
-                // that still has 'time left' being subscribed.
-                // next_billing_at will be present when a subscription is active or in trial, and will
-                // indicate up till when we can trust the the user is subscribed.
-                const expiry = entry.subscription['current_term_end'] || entry.subscription['next_billing_at']
-
-                const subPlanId = entry.subscription.plan_id
-                const existingSubscription = claims.subscriptions.get(subPlanId);
-
-                // N.B. In case a user has more than one subscription to the same plan,
-                // (e.g. newly configured plan or an old trial) make sure that the furthest expiry date is set.
-                if (typeof existingSubscription == 'undefined' || existingSubscription.expiry < expiry) {
-                    console.log(`Valid subscription for UserId:${userId}, planId:${subPlanId}, expiry:${expiry}`);
-                    claims.subscriptions.set(subPlanId, {expiry})
-                }
-            }
-        }
-    }
-    addSubscribedFeatures(claims);
-            
-    // N.B. Claims are always reset, not additive
-    console.log(`setCustomUserClaims(${userId},${JSON.stringify(claims)})`)
-    const setClaimResult = await admin.auth().setCustomUserClaims(userId, claims)
-    return {"result": {claims, setClaimResult}};
+const chargebeeSubscriptionAPIClient: ChargebeeSubscriptionAPIClient = async (subscriptionQuery) => {
+    return chargebee.subscription.list(subscriptionQuery).request()
 }
+const firebaseAuthClaimsSetter: CustomClaimsSetter = async (userId, claims) => admin.auth().setCustomUserClaims(userId, claims);
 
-function addSubscribedFeatures(claims: Claims) {
-    for (const subscriptionKey of claims.subscriptions.keys()) {
-        const subscription = claims.subscriptions.get(subscriptionKey)
-        const subscriptionFeatures = subscriptionToFeatures.get(subscriptionKey)
-        if (subscriptionFeatures != null && subscription != null) {
-            for (const feature of subscriptionFeatures) {
-                claims.features.set(feature,{expiry: subscription.expiry} )
-            }
-        }
-    }
-}
-
-const subscriptionToFeatures = new Map<UserPlans,UserFeatures[]>([
-    ["free", []],
-    ["backup-monthly",  ['backup']],
-    ["backup-yearly",  ['backup']],
-    ["sync-monthly",  ['backup','sync']],
-    ["sync-yearly",  ['backup','sync']]
-])
-
+const _refreshUserSubscriptionStatus = async (userId: string) => refreshUserSubscriptionStatus(userId, {
+    getSubscriptions: chargebeeSubscriptionAPIClient,
+    setClaims: firebaseAuthClaimsSetter,
+});
 /**
  * Firebase Function
  *
