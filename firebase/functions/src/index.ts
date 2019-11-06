@@ -81,6 +81,11 @@ const resultFormatter = (error: any, result: any) => {
     return {result};
 }
 
+export const getLoginToken = functions.https.onCall(    async (data: any, _context: CallableContext) => {
+    const context = helpTesting(_context)
+    return admin.auth().createCustomToken(context.uid)
+});
+
 /**
  * Firebase Function
  *
@@ -125,7 +130,6 @@ const getManageLink = functions.https.onCall(
         chargebee.configure(getChargebeeOptions())
 
         const portalOptions = {
-            redirect_url: data.redirectUrl,
             customer: getUser(context),
         }
 
