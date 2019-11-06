@@ -7,5 +7,5 @@ export interface Claims {
 
 export type UserFeatures = "backup" | "sync"
 export type UserPlans = "free" | "backup-monthly" | "backup-yearly" | "sync-monthly" | "sync-yearly"
-export type SubscriptionMap = {[key: string]: {expiry:number}}
-export type FeatureMap = {[key: string]: {expiry:number}}
+export interface SubscriptionMap {[key: string]: {expiry:number}}
+export interface FeatureMap {[key: string]: {expiry:number}}
