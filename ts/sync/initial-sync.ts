@@ -36,12 +36,12 @@ export class MemexInitialSync extends InitialSync {
             let filteredObject = params.object
             if (this.filterBlobs) {
                 filteredObject = (await blobFilter({
-                    ...params, filteredObject
+                    ...params, object: filteredObject,
                 })).object
             }
             if (this.filterPassiveData) {
                 filteredObject = (await passiveDataFilter({
-                    ...params, filteredObject
+                    ...params, object: filteredObject,
                 })).object
             }
             return { ...params, object: filteredObject }
