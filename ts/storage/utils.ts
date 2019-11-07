@@ -5,7 +5,7 @@ export function isTermsField(params: {
     field: string
 }): boolean {
     return (
-        params.field.startsWith('_terms') ||
+        params.field.endsWith('_terms') ||
         params.field.endsWith('Terms') ||
         params.field === 'terms'
     )
@@ -14,11 +14,11 @@ export function isTermsField(params: {
 export function createPassiveDataChecker(dependencies: {
     storageManager: StorageManager
 }): (
-    params: {
-        collection: string
-        pk: any
-    },
-) => Promise<boolean> {
+        params: {
+            collection: string
+            pk: any
+        },
+    ) => Promise<boolean> {
     return async params => {
         if (params.collection !== 'pages') {
             return false
