@@ -59,3 +59,11 @@ export async function getStorageContents(
     }
     return storedData
 }
+
+export function getCurrentSchemaVersion(storageManager: StorageManager) {
+    const schemaVersions = Object.keys(
+        storageManager.registry.collectionsByVersion,
+    ).map(version => parseInt(version, 10))
+    schemaVersions.sort()
+    return schemaVersions[schemaVersions.length - 1]
+}

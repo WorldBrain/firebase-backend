@@ -2,17 +2,22 @@ import {
     ContinuousSync,
     ContinuousSyncDependencies,
 } from '@worldbrain/storex-sync/lib/integration/continuous-sync'
-import { SyncPreSendProcessor, SyncSerializer } from '@worldbrain/storex-sync'
+import { SyncPreSendProcessor, SyncSerializer, SyncOptions } from '@worldbrain/storex-sync'
 import { isTermsField } from '../storage/utils'
 import { SyncSecretStore } from './secrets'
 import { EncryptedSyncSerializer } from './sync-serializer'
 
+export interface MemexContinuousSyncDependencies extends ContinuousSyncDependencies {
+    secretStore: SyncSecretStore
+    productType: 'ext' | 'app',
+    productVersion: string,
+}
 export class MemexContinuousSync extends ContinuousSync {
     private syncSerializer: SyncSerializer
     public useEncryption = true
 
     constructor(
-        options: ContinuousSyncDependencies & { secretStore: SyncSecretStore },
+        private options: MemexContinuousSyncDependencies,
     ) {
         super(options)
 
@@ -21,12 +26,17 @@ export class MemexContinuousSync extends ContinuousSync {
         })
     }
 
-    getPreSendProcessor(): SyncPreSendProcessor | void {
-        return _preSendProcessor
-    }
-
-    getSerializer(): SyncSerializer | void {
-        return this.useEncryption ? this.syncSerializer : undefined
+    async getSyncOptions(): Promise<SyncOptions> {
+        const syncOptions = await super.getSyncOptions()
+        syncOptions.preSend = _preSendProcessor
+        if (this.useEncryption) {
+            syncOptions.serializer = this.syncSerializer
+        }
+        syncOptions.extraSentInfo = {
+            pt: this.options.productType,
+            pv: this.options.productVersion,
+        }
+        return syncOptions
     }
 }
 
