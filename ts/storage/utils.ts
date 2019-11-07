@@ -1,5 +1,7 @@
 import StorageManager from '@worldbrain/storex'
 
+export type StorageContents = { [collection: string]: any[] }
+
 export function isTermsField(params: {
     collection: string
     field: string
