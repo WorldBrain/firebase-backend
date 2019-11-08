@@ -3,7 +3,7 @@ import {
     ContinuousSyncDependencies,
 } from '@worldbrain/storex-sync/lib/integration/continuous-sync'
 import { SyncPreSendProcessor, SyncSerializer, SyncOptions } from '@worldbrain/storex-sync'
-import { isTermsField } from '../storage/utils'
+import { isTermsField, getCurrentSchemaVersion } from '../storage/utils'
 import { SyncSecretStore } from './secrets'
 import { EncryptedSyncSerializer } from './sync-serializer'
 
@@ -13,8 +13,9 @@ export interface MemexContinuousSyncDependencies extends ContinuousSyncDependenc
     productVersion: string,
 }
 export class MemexContinuousSync extends ContinuousSync {
-    private syncSerializer: SyncSerializer
     public useEncryption = true
+    private syncSerializer: SyncSerializer
+    private schemaVersion?: number
 
     constructor(
         private options: MemexContinuousSyncDependencies,
@@ -32,11 +33,23 @@ export class MemexContinuousSync extends ContinuousSync {
         if (this.useEncryption) {
             syncOptions.serializer = this.syncSerializer
         }
+
         syncOptions.extraSentInfo = {
             pt: this.options.productType,
             pv: this.options.productVersion,
+            sv: await this.getSchemaVersion()
         }
         return syncOptions
+    }
+
+    private async getSchemaVersion(): Promise<number> {
+        if (this.schemaVersion) {
+            return this.schemaVersion
+        }
+
+        const asDate = getCurrentSchemaVersion(this.options.storageManager)
+        this.schemaVersion = asDate.getTime()
+        return this.schemaVersion
     }
 }
 

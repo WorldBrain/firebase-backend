@@ -60,10 +60,10 @@ export async function getStorageContents(
     return storedData
 }
 
-export function getCurrentSchemaVersion(storageManager: StorageManager) {
+export function getCurrentSchemaVersion(storageManager: StorageManager): Date {
     const schemaVersions = Object.keys(
         storageManager.registry.collectionsByVersion,
     ).map(version => parseInt(version, 10))
     schemaVersions.sort()
-    return schemaVersions[schemaVersions.length - 1]
+    return new Date(schemaVersions[schemaVersions.length - 1])
 }
