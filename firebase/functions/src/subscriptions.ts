@@ -87,9 +87,13 @@ const setFeaturesFromSubscriptions = (claims: Claims) => {
 
 export const subscriptionToFeatures = new Map<UserPlans,UserFeatures[]>([
     ["free", []],
-    ["backup-monthly",  ['backup']],
-    ["backup-yearly",  ['backup']],
-    ["sync-monthly",  ['backup','sync']],
-    ["sync-yearly",  ['backup','sync']]
+    ["pro-1-device",  ['backup','sync']],
+    ["pro-2-devices",  ['backup','sync']],
+    ["pro-3-devices",  ['backup','sync']],
+    ["pro-4-devices",  ['backup','sync']],
+    ["pro-1-device-yrl",  ['backup','sync']],
+    ["pro-2-devices-yrl",  ['backup','sync']],
+    ["pro-3-devices-yrl",  ['backup','sync']],
+    ["pro-4-devices-yrl",  ['backup','sync']],
 ])
 
