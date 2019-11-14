@@ -11,14 +11,13 @@ export class MemorySubscriptionsService
 
     constructor(options: { expiry?: number } = {}) {
         const { expiry } = options
-        if (expiry != null) {
+        if (expiry) {
             this.claims = {
                 subscriptions: {},
                 features: {},
                 lastSubscribed: null,
             }
-            this.claims.subscriptions['backup-monthly'] = { expiry }
-            this.claims.subscriptions['sync-monthly'] = { expiry }
+            this.claims.subscriptions['pro-1-device'] = { expiry }
             this.claims.features['backup'] = { expiry }
             this.claims.features['sync'] = { expiry }
         }
