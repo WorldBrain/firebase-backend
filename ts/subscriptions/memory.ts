@@ -4,12 +4,25 @@ import {
     SubscriptionCheckoutOptions,
 } from './types'
 
-export default class MemorySubscriptionsService
+export class MemorySubscriptionsService
     implements SubscriptionsService {
 
     public claims: Claims | null = null
 
-    constructor() { }
+    constructor(options: { expiry?: number } = {}) {
+        const { expiry } = options
+        if (expiry != null) {
+            this.claims = {
+                subscriptions: {},
+                features: {},
+                lastSubscribed: null,
+            }
+            this.claims.subscriptions['backup-monthly'] = { expiry }
+            this.claims.subscriptions['sync-monthly'] = { expiry }
+            this.claims.features['backup'] = { expiry }
+            this.claims.features['sync'] = { expiry }
+        }
+    }
 
     async getCurrentUserClaims(forceRefresh = false): Promise<Claims | null> {
         return this.claims

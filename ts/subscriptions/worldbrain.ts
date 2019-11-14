@@ -4,7 +4,7 @@ import {
     SubscriptionCheckoutOptions,
 } from './types'
 
-export default class WorldbrainSubscriptionsService
+export class WorldbrainSubscriptionsService
     implements SubscriptionsService {
 
     constructor(private firebase: any) { }
