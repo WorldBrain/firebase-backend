@@ -20,6 +20,8 @@ export class MemexInitialSync extends InitialSync {
     constructor(
         private options: InitialSyncDependencies & {
             secrectStore: SyncSecretStore
+            generateLoginToken?: () => Promise<string>
+            loginWithToken?: (token: string) => Promise<void>
         },
     ) {
         super(options)
@@ -52,6 +54,13 @@ export class MemexInitialSync extends InitialSync {
     protected async preSync(options: InitialSyncInfo) {
         const { secrectStore } = this.options
         if (options.role === 'sender') {
+            if (this.options.generateLoginToken) {
+                await options.senderFastSyncChannel.sendUserPackage({
+                    type: 'login-token',
+                    token: await this.options.generateLoginToken(),
+                })
+            }
+
             let key = await secrectStore.getSyncEncryptionKey()
             if (!key) {
                 await secrectStore.generateSyncEncryptionKey()
@@ -62,14 +71,20 @@ export class MemexInitialSync extends InitialSync {
                 key,
             })
         } else {
-            const userPackage = await options.receiverFastSyncChannel.receiveUserPackage()
-            if (userPackage.type !== 'encryption-key') {
-                throw new Error(
-                    'Expected to receive encryption key in inital sync, but got ' +
-                    userPackage.type,
-                )
+            // We're expecting to user packages: key and token
+            for (const iteration of [0, 1]) {
+                const userPackage = await options.receiverFastSyncChannel.receiveUserPackage()
+                if (userPackage.type === 'encryption-key') {
+                    await secrectStore.setSyncEncryptionKey(userPackage.key)
+                } else if (userPackage.type === 'login-token') {
+                    await this.options.loginWithToken(userPackage.token)
+                } else {
+                    throw new Error(
+                        'Expected to receive encryption key in inital sync, but got ' +
+                        userPackage.type,
+                    )
+                }
             }
-            await secrectStore.setSyncEncryptionKey(userPackage.key)
         }
     }
 }
