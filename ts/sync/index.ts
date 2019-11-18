@@ -32,7 +32,7 @@ export default class SyncService {
             storageManager: StorageManager
             signalTransportFactory: SignalTransportFactory
             clientSyncLog: ClientSyncLogStorage
-            sharedSyncLog: SharedSyncLog
+            getSharedSyncLog: () => Promise<SharedSyncLog>
             settingStore: SyncSettingsStore
             productType: 'app' | 'ext',
             productVersion: string
@@ -61,7 +61,7 @@ export default class SyncService {
             },
             storageManager: options.storageManager,
             clientSyncLog: this.options.clientSyncLog,
-            getSharedSyncLog: async () => this.options.sharedSyncLog,
+            getSharedSyncLog: this.options.getSharedSyncLog,
             settingStore: this.settingStore,
             secretStore: this.secretStore,
             productType: options.productType,
