@@ -9,7 +9,7 @@ export class WorldbrainSubscriptionsService
 
     constructor(private firebase: any) { }
 
-    async getCurrentUserClaims(forceRefresh = false): Promise<Claims | null> {
+    getCurrentUserClaims = async (forceRefresh = false): Promise<Claims | null> => {
         const currentUser = this.firebase.auth().currentUser
         if (currentUser == null) {
             return null
@@ -21,21 +21,18 @@ export class WorldbrainSubscriptionsService
         return claims
     }
 
-    async getCheckoutLink(
+    getCheckoutLink = async (
         options: SubscriptionCheckoutOptions,
-    ): Promise<string> {
-        const result = await this._callFirebaseFunction('getCheckoutLink')(
-            options,
-        )
+    ): Promise<string> => {
+        const result = await this._callFirebaseFunction('getCheckoutLink', options)
 
         return result.data['hosted_page']
     }
 
-    async getManageLink(
+    getManageLink = async (
         options?: SubscriptionCheckoutOptions,
-    ): Promise<string> {
-        const result = this._callFirebaseFunction('getManageLink')(options)
-
+    ): Promise<string> => {
+        const result = this._callFirebaseFunction('getManageLink',options)
         return result.data['portal_session']
     }
 

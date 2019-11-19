@@ -1,5 +1,4 @@
 import { AuthService, AuthenticatedUser, AuthServiceEvents } from './types'
-import { LocalStorageService } from '../local-storage'
 import { EventEmitter } from 'events'
 import TypedEventEmitter from 'typed-emitter'
 

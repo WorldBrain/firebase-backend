@@ -1,7 +1,5 @@
-import { EventEmitter } from 'events'
-import TypedEventEmitter from 'typed-emitter'
 import { LocalStorageService } from '../local-storage'
-import { AuthService, AuthenticatedUser, AuthServiceEvents } from './types'
+import {  AuthenticatedUser, } from './types'
 import { MemoryAuthService } from './memory'
 
 export class LocalAuthService extends MemoryAuthService {

@@ -28,5 +28,5 @@ export type UserPlan =
     | 'pro-4-devices-yrl'
 
 export interface SubscriptionCheckoutOptions {
-    plan: UserPlan
+    planId: UserPlan
 }

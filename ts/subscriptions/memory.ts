@@ -30,7 +30,7 @@ export class MemorySubscriptionsService
     async getCheckoutLink(
         options: SubscriptionCheckoutOptions,
     ): Promise<string> {
-        return `https://checkout.link?plan=${options.plan}`
+        return `https://checkout.link?plan=${options.planId}`
     }
 
     async getManageLink(
