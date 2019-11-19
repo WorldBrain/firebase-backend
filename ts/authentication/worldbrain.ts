@@ -6,7 +6,7 @@ export class WorldbrainAuthService implements AuthService {
     public events = new EventEmitter() as TypedEventEmitter<AuthServiceEvents>
 
     constructor(private firebase: any) {
-        firebase.onAuthStateChanged((firebaseUser: any) => {
+        firebase.auth().onAuthStateChanged((firebaseUser: any) => {
             const user = this._getUserFromFirebaseUser(firebaseUser)
             this.events.emit('changed', { user })
         })
