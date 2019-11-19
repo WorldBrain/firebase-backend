@@ -22,6 +22,7 @@ export default class SyncService {
 
     initialSync: MemexInitialSync
     continuousSync: MemexContinuousSync
+    clientSyncLog: ClientSyncLogStorage
     settingStore: SyncSettingsStore
     secretStore: SyncSecretStore
     syncLoggingMiddleware?: SyncLoggingMiddleware
@@ -36,12 +37,14 @@ export default class SyncService {
             settingStore: SyncSettingsStore
             productType: 'app' | 'ext',
             productVersion: string
+            syncFrequencyInMs?: number
         },
     ) {
         this.settingStore = options.settingStore
         this.secretStore = new SyncSecretStore({
             settingStore: this.settingStore,
         })
+        this.clientSyncLog = options.clientSyncLog
 
         this.initialSync = new MemexInitialSync({
             storageManager: options.storageManager,
@@ -53,6 +56,7 @@ export default class SyncService {
             loginWithToken: async token => options.auth.loginWithToken(token),
         })
         this.continuousSync = new MemexContinuousSync({
+            frequencyInMs: options.syncFrequencyInMs,
             auth: {
                 getUserId: async () => {
                     const user = await options.auth.getCurrentUser()
