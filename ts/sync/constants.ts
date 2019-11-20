@@ -22,4 +22,5 @@ export const SYNCED_COLLECTIONS: string[] = [
     ANNOTATIONS_COLLECTION_NAMES.annotation,
     ANNOTATIONS_COLLECTION_NAMES.listEntry,
     ANNOTATIONS_COLLECTION_NAMES.bookmark,
+    'syncDeviceInfo',
 ]

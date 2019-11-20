@@ -8,6 +8,8 @@ import {
 } from '@worldbrain/storex-sync/lib/integration/initial-sync'
 import { createPassiveDataChecker } from '../storage/utils'
 import { SyncSecretStore } from './secrets'
+import { MemexContinuousSync } from './continuous-sync';
+import { SyncInfoStorage } from './storage';
 
 export {
     SignalTransportFactory,
@@ -20,6 +22,10 @@ export class MemexInitialSync extends InitialSync {
     constructor(
         private options: InitialSyncDependencies & {
             secrectStore: SyncSecretStore
+            continuousSync: MemexContinuousSync
+            syncInfoStorage: SyncInfoStorage
+            productType: 'app' | 'ext',
+            devicePlatform: 'integration-tests' | 'android' | 'ios' | 'browser',
             generateLoginToken?: () => Promise<string>
             loginWithToken?: (token: string) => Promise<void>
         },
@@ -52,7 +58,7 @@ export class MemexInitialSync extends InitialSync {
     }
 
     protected async preSync(options: InitialSyncInfo) {
-        const { secrectStore } = this.options
+        const { secrectStore, continuousSync } = this.options
         if (options.role === 'sender') {
             if (this.options.generateLoginToken) {
                 await options.senderFastSyncChannel.sendUserPackage({
@@ -70,8 +76,27 @@ export class MemexInitialSync extends InitialSync {
                 type: 'encryption-key',
                 key,
             })
+
+            if (!continuousSync.deviceId) {
+                await continuousSync.initDevice()
+                await this.options.syncInfoStorage.createDeviceInfo({
+                    deviceId: continuousSync.deviceId,
+                    productType: this.options.productType,
+                    devicePlatform: this.options.devicePlatform,
+                })
+            }
+
+            const deviceInfoPackage = await options.senderFastSyncChannel.receiveUserPackage()
+            if (deviceInfoPackage.type !== 'device-info') {
+                throw new Error(`Expected to receive device info from sync target, but got ${deviceInfoPackage.type}`)
+            }
+            await this.options.syncInfoStorage.createDeviceInfo({
+                deviceId: deviceInfoPackage.deviceId,
+                productType: deviceInfoPackage.productType,
+                devicePlatform: deviceInfoPackage.devicePlatform
+            })
         } else {
-            // We're expecting to user packages: key and token
+            // We're expecting 2 user packages: key and token
             for (const iteration of [0, 1]) {
                 const userPackage = await options.receiverFastSyncChannel.receiveUserPackage()
                 if (userPackage.type === 'encryption-key') {
@@ -85,6 +110,16 @@ export class MemexInitialSync extends InitialSync {
                     )
                 }
             }
+
+            if (!continuousSync.deviceId) {
+                await continuousSync.initDevice()
+            }
+            await options.receiverFastSyncChannel.sendUserPackage({
+                type: 'device-info',
+                deviceId: continuousSync.deviceId,
+                productType: this.options.productType,
+                devicePlatform: this.options.devicePlatform
+            })
         }
     }
 }

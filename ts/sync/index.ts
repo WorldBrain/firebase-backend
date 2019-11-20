@@ -12,6 +12,7 @@ import {
     SyncSecretStore,
     SignalTransportFactory,
 } from '.'
+import { SyncInfoStorage } from './storage';
 
 export * from './initial-sync'
 export * from './continuous-sync'
@@ -32,10 +33,12 @@ export default class SyncService {
             storageManager: StorageManager
             signalTransportFactory: SignalTransportFactory
             clientSyncLog: ClientSyncLogStorage
+            syncInfoStorage: SyncInfoStorage
             getSharedSyncLog: () => Promise<SharedSyncLog>
             settingStore: SyncSettingsStore
             productType: 'app' | 'ext',
             productVersion: string
+            devicePlatform: string
         },
     ) {
         this.settingStore = options.settingStore
@@ -43,15 +46,6 @@ export default class SyncService {
             settingStore: this.settingStore,
         })
 
-        this.initialSync = new MemexInitialSync({
-            storageManager: options.storageManager,
-            signalTransportFactory: options.signalTransportFactory,
-            syncedCollections: this.syncedCollections,
-            secrectStore: this.secretStore,
-            generateLoginToken: async () =>
-                (await options.auth.generateLoginToken()).token,
-            loginWithToken: async token => options.auth.loginWithToken(token),
-        })
         this.continuousSync = new MemexContinuousSync({
             auth: {
                 getUserId: async () => {
@@ -79,6 +73,19 @@ export default class SyncService {
                     )
                 }
             },
+        })
+        this.initialSync = new MemexInitialSync({
+            storageManager: options.storageManager,
+            continuousSync: this.continuousSync,
+            syncInfoStorage: options.syncInfoStorage,
+            signalTransportFactory: options.signalTransportFactory,
+            syncedCollections: this.syncedCollections,
+            secrectStore: this.secretStore,
+            productType: options.productType,
+            devicePlatform: options.devicePlatform,
+            generateLoginToken: async () =>
+                (await options.auth.generateLoginToken()).token,
+            loginWithToken: async token => options.auth.loginWithToken(token),
         })
     }
 
