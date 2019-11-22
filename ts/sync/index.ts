@@ -13,6 +13,7 @@ import {
     SignalTransportFactory,
 } from '.'
 import { SyncInfoStorage } from './storage';
+import { MemexSyncProductType, MemexSyncDevicePlatform } from './types';
 
 export * from './initial-sync'
 export * from './continuous-sync'
@@ -38,10 +39,10 @@ export default class SyncService {
             syncInfoStorage: SyncInfoStorage
             getSharedSyncLog: () => Promise<SharedSyncLog>
             settingStore: SyncSettingsStore
-            productType: 'app' | 'ext',
+            productType: MemexSyncProductType,
             productVersion: string
+            devicePlatform: MemexSyncDevicePlatform
             syncFrequencyInMs?: number
-            devicePlatform: string
         },
     ) {
         this.settingStore = options.settingStore

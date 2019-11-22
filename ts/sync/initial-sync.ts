@@ -10,6 +10,7 @@ import { createPassiveDataChecker } from '../storage/utils'
 import { SyncSecretStore } from './secrets'
 import { MemexContinuousSync } from './continuous-sync';
 import { SyncInfoStorage } from './storage';
+import { MemexSyncDevicePlatform, MemexSyncProductType } from './types';
 
 export {
     SignalTransportFactory,
@@ -24,8 +25,8 @@ export class MemexInitialSync extends InitialSync {
             secrectStore: SyncSecretStore
             continuousSync: MemexContinuousSync
             syncInfoStorage: SyncInfoStorage
-            productType: 'app' | 'ext',
-            devicePlatform: 'integration-tests' | 'android' | 'ios' | 'browser',
+            productType: MemexSyncProductType,
+            devicePlatform: MemexSyncDevicePlatform,
             generateLoginToken?: () => Promise<string>
             loginWithToken?: (token: string) => Promise<void>
         },
