@@ -24,6 +24,7 @@ export default class SyncService {
     initialSync: MemexInitialSync
     continuousSync: MemexContinuousSync
     clientSyncLog: ClientSyncLogStorage
+    syncInfoStorage: SyncInfoStorage
     settingStore: SyncSettingsStore
     secretStore: SyncSecretStore
     syncLoggingMiddleware?: SyncLoggingMiddleware
@@ -48,6 +49,7 @@ export default class SyncService {
             settingStore: this.settingStore,
         })
         this.clientSyncLog = options.clientSyncLog
+        this.syncInfoStorage = options.syncInfoStorage
 
         this.continuousSync = new MemexContinuousSync({
             frequencyInMs: options.syncFrequencyInMs,

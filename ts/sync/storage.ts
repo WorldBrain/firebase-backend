@@ -26,6 +26,13 @@ export class SyncInfoStorage extends StorageModule {
                     operation: 'createObject',
                     collection: 'syncDeviceInfo'
                 },
+                getDevice: {
+                    operation: 'findObject',
+                    collection: 'syncDeviceInfo',
+                    args: {
+                        deviceId: '$deviceId:string'
+                    }
+                },
                 getAllDevices: {
                     operation: 'findObjects',
                     collection: 'syncDeviceInfo',
@@ -35,8 +42,11 @@ export class SyncInfoStorage extends StorageModule {
         }
     }
 
-    async createDeviceInfo(params: { deviceId: string, productType: string, devicePlatform: string }) {
-        await this.operation('createSyncDeviceInfo', { ...params, createdWhen: Date.now() })
+    async createDeviceInfo(params: { deviceId: string | number, productType: string, devicePlatform: string }) {
+        params = { ...params, deviceId: params.deviceId.toString() }
+        if (!await this.operation('getDevice', params)) {
+            await this.operation('createSyncDeviceInfo', { ...params, createdWhen: Date.now() })
+        }
     }
 
     async listDevices() {
