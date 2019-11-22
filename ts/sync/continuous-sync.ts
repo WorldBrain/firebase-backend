@@ -11,9 +11,10 @@ export interface MemexContinuousSyncDependencies extends ContinuousSyncDependenc
     secretStore: SyncSecretStore
     productType: 'ext' | 'app',
     productVersion: string,
+    useEncryption: boolean
 }
 export class MemexContinuousSync extends ContinuousSync {
-    public useEncryption = true
+    public useEncryption: boolean
     private syncSerializer: SyncSerializer
     private schemaVersion?: number
 
@@ -25,6 +26,7 @@ export class MemexContinuousSync extends ContinuousSync {
         this.syncSerializer = new EncryptedSyncSerializer({
             secretStore: options.secretStore,
         })
+        this.useEncryption = options.useEncryption
     }
 
     async getSyncOptions(): Promise<SyncOptions> {

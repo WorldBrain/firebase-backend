@@ -43,8 +43,10 @@ export default class SyncService {
             productVersion: string
             devicePlatform: MemexSyncDevicePlatform
             syncFrequencyInMs?: number
+            disableEncryption?: boolean
         },
     ) {
+        const useEncryption = !options.disableEncryption
         this.settingStore = options.settingStore
         this.secretStore = new SyncSecretStore({
             settingStore: this.settingStore,
@@ -53,6 +55,7 @@ export default class SyncService {
         this.syncInfoStorage = options.syncInfoStorage
 
         this.continuousSync = new MemexContinuousSync({
+            useEncryption,
             frequencyInMs: options.syncFrequencyInMs,
             auth: {
                 getUserId: async () => {
@@ -82,6 +85,7 @@ export default class SyncService {
             },
         })
         this.initialSync = new MemexInitialSync({
+            useEncryption,
             storageManager: options.storageManager,
             continuousSync: this.continuousSync,
             syncInfoStorage: options.syncInfoStorage,

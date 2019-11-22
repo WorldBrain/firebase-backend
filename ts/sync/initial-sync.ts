@@ -17,6 +17,7 @@ export {
 } from '@worldbrain/storex-sync/lib/integration/initial-sync'
 
 export class MemexInitialSync extends InitialSync {
+    public useEncryption: boolean
     public filterBlobs = true
     public filterPassiveData = false
 
@@ -27,11 +28,13 @@ export class MemexInitialSync extends InitialSync {
             syncInfoStorage: SyncInfoStorage
             productType: MemexSyncProductType,
             devicePlatform: MemexSyncDevicePlatform,
+            useEncryption: boolean
             generateLoginToken?: () => Promise<string>
             loginWithToken?: (token: string) => Promise<void>
         },
     ) {
         super(options)
+        this.useEncryption = options.useEncryption
     }
 
     protected getPreSendProcessor() {
@@ -68,15 +71,17 @@ export class MemexInitialSync extends InitialSync {
                 })
             }
 
-            let key = await secrectStore.getSyncEncryptionKey()
-            if (!key) {
-                await secrectStore.generateSyncEncryptionKey()
-                key = await secrectStore.getSyncEncryptionKey()
+            if (this.useEncryption) {
+                let key = await secrectStore.getSyncEncryptionKey()
+                if (!key) {
+                    await secrectStore.generateSyncEncryptionKey()
+                    key = await secrectStore.getSyncEncryptionKey()
+                }
+                await options.senderFastSyncChannel.sendUserPackage({
+                    type: 'encryption-key',
+                    key,
+                })
             }
-            await options.senderFastSyncChannel.sendUserPackage({
-                type: 'encryption-key',
-                key,
-            })
 
             if (!continuousSync.deviceId) {
                 await continuousSync.initDevice()
@@ -97,8 +102,12 @@ export class MemexInitialSync extends InitialSync {
                 devicePlatform: deviceInfoPackage.devicePlatform
             })
         } else {
-            // We're expecting 2 user packages: key and token
-            for (const iteration of [0, 1]) {
+            let expectedPackageCount = 1 // The login token
+            if (this.useEncryption) {
+                expectedPackageCount += 1
+            }
+
+            for (let i = 0; i < expectedPackageCount; ++i) {
                 const userPackage = await options.receiverFastSyncChannel.receiveUserPackage()
                 if (userPackage.type === 'encryption-key') {
                     await secrectStore.setSyncEncryptionKey(userPackage.key)
