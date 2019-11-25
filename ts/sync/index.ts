@@ -1,5 +1,5 @@
 import StorageManager from '@worldbrain/storex'
-
+import { SyncPostReceiveProcessor } from '@worldbrain/storex-sync'
 import { SharedSyncLog } from '@worldbrain/storex-sync/lib/shared-sync-log'
 import { SyncLoggingMiddleware } from '@worldbrain/storex-sync/lib/logging-middleware'
 import { SyncSettingsStore } from '@worldbrain/storex-sync/lib/integration/settings'
@@ -41,7 +41,8 @@ export default class SyncService {
             getSharedSyncLog: () => Promise<SharedSyncLog>
             settingStore: SyncSettingsStore
             syncEncryption?: SyncEncyption
-            productType: MemexSyncProductType,
+            postReceiveProcessor?: SyncPostReceiveProcessor
+            productType: 'app' | 'ext',
             productVersion: string
             devicePlatform: MemexSyncDevicePlatform
             syncFrequencyInMs?: number
@@ -75,6 +76,7 @@ export default class SyncService {
             secretStore: this.secretStore,
             productType: options.productType,
             productVersion: options.productVersion,
+            postReceiveProcessor: options.postReceiveProcessor,
             toggleSyncLogging: (enabled: boolean, deviceId?: string | number) => {
                 if (this.syncLoggingMiddleware) {
                     if (enabled) {

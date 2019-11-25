@@ -2,7 +2,7 @@ import {
     ContinuousSync,
     ContinuousSyncDependencies,
 } from '@worldbrain/storex-sync/lib/integration/continuous-sync'
-import { SyncPreSendProcessor, SyncSerializer, SyncOptions } from '@worldbrain/storex-sync'
+import { SyncPreSendProcessor, SyncPostReceiveProcessor, SyncSerializer, SyncOptions } from '@worldbrain/storex-sync'
 import { isTermsField, getCurrentSchemaVersion } from '../storage/utils'
 import { SyncSecretStore } from './secrets'
 import { EncryptedSyncSerializer } from './sync-serializer'
@@ -12,6 +12,7 @@ export interface MemexContinuousSyncDependencies extends ContinuousSyncDependenc
     productType: 'ext' | 'app',
     productVersion: string,
     useEncryption: boolean
+    postReceiveProcessor?: SyncPostReceiveProcessor
 }
 export class MemexContinuousSync extends ContinuousSync {
     private syncSerializer?: SyncSerializer
@@ -56,6 +57,12 @@ export class MemexContinuousSync extends ContinuousSync {
         const asDate = getCurrentSchemaVersion(this.options.storageManager)
         this.schemaVersion = asDate.getTime()
         return this.schemaVersion
+    }
+
+    getPostReceiveProcessor(): SyncPostReceiveProcessor | void {
+        if (this.options.postReceiveProcessor) {
+            return this.options.postReceiveProcessor
+        }
     }
 }
 
