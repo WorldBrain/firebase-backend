@@ -34,7 +34,7 @@ export class MemexInitialSync extends InitialSync {
     ) {
         super(options)
 
-        if (options.useEncryption && !options.secrectStore) {
+        if (options.useEncryption && !options.secretStore) {
             throw new Error(`MemexInitialSync created wanting encryption, but missing a secret store`)
         }
     }
@@ -64,7 +64,7 @@ export class MemexInitialSync extends InitialSync {
     }
 
     protected async preSync(options: InitialSyncInfo) {
-        const { secrectStore, continuousSync } = this.options
+        const { secretStore, continuousSync } = this.options
         if (options.role === 'sender') {
             if (this.options.generateLoginToken) {
                 await options.senderFastSyncChannel.sendUserPackage({
@@ -73,11 +73,11 @@ export class MemexInitialSync extends InitialSync {
                 })
             }
 
-            if (secrectStore) {
-                let key = await secrectStore.getSyncEncryptionKey()
+            if (secretStore) {
+                let key = await secretStore.getSyncEncryptionKey()
                 if (!key) {
-                    await secrectStore.generateSyncEncryptionKey()
-                    key = await secrectStore.getSyncEncryptionKey()
+                    await secretStore.generateSyncEncryptionKey()
+                    key = await secretStore.getSyncEncryptionKey()
                 }
                 await options.senderFastSyncChannel.sendUserPackage({
                     type: 'encryption-key',
@@ -105,14 +105,14 @@ export class MemexInitialSync extends InitialSync {
             })
         } else {
             let expectedPackageCount = 1 // The login token
-            if (secrectStore) { // transfer the key if we want encryption
+            if (secretStore) { // transfer the key if we want encryption
                 expectedPackageCount += 1
             }
 
             for (let i = 0; i < expectedPackageCount; ++i) {
                 const userPackage = await options.receiverFastSyncChannel.receiveUserPackage()
                 if (userPackage.type === 'encryption-key') {
-                    await secrectStore.setSyncEncryptionKey(userPackage.key)
+                    await secretStore.setSyncEncryptionKey(userPackage.key)
                 } else if (userPackage.type === 'login-token') {
                     await this.options.loginWithToken(userPackage.token)
                 } else {

@@ -14,7 +14,7 @@ import {
 } from '.'
 import { SyncInfoStorage } from './storage';
 import { MemexSyncProductType, MemexSyncDevicePlatform } from './types';
-import { SyncEncyption } from './secrets';
+import { SyncEncyption } from './secrets/types';
 
 export * from './initial-sync'
 export * from './continuous-sync'
@@ -96,7 +96,7 @@ export default class SyncService {
             syncInfoStorage: options.syncInfoStorage,
             signalTransportFactory: options.signalTransportFactory,
             syncedCollections: this.syncedCollections,
-            secrectStore: this.secretStore,
+            secretStore: this.secretStore,
             productType: options.productType,
             devicePlatform: options.devicePlatform,
             generateLoginToken: async () =>
