@@ -1,7 +1,96 @@
 service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write;
+    match /databases/{database}/documents {
+        match /sharedSyncLogDeviceInfo/{userId} {
+            match /devices/{sharedSyncLogDeviceInfo} {
+                allow list: if
+                  // Ownership rules
+                  request.auth.uid == userId
+                ;
+                allow get: if
+                  // Ownership rules
+                  request.auth.uid == userId
+                ;
+                allow create: if
+                  // Type checks
+                  (!('sharedUntil' in request.resource.data.keys()) || request.resource.data.sharedUntil is timestamp) &&
+
+
+                  // Validation rules
+                  ((!('sharedUntil' in request.resource.data)) || (request.resource.data.sharedUntil == request.time)) &&
+
+
+                  // Ownership rules
+                  request.auth.uid == userId
+                ;
+                allow update: if
+                  // Type checks
+                  (!('sharedUntil' in request.resource.data.keys()) || request.resource.data.sharedUntil is timestamp) &&
+
+
+                  // Validation rules
+                  ((!('sharedUntil' in request.resource.data)) || (request.resource.data.sharedUntil == request.time)) &&
+
+
+                  // Ownership rules
+                  request.auth.uid == userId
+                ;
+                allow delete: if
+                  // Ownership rules
+                  request.auth.uid == userId
+                ;
+            }
+        }
+        match /sharedSyncLogEntryBatch/{userId} {
+            match /entries/{sharedSyncLogEntryBatch} {
+                allow list: if
+                  // Ownership rules
+                  request.auth.uid == userId
+                ;
+                allow get: if
+                  // Ownership rules
+                  request.auth.uid == userId
+                ;
+                allow create: if
+                  // Type checks
+                  request.resource.data.deviceId is string &&
+                  request.resource.data.sharedOn is timestamp &&
+                  request.resource.data.data is string &&
+
+
+                  // Ownership rules
+                  request.auth.uid == userId
+                ;
+                allow delete: if
+                  // Ownership rules
+                  request.auth.uid == userId
+                ;
+            }
+        }
+        match /sharedSyncLogSeenEntry/{userId} {
+            match /entries/{sharedSyncLogSeenEntry} {
+                allow list: if
+                  // Ownership rules
+                  request.auth.uid == userId
+                ;
+                allow get: if
+                  // Ownership rules
+                  request.auth.uid == userId
+                ;
+                allow create: if
+                  // Type checks
+                  request.resource.data.creatorDeviceId is string &&
+                  request.resource.data.retrieverDeviceId is string &&
+                  request.resource.data.createdOn is timestamp &&
+
+
+                  // Ownership rules
+                  request.auth.uid == userId
+                ;
+                allow delete: if
+                  // Ownership rules
+                  request.auth.uid == userId
+                ;
+            }
+        }
     }
-  }
 }
