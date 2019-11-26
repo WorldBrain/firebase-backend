@@ -1,7 +1,15 @@
-import * as openpgp from 'openpgp'
-import nacl from 'tweetnacl'
-import { ab2str } from './utils'
-import { MemexSyncSettingsStore } from './settings';
+import { MemexSyncSettingsStore } from '../settings';
+
+export interface SyncEncyption {
+    gernerateKey(): Promise<string>
+    encryptSyncMessage(
+        message: string,
+        options: { key: string }
+    ): Promise<{ message: string; nonce?: string }>
+    decryptSyncMessage(encrypted: {
+        message: string, nonce?: string
+    }, options: { key: string }): Promise<string>
+}
 
 export class SyncSecretStore {
     private key: string | null = null
@@ -9,12 +17,13 @@ export class SyncSecretStore {
 
     constructor(
         private options: {
+            encryption: SyncEncyption
             settingStore: MemexSyncSettingsStore
         },
     ) { }
 
     async generateSyncEncryptionKey(): Promise<void> {
-        this.key = ab2str(nacl.randomBytes(nacl.secretbox.keyLength).buffer)
+        this.key = await this.options.encryption.gernerateKey()
         await this._storeKey()
     }
 
@@ -37,14 +46,7 @@ export class SyncSecretStore {
             throw new Error('Tried to encrypt sync message without a key')
         }
 
-        return {
-            message: (await openpgp.encrypt({
-                message: openpgp.message.fromText(message),
-                passwords: [this.key],
-                armor: true,
-            })).data,
-            nonce: '',
-        }
+        return this.options.encryption.encryptSyncMessage(message, { key: this.key })
     }
 
     async decryptSyncMessage(encrypted: {
@@ -55,11 +57,7 @@ export class SyncSecretStore {
             throw new Error('Tried to decrypt sync message without a key')
         }
 
-        return (await openpgp.decrypt({
-            message: await openpgp.message.readArmored(encrypted.message),
-            passwords: [this.key],
-            format: 'utf8',
-        })).data as string
+        return this.options.encryption.decryptSyncMessage(encrypted, { key: this.key })
     }
 
     async _storeKey() {

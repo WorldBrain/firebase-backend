@@ -8,14 +8,13 @@ import { SyncSecretStore } from './secrets'
 import { EncryptedSyncSerializer } from './sync-serializer'
 
 export interface MemexContinuousSyncDependencies extends ContinuousSyncDependencies {
-    secretStore: SyncSecretStore
+    secretStore?: SyncSecretStore
     productType: 'ext' | 'app',
     productVersion: string,
     useEncryption: boolean
 }
 export class MemexContinuousSync extends ContinuousSync {
-    public useEncryption: boolean
-    private syncSerializer: SyncSerializer
+    private syncSerializer?: SyncSerializer
     private schemaVersion?: number
 
     constructor(
@@ -23,16 +22,21 @@ export class MemexContinuousSync extends ContinuousSync {
     ) {
         super(options)
 
-        this.syncSerializer = new EncryptedSyncSerializer({
-            secretStore: options.secretStore,
-        })
-        this.useEncryption = options.useEncryption
+        if (options.secretStore) {
+            this.syncSerializer = new EncryptedSyncSerializer({
+                secretStore: options.secretStore,
+            })
+        }
+
+        if (options.useEncryption && !options.secretStore) {
+            throw new Error(`MemexInitialSync created wanting encryption, but missing a secret store`)
+        }
     }
 
     async getSyncOptions(): Promise<SyncOptions> {
         const syncOptions = await super.getSyncOptions()
         syncOptions.preSend = _preSendProcessor
-        if (this.useEncryption) {
+        if (this.syncSerializer) {
             syncOptions.serializer = this.syncSerializer
         }
 

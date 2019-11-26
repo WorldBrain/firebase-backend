@@ -14,6 +14,7 @@ import {
 } from '.'
 import { SyncInfoStorage } from './storage';
 import { MemexSyncProductType, MemexSyncDevicePlatform } from './types';
+import { SyncEncyption } from './secrets';
 
 export * from './initial-sync'
 export * from './continuous-sync'
@@ -27,7 +28,7 @@ export default class SyncService {
     clientSyncLog: ClientSyncLogStorage
     syncInfoStorage: SyncInfoStorage
     settingStore: SyncSettingsStore
-    secretStore: SyncSecretStore
+    secretStore?: SyncSecretStore
     syncLoggingMiddleware?: SyncLoggingMiddleware
 
     constructor(
@@ -39,6 +40,7 @@ export default class SyncService {
             syncInfoStorage: SyncInfoStorage
             getSharedSyncLog: () => Promise<SharedSyncLog>
             settingStore: SyncSettingsStore
+            syncEncryption?: SyncEncyption
             productType: MemexSyncProductType,
             productVersion: string
             devicePlatform: MemexSyncDevicePlatform
@@ -48,9 +50,12 @@ export default class SyncService {
     ) {
         const useEncryption = !options.disableEncryption
         this.settingStore = options.settingStore
-        this.secretStore = new SyncSecretStore({
-            settingStore: this.settingStore,
-        })
+        if (options.syncEncryption) {
+            this.secretStore = new SyncSecretStore({
+                encryption: options.syncEncryption,
+                settingStore: this.settingStore,
+            })
+        }
         this.clientSyncLog = options.clientSyncLog
         this.syncInfoStorage = options.syncInfoStorage
 

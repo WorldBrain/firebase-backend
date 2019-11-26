@@ -17,13 +17,12 @@ export {
 } from '@worldbrain/storex-sync/lib/integration/initial-sync'
 
 export class MemexInitialSync extends InitialSync {
-    public useEncryption: boolean
     public filterBlobs = true
     public filterPassiveData = false
 
     constructor(
         private options: InitialSyncDependencies & {
-            secrectStore: SyncSecretStore
+            secretStore?: SyncSecretStore
             continuousSync: MemexContinuousSync
             syncInfoStorage: SyncInfoStorage
             productType: MemexSyncProductType,
@@ -34,7 +33,10 @@ export class MemexInitialSync extends InitialSync {
         },
     ) {
         super(options)
-        this.useEncryption = options.useEncryption
+
+        if (options.useEncryption && !options.secrectStore) {
+            throw new Error(`MemexInitialSync created wanting encryption, but missing a secret store`)
+        }
     }
 
     protected getPreSendProcessor() {
@@ -71,7 +73,7 @@ export class MemexInitialSync extends InitialSync {
                 })
             }
 
-            if (this.useEncryption) {
+            if (secrectStore) {
                 let key = await secrectStore.getSyncEncryptionKey()
                 if (!key) {
                     await secrectStore.generateSyncEncryptionKey()
@@ -103,7 +105,7 @@ export class MemexInitialSync extends InitialSync {
             })
         } else {
             let expectedPackageCount = 1 // The login token
-            if (this.useEncryption) {
+            if (secrectStore) { // transfer the key if we want encryption
                 expectedPackageCount += 1
             }
 
