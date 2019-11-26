@@ -1,8 +1,9 @@
 import * as openpgp from 'openpgp'
 import nacl from 'tweetnacl'
 import { ab2str } from './utils'
+import { SyncEncyption } from './types'
 
-export class OpenPgpJsSyncEncryption {
+export class OpenPgpJsSyncEncryption implements SyncEncyption {
     async gernerateKey(): Promise<string> {
         return ab2str(nacl.randomBytes(nacl.secretbox.keyLength).buffer)
     }
