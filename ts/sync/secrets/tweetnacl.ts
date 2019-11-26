@@ -1,4 +1,4 @@
-import { secretbox, randomBytes } from "tweetnacl";
+import { secretbox, randomBytes, setPRNG } from "tweetnacl";
 import {
     decodeUTF8,
     encodeUTF8,
@@ -12,6 +12,17 @@ const newNonce = () => randomBytes(secretbox.nonceLength);
 const generateKey = () => encodeBase64(randomBytes(secretbox.keyLength));
 
 export class TweetNaclSyncEncryption implements SyncEncyption {
+    constructor(private options: { randomBytes: (n: number) => Uint8Array }) {
+        function cleanup(arr: Uint8Array) {
+            for (var i = 0; i < arr.length; i++) arr[i] = 0;
+        }
+        setPRNG(function (x, n) {
+            var i, v = options.randomBytes(n);
+            for (i = 0; i < n; i++) x[i] = v[i];
+            cleanup(v);
+        })
+    }
+
     async gernerateKey(): Promise<string> {
         return generateKey()
     }
