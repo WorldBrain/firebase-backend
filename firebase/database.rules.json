@@ -4,10 +4,20 @@
       "$id": {
         ".read": true,
         ".write": true,
-        ".validate": "newData.child('payload').isString() && newData.child('deviceId').isString() && newData.child('type').val().matches(/^initial|message|confirmation$/) && newData.child('confirm').isBoolean() && newData.child('updated').val() === now",
+        ".validate": "data.child('created').val() != null || newData.child('created').val() == now",
         ".indexOn": [
           "updated"
-        ]
+        ],
+        "firstQueue": {
+          "$message": {
+            ".validate": "data.val() == null && newData.isString() && newData.val().length < 10240"
+          },
+        },
+        "secondQueue": {
+          "$message": {
+            ".validate": "data.val() == null && newData.isString() && newData.val().length < 10240"
+          },
+        }
       }
     }
   }
