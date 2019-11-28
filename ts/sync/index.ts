@@ -103,7 +103,7 @@ export default class SyncService {
             devicePlatform: options.devicePlatform,
             generateLoginToken: async () =>
                 (await options.auth.generateLoginToken()).token,
-            loginWithToken: async token => options.auth.loginWithToken(token),
+            loginWithToken: async (token: string) => options.auth.loginWithToken(token),
         })
     }
 

@@ -16,6 +16,20 @@ export {
     SignalTransportFactory,
 } from '@worldbrain/storex-sync/lib/integration/initial-sync'
 
+type SyncUserPackage =
+    {
+        type: 'login-token'
+        token: string,
+    } | {
+        type: 'device-info'
+        deviceId: string | number
+        productType: MemexSyncProductType
+        devicePlatform: MemexSyncDevicePlatform
+    } | {
+        type: 'encryption-key'
+        key: string
+    }
+
 export class MemexInitialSync extends InitialSync {
     public filterBlobs = true
     public filterPassiveData = false
@@ -65,12 +79,14 @@ export class MemexInitialSync extends InitialSync {
 
     protected async preSync(options: InitialSyncInfo) {
         const { secretStore, continuousSync } = this.options
+
         if (options.role === 'sender') {
             if (this.options.generateLoginToken) {
-                await options.senderFastSyncChannel.sendUserPackage({
+                const userPackage: SyncUserPackage = {
                     type: 'login-token',
                     token: await this.options.generateLoginToken(),
-                })
+                }
+                await options.senderFastSyncChannel.sendUserPackage(userPackage)
             }
 
             if (secretStore) {
@@ -79,10 +95,11 @@ export class MemexInitialSync extends InitialSync {
                     await secretStore.generateSyncEncryptionKey()
                     key = await secretStore.getSyncEncryptionKey()
                 }
-                await options.senderFastSyncChannel.sendUserPackage({
+                const userPackage: SyncUserPackage = {
                     type: 'encryption-key',
                     key,
-                })
+                }
+                await options.senderFastSyncChannel.sendUserPackage(userPackage)
             }
 
             if (!continuousSync.deviceId) {
@@ -94,7 +111,7 @@ export class MemexInitialSync extends InitialSync {
                 })
             }
 
-            const deviceInfoPackage = await options.senderFastSyncChannel.receiveUserPackage()
+            const deviceInfoPackage: SyncUserPackage = await options.senderFastSyncChannel.receiveUserPackage()
             if (deviceInfoPackage.type !== 'device-info') {
                 throw new Error(`Expected to receive device info from sync target, but got ${deviceInfoPackage.type}`)
             }
@@ -110,7 +127,7 @@ export class MemexInitialSync extends InitialSync {
             }
 
             for (let i = 0; i < expectedPackageCount; ++i) {
-                const userPackage = await options.receiverFastSyncChannel.receiveUserPackage()
+                const userPackage: SyncUserPackage = await options.receiverFastSyncChannel.receiveUserPackage()
                 if (userPackage.type === 'encryption-key') {
                     await secretStore.setSyncEncryptionKey(userPackage.key)
                 } else if (userPackage.type === 'login-token') {
@@ -126,12 +143,13 @@ export class MemexInitialSync extends InitialSync {
             if (!continuousSync.deviceId) {
                 await continuousSync.initDevice()
             }
-            await options.receiverFastSyncChannel.sendUserPackage({
+            const userPackage: SyncUserPackage = {
                 type: 'device-info',
                 deviceId: continuousSync.deviceId,
                 productType: this.options.productType,
                 devicePlatform: this.options.devicePlatform
-            })
+            }
+            await options.receiverFastSyncChannel.sendUserPackage(userPackage)
         }
     }
 }
