@@ -22,13 +22,14 @@ export class WorldbrainAuthService implements AuthService {
             return
         }
 
-        await this._callFirebaseFunction('refreshUserClaims')()
+        await this._callFirebaseFunction('refreshUserClaims')
         await firebaseUser.reload()
         this.events.emit('changed', { user: await this.getCurrentUser() })
     }
 
     async generateLoginToken() {
-        return (await this._callFirebaseFunction('getCustomLoginToken')()).data
+        const response: { data: string } = await this._callFirebaseFunction('getLoginToken')
+        return { token: response.data }
     }
 
     async loginWithToken(token: string) {
