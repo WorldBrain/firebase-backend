@@ -53,7 +53,7 @@ export class MemexInitialSync extends InitialSync {
         }
     }
 
-    protected getPreSendProcessor() {
+    getPreSendProcessor() {
         const passiveDataFilter = _createExcludePassivePreSendFilter({
             storageManager: this.dependencies.storageManager,
         })
@@ -77,7 +77,7 @@ export class MemexInitialSync extends InitialSync {
         return processor
     }
 
-    protected async preSync(options: InitialSyncInfo) {
+    async preSync(options: InitialSyncInfo) {
         const { secretStore, continuousSync } = this.options
 
         if (options.role === 'sender') {
