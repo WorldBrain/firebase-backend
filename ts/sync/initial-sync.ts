@@ -152,6 +152,11 @@ export class MemexInitialSync extends InitialSync {
             await options.receiverFastSyncChannel.sendUserPackage(userPackage)
         }
     }
+
+    async waitForInitialSync(): Promise<void> {
+        await super.waitForInitialSync()
+        await this.options.continuousSync.enableContinuousSync()
+    }
 }
 
 export function _createBlobPreSendFilter(dependencies: {
