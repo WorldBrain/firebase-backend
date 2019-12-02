@@ -104,6 +104,7 @@ export default class SyncService {
             generateLoginToken: async () =>
                 (await options.auth.generateLoginToken()).token,
             loginWithToken: async (token: string) => options.auth.loginWithToken(token),
+            debug: true,
         })
     }
 
