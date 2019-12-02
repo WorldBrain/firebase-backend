@@ -33,4 +33,8 @@ export class MemoryAuthService implements AuthService {
     }
 
     async refreshUserInfo(): Promise<void> {}
+
+    signOut() {
+        this.currentUser = null;
+    }
 }

@@ -26,4 +26,8 @@ export class LocalAuthService extends MemoryAuthService {
         }
         return super.getCurrentUser()
     }
+
+    signOut() {
+        this.currentUser = null;
+    }
 }

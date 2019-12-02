@@ -36,6 +36,10 @@ export class WorldbrainAuthService implements AuthService {
         await this.firebase.auth().signInWithCustomToken(token)
     }
 
+    signOut() {
+        this.firebase.auth.signOut()
+    }
+
     _getUserFromFirebaseUser(
         user?: any,
         // user?: FirebaseAuthTypes.User | null,
