@@ -17,15 +17,9 @@ export type FeatureMap = {
 }
 export type UserFeature = 'backup' | 'sync'
 export type UserPlan =
-    | 'free'
-    | 'pro-1-device'
-    | 'pro-2-devices'
-    | 'pro-3-devices'
-    | 'pro-4-devices'
-    | 'pro-1-device-yrl'
-    | 'pro-2-devices-yrl'
-    | 'pro-3-devices-yrl'
-    | 'pro-4-devices-yrl'
+    | 'pro-monthly'
+    | 'pro-yearly'
+
 
 export interface SubscriptionCheckoutOptions {
     planId: UserPlan

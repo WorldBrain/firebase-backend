@@ -17,7 +17,7 @@ export class MemorySubscriptionsService
                 features: {},
                 lastSubscribed: null,
             }
-            this.claims.subscriptions['pro-1-device'] = { expiry }
+            this.claims.subscriptions['pro-yearly'] = { expiry }
             this.claims.features['backup'] = { expiry }
             this.claims.features['sync'] = { expiry }
         }

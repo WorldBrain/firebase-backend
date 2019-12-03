@@ -37,7 +37,7 @@ export class WorldbrainAuthService implements AuthService {
     }
 
     signOut() {
-        this.firebase.auth.signOut()
+        this.firebase.auth().signOut()
     }
 
     _getUserFromFirebaseUser(
