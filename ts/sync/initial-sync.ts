@@ -86,7 +86,7 @@ export class MemexInitialSync extends InitialSync {
                     type: 'login-token',
                     token: await this.options.generateLoginToken(),
                 }
-                await options.senderFastSyncChannel.sendUserPackage(userPackage)
+                await options.fastSyncChannel.sendUserPackage(userPackage)
             }
 
             if (secretStore) {
@@ -99,7 +99,7 @@ export class MemexInitialSync extends InitialSync {
                     type: 'encryption-key',
                     key,
                 }
-                await options.senderFastSyncChannel.sendUserPackage(userPackage)
+                await options.fastSyncChannel.sendUserPackage(userPackage)
             }
 
             if (!continuousSync.deviceId) {
@@ -111,7 +111,7 @@ export class MemexInitialSync extends InitialSync {
                 })
             }
 
-            const deviceInfoPackage: SyncUserPackage = await options.senderFastSyncChannel.receiveUserPackage()
+            const deviceInfoPackage: SyncUserPackage = await options.fastSyncChannel.receiveUserPackage()
             if (deviceInfoPackage.type !== 'device-info') {
                 throw new Error(`Expected to receive device info from sync target, but got ${deviceInfoPackage.type}`)
             }
@@ -127,7 +127,7 @@ export class MemexInitialSync extends InitialSync {
             }
 
             for (let i = 0; i < expectedPackageCount; ++i) {
-                const userPackage: SyncUserPackage = await options.receiverFastSyncChannel.receiveUserPackage()
+                const userPackage: SyncUserPackage = await options.fastSyncChannel.receiveUserPackage()
                 if (userPackage.type === 'encryption-key') {
                     await secretStore.setSyncEncryptionKey(userPackage.key)
                 } else if (userPackage.type === 'login-token') {
@@ -149,7 +149,7 @@ export class MemexInitialSync extends InitialSync {
                 productType: this.options.productType,
                 devicePlatform: this.options.devicePlatform
             }
-            await options.receiverFastSyncChannel.sendUserPackage(userPackage)
+            await options.fastSyncChannel.sendUserPackage(userPackage)
         }
     }
 

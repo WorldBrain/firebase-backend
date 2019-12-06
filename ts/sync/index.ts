@@ -79,11 +79,7 @@ export default class SyncService {
             postReceiveProcessor: options.postReceiveProcessor,
             toggleSyncLogging: (enabled: boolean, deviceId?: string | number) => {
                 if (this.syncLoggingMiddleware) {
-                    if (enabled) {
-                        this.syncLoggingMiddleware.enable(deviceId!)
-                    } else {
-                        this.syncLoggingMiddleware.disable()
-                    }
+                    this.syncLoggingMiddleware.toggle(enabled, deviceId!)
                 } else {
                     throw new Error(
                         `Tried to toggle sync logging before logging middleware was created`,
