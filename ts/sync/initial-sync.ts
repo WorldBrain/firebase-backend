@@ -151,6 +151,8 @@ export class MemexInitialSync extends InitialSync {
             }
             await options.fastSyncChannel.sendUserPackage(userPackage)
         }
+
+        await this.options.continuousSync.enableContinuousSync()
     }
 
     async waitForInitialSync(): Promise<void> {
