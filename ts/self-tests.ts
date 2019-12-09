@@ -4,7 +4,7 @@ import { MemexInitialSync, MemexContinuousSync } from './sync';
 import { MemexSyncSettingsStore } from './sync/settings';
 
 export function createSelfTests(dependencies: {
-    auth: {
+    auth?: {
         setUser: (user: { id: number | string }) => Promise<void>
     },
     services: {
@@ -40,8 +40,10 @@ export function createSelfTests(dependencies: {
             await services.sync.initialSync.waitForInitialSync()
             console['log']('After initial Sync', await getStorageContents(storage.manager))
         },
-        incrementalSyncSend: async (userId: string) => {
-            dependencies.auth.setUser({ id: userId })
+        incrementalSyncSend: async (userId?: string) => {
+            if (dependencies.auth && userId) {
+                dependencies.auth.setUser({ id: userId })
+            }
             await services.sync.settingStore.storeSetting('deviceId', null)
 
             const { initialMessage } = await tests.initialSyncSend({ excludeTestData: true })
@@ -55,8 +57,10 @@ export function createSelfTests(dependencies: {
             await services.sync.continuousSync.forceIncrementalSync()
             console['log']('Finished incremental Sync')
         },
-        incrementalSyncReceive: async (userId: string, initialMessage: string) => {
-            dependencies.auth.setUser({ id: userId })
+        incrementalSyncReceive: async (userId: string | null, initialMessage: string) => {
+            if (dependencies.auth && userId) {
+                dependencies.auth.setUser({ id: userId })
+            }
             await services.sync.settingStore.storeSetting('deviceId', null)
 
             console['log']('Starting initial Sync')
