@@ -23,14 +23,6 @@ service cloud.firestore {
                   request.auth.uid == userId
                 ;
                 allow update: if
-                  // Type checks
-                  (!('sharedUntil' in request.resource.data.keys()) || request.resource.data.sharedUntil is timestamp) &&
-
-
-                  // Validation rules
-                  ((!('sharedUntil' in request.resource.data)) || (request.resource.data.sharedUntil == request.time)) &&
-
-
                   // Ownership rules
                   request.auth.uid == userId
                 ;

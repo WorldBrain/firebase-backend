@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin'
 import * as functions from 'firebase-functions'
-import {CallableContext, Request} from 'firebase-functions/lib/providers/https'
-import {ChargebeeSubscriptionAPIClient, CustomClaimsSetter, refreshUserSubscriptionStatus} from "./subscriptions";
+import { CallableContext, Request } from 'firebase-functions/lib/providers/https'
+import { ChargebeeSubscriptionAPIClient, CustomClaimsSetter, refreshUserSubscriptionStatus } from "./subscriptions";
 
 const chargebee = require('chargebee')
 
@@ -41,15 +41,15 @@ const notAuthenticatedResponse = errorResponse('auth', 'Not Authenticated')
  * Helper function to set the user Auth context of an emulator
  * @param context
  */
-const helpTesting = (context: any) => {
+const helpTesting = (context: CallableContext) => {
     if (runningInEmulator) {
-        context.auth = testUserDetails
+        context.auth = testUserDetails as any
     }
     return context;
 }
 const testUserDetails = {
     uid: 'CGPoLZClUlh1pIejEFwKjv3lCl32',
-    token: {"email": "test@example.com"},
+    token: { "email": "test@example.com" },
 }
 
 /**
@@ -78,12 +78,17 @@ const resultFormatter = (error: any, result: any) => {
         )
     }
 
-    return {result};
+    return { result };
 }
 
-export const getLoginToken = functions.https.onCall(    async (data: any, _context: CallableContext) => {
+export const getLoginToken = functions.https.onCall(async (data: any, _context: CallableContext) => {
     const context = helpTesting(_context)
-    return admin.auth().createCustomToken(context.uid)
+    const uid = context.auth && context.auth.uid
+    if (uid) {
+        return admin.auth().createCustomToken(uid)
+    } else {
+        return null
+    }
 });
 
 /**
@@ -102,7 +107,7 @@ const getCheckoutLink = functions.https.onCall(
         chargebee.configure(getChargebeeOptions())
 
         const checkoutOptions = {
-            subscription: {plan_id: data.planId},
+            subscription: { plan_id: data.planId },
             customer: getUser(context),
         }
 
