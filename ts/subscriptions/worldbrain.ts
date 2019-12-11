@@ -32,7 +32,7 @@ export class WorldbrainSubscriptionsService
     getManageLink = async (
         options?: SubscriptionCheckoutOptions,
     ): Promise<string> => {
-        const result = this._callFirebaseFunction('getManageLink',options)
+        const result = await this._callFirebaseFunction('getManageLink',options)
         return result.data['portal_session']
     }
 
