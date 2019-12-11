@@ -1,5 +1,5 @@
 export interface SubscriptionsService {
-    getCurrentUserClaims(): Promise<Claims | null>
+    getCurrentUserClaims(forceRefresh?: boolean): Promise<Claims | null>
     getCheckoutLink(options: SubscriptionCheckoutOptions): Promise<string>
     getManageLink(options?: SubscriptionCheckoutOptions): Promise<string>
 }

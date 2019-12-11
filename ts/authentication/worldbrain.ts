@@ -24,6 +24,7 @@ export class WorldbrainAuthService implements AuthService {
 
         await this._callFirebaseFunction('refreshUserClaims')
         await firebaseUser.reload()
+        const newToken = await firebaseUser.getIdToken(true)
         this.events.emit('changed', { user: await this.getCurrentUser() })
     }
 
