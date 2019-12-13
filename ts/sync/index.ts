@@ -48,6 +48,7 @@ export default class SyncService {
             syncFrequencyInMs?: number
             disableEncryption?: boolean
             continuousSyncBatchSize?: number
+            continuousSyncSingleBatch?: boolean
         },
     ) {
         const useEncryption = !options.disableEncryption
@@ -79,6 +80,7 @@ export default class SyncService {
             productVersion: options.productVersion,
             postReceiveProcessor: options.postReceiveProcessor,
             batchSize: options.continuousSyncBatchSize,
+            singleBatch: options.continuousSyncSingleBatch,
             toggleSyncLogging: (enabled: boolean, deviceId?: string | number) => {
                 if (this.syncLoggingMiddleware) {
                     if (enabled && deviceId) {
