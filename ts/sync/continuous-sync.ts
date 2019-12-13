@@ -46,6 +46,13 @@ export class MemexContinuousSync extends ContinuousSync {
             pv: this.options.productVersion,
             sv: await this.getSchemaVersion()
         }
+
+        const origReconciler = syncOptions.reconciler
+        syncOptions.reconciler = (entries, options) => {
+            options.doubleCreateBehaviour = 'merge'
+            const result = origReconciler(entries, options)
+            return result
+        }
         return syncOptions
     }
 
