@@ -157,7 +157,6 @@ export class MemexInitialSync extends InitialSync {
 
     async waitForInitialSync(): Promise<void> {
         await super.waitForInitialSync()
-        await this.options.continuousSync.enableContinuousSync()
     }
 }
 
