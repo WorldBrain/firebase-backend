@@ -9,6 +9,7 @@ export class MemoryAuthService implements AuthService {
 
     async setUser(user: AuthenticatedUser | null) {
         this.currentUser = user
+        this.events.emit('changed', { user })
     }
 
     async getCurrentUser(): Promise<AuthenticatedUser | null> {
@@ -29,12 +30,12 @@ export class MemoryAuthService implements AuthService {
         if (!parsed.authMockToken) {
             throw new Error(`Tried to log in with invalid token: ` + token)
         }
-        this.currentUser = parsed.user
+        this.setUser(parsed.user)
     }
 
-    async refreshUserInfo(): Promise<void> {}
+    async refreshUserInfo(): Promise<void> { }
 
     signOut() {
-        this.currentUser = null;
+        this.setUser(null)
     }
 }
