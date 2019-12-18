@@ -1,4 +1,4 @@
-import {Claims, UserFeatures, UserPlans} from "./types";
+import {Claims, UserFeature, UserPlan} from './external/memex-common/ts/subscriptions/types'
 
 export interface SusbcriptionQuery {
     'customer_id[is]': string,
@@ -50,7 +50,7 @@ export const refreshUserSubscriptionStatus = async (userId: string, {getSubscrip
                 // next_billing_at will be present when a subscription is active or in trial, and will
                 // indicate up till when we can trust the the user is subscribed.
                 const expiry = entry.subscription['current_term_end'] || entry.subscription['next_billing_at']
-                const subPlanId = entry.subscription.plan_id
+                const subPlanId = entry.subscription.plan_id as UserPlan
                 // console.log(`Valid subscription for UserId:${userId}, planId:${subPlanId}, expiry:${expiry}`);
 
                 const existingSubscription = claims.subscriptions[subPlanId];
@@ -75,8 +75,8 @@ export const refreshUserSubscriptionStatus = async (userId: string, {getSubscrip
 const setFeaturesFromSubscriptions = (claims: Claims) => {
     // For each subscription, add the corresponding feature
     for (const subscriptionKey of Object.keys(claims.subscriptions)) {
-        const subscription = claims.subscriptions[subscriptionKey]
-        const subscriptionFeatures = subscriptionToFeatures.get(subscriptionKey as UserPlans)
+        const subscription = claims.subscriptions[subscriptionKey as UserPlan]
+        const subscriptionFeatures = subscriptionToFeatures.get(subscriptionKey as UserPlan)
         if (subscriptionFeatures != null && subscription != null) {
             for (const feature of subscriptionFeatures) {
                 claims.features[feature] = {expiry: subscription.expiry}
@@ -85,15 +85,8 @@ const setFeaturesFromSubscriptions = (claims: Claims) => {
     }
 }
 
-export const subscriptionToFeatures = new Map<UserPlans,UserFeatures[]>([
-    ["free", []],
-    ["pro-1-device",  ['backup','sync']],
-    ["pro-2-devices",  ['backup','sync']],
-    ["pro-3-devices",  ['backup','sync']],
-    ["pro-4-devices",  ['backup','sync']],
-    ["pro-1-device-yrl",  ['backup','sync']],
-    ["pro-2-devices-yrl",  ['backup','sync']],
-    ["pro-3-devices-yrl",  ['backup','sync']],
-    ["pro-4-devices-yrl",  ['backup','sync']],
+export const subscriptionToFeatures = new Map<UserPlan,UserFeature[]>([
+    ["pro-yearly",  ['backup','sync']],
+    ["pro-monthly",  ['backup','sync']],
 ])
 

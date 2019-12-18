@@ -1,0 +1,3 @@
+[submodule "firebase/functions/src/external/memex-common"]
+	path = firebase/functions/src/external/memex-common
+	url = https://github.com/WorldBrain/memex-common.git
