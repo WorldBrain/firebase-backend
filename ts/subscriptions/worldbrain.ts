@@ -9,7 +9,7 @@ export class WorldbrainSubscriptionsService
 
     constructor(private firebase: any) { }
 
-    getCurrentUserClaims = async (forceRefresh = true): Promise<Claims | null> => {
+    getCurrentUserClaims = async (forceRefresh = false): Promise<Claims | null> => {
         const currentUser = this.firebase.auth().currentUser
         if (currentUser == null) {
             return null
