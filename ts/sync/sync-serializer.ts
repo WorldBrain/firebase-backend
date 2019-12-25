@@ -10,7 +10,7 @@ export class EncryptedSyncSerializer implements SyncSerializer {
         data: SharedSyncLogEntryData,
     ): Promise<string> => {
         return [
-            'openpgpjs',
+            'tweetnacl',
             (await this.options.secretStore.encryptSyncMessage(
                 JSON.stringify(data),
             )).message,

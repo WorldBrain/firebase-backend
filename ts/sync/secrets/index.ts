@@ -32,11 +32,12 @@ export class SyncSecretStore {
     async encryptSyncMessage(
         message: string,
     ): Promise<{ message: string; nonce?: string }> {
-        if (!this.key) {
+        const key = await this.getSyncEncryptionKey()
+        if (!key) {
             throw new Error('Tried to encrypt sync message without a key')
         }
 
-        return this.options.encryption.encryptSyncMessage(message, { key: this.key })
+        return this.options.encryption.encryptSyncMessage(message, { key })
     }
 
     async decryptSyncMessage(encrypted: {
