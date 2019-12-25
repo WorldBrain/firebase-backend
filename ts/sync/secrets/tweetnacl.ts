@@ -12,15 +12,17 @@ const newNonce = () => randomBytes(secretbox.nonceLength);
 const generateKey = async () => encodeBase64(await randomBytes(secretbox.keyLength));
 
 export class TweetNaclSyncEncryption implements SyncEncyption {
-    constructor(options: { randomBytes: (n: number) => Promise<Uint8Array> }) {
+    constructor(options: { randomBytes?: (n: number) => Promise<Uint8Array> }) {
         function cleanup(arr: Uint8Array) {
             for (var i = 0; i < arr.length; i++) arr[i] = 0;
         }
-        setPRNG(async (uint8Array, randomBytesLength) => {
-            var i, v = await options.randomBytes(randomBytesLength);
-            for (i = 0; i < randomBytesLength; i++) uint8Array[i] = v[i];
-            cleanup(v);
-        })
+        if (options.randomBytes) {
+            setPRNG(async (uint8Array, randomBytesLength) => {
+                var i, v = await options.randomBytes(randomBytesLength);
+                for (i = 0; i < randomBytesLength; i++) uint8Array[i] = v[i];
+                cleanup(v);
+            })
+        }
     }
 
     async gernerateKey(): Promise<string> {
