@@ -1,4 +1,4 @@
-import { secretbox, randomBytes, setPRNG } from "tweetnacl";
+import { secretbox, randomBytes, setPRNG } from "tweetnacl-async";
 import {
     decodeUTF8,
     encodeUTF8,
@@ -9,16 +9,16 @@ import { SyncEncyption } from "./types";
 
 const newNonce = () => randomBytes(secretbox.nonceLength);
 
-const generateKey = () => encodeBase64(randomBytes(secretbox.keyLength));
+const generateKey = async () => encodeBase64(await randomBytes(secretbox.keyLength));
 
 export class TweetNaclSyncEncryption implements SyncEncyption {
-    constructor(private options: { randomBytes: (n: number) => Uint8Array }) {
+    constructor(options: { randomBytes: (n: number) => Promise<Uint8Array> }) {
         function cleanup(arr: Uint8Array) {
             for (var i = 0; i < arr.length; i++) arr[i] = 0;
         }
-        setPRNG(function (x, n) {
-            var i, v = options.randomBytes(n);
-            for (i = 0; i < n; i++) x[i] = v[i];
+        setPRNG(async (uint8Array, randomBytesLength) => {
+            var i, v = await options.randomBytes(randomBytesLength);
+            for (i = 0; i < randomBytesLength; i++) uint8Array[i] = v[i];
             cleanup(v);
         })
     }
@@ -32,7 +32,7 @@ export class TweetNaclSyncEncryption implements SyncEncyption {
     ): Promise<{ message: string; nonce?: string }> {
         const keyUint8Array = decodeBase64(options.key);
 
-        const nonce = newNonce();
+        const nonce = await newNonce();
         const messageUint8 = decodeUTF8(message);
         const box = secretbox(messageUint8, nonce, keyUint8Array);
 
