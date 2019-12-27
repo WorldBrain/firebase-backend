@@ -53,7 +53,7 @@ export default class SyncService {
     ) {
         const useEncryption = !options.disableEncryption
         this.settingStore = options.settingStore
-        if (options.syncEncryption) {
+        if (useEncryption && options.syncEncryption) {
             this.secretStore = new SyncSecretStore({
                 encryption: options.syncEncryption,
                 settingStore: this.settingStore,
