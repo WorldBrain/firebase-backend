@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - "10"
+before_deploy:
+  - git submodule update --init --recursive
+  - yarn install --frozen-lockfile --network-concurrency 1
+  - yarn generate-rules
+deploy:
+  on: staging
+  provider: firebase
+  token:
+    secure: gWu0u707JeM+B2Jcp+poFzcEbUlLMo65aqllaa/9Yu1lFOtd9u2Wv+g9wcgByt/X2IpmRjWQz8J8JuFCQ9QydDeuB33NDm1DfDXtlmjL+gHcimM/vKz1Ls30GxsK5sGh4zEvbD+wQfgeGpHQiV14qp4qYDjW4M8XqDTsPbHrS+n1lDFMT8dgXytI5Oh/ypfWTxbZ1kJ1lMGFyk8gsgVa9j8Ok0PuWHjTM2NjmhkAjSM+lxfmlRVPlLrUYv6+vMF1PScY3Wx4jXis6aGAuoQaZNYzGp5NnXhXSp5HCM+LfW6+H4taKcDMCys8SqZFGYhvR0hZuPaAL/cUCIuW8lBL0d4aFH9MqXtQS+4HFDHtpmp9C6uvuZTQOJ9ajVG+ZHByPxd8w/JzdcRuNJcFmzguB9RWZVZnVBWPT9rMqetAkfSapXjGQBIaQbS5fZhmh6Nq5Lyml2o98/MZvxoKFLcBHJrNnJ6jdizeWqnSB3u5oApDvTs4ZGV+K7iEBrI+R17BT1TKc0pnCxcxVgGgSA+DAYM5tT5RLyPlRtpktgAfJRXieYW+dSV1aemqXk9KCfZrKhno6Imw3Ydqo+OgAr6ke12pDd3xEioiDF9vaIXOipwkbjOX34AHP3+kqh5iA5yjutEnkCCZRJ5R6gRQg3uQNQvWAWzeGiJ3dVTgZ6WI0YE=
+  project: WorldBrain-Staging
