@@ -1,1 +1,1 @@
-firebase -P $1 --only firestore,database --token "$2"
+yarn firebase -P $1 --only firestore,database --token "$2"
