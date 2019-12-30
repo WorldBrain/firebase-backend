@@ -5,6 +5,7 @@ before_deploy:
   - git submodule update --init --recursive
   - yarn install --frozen-lockfile --network-concurrency 1
   - yarn generate-rules
+  - cd firebase
 deploy:
   on: staging
   provider: firebase
