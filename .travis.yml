@@ -9,7 +9,7 @@ before_deploy:
 deploy:
   on: staging
   provider: script
-  script: bash scripts/deploy.sh worldbrain-staging "$STAGING_TOKEN"
+  script: bash ../scripts/deploy.sh worldbrain-staging "$STAGING_TOKEN"
 env:
   global:
     secure: cKG4HydTg0S2d6hZzo7z0uT4KjnFLwaCVIarfDQzn732+xWfujUTOQzlE44pACYSm8QS+dJz+sFCTGdgKU2a0vAYRftMpy9k7O8KPfO0timZvtA1vyAKeD99JBkbZghxwi0ADXNXDd6YNBS4el8LdmuQ9f7BryFpMmUGQHBjtL5QtBWLjdVY89PdD1LTukCFRC6TsuANLmACf/Jbw2xdEwVCu7dPXFCKGQix85YCTPS3i8uWHYMaMM0kchGHKH+BKGykBl1oDfwu/9+f9uYlrpYz/3xnmJU8tns4IsUMPRCwQhvrzmvCt5d3gQDaE1+L69pFu/ByEePj3+nIylt5+zdAhHJxu0+ObAVwMQxya9y8BUNfEyqFLdPFckcXfPuCVC3a2Ygf2Ce+SUxh+5fPRZi4MzeeX+q+5g8CFvTYoSsfF+obvEBSxEHlAs6+sLHh+kqXADLHItnMeiGAg6I6qKsUgjBVceBKFkA4x7OPPcV6gJdu47nONhcRH5XlnmzSZVFeKwdpGdin1PmZzHWQIwrDnC8S5jUS1obQTLBSxWPWh5Sc882BrMDpBj4FuaCSAcCyyXEgJ0T6oOR9xrCwsq9bdQVdOS/eT5lAppKVnOEHkiOQQxt7lVPmznWtdEm+JM+XMYg3hQ8F8sgrciiCXX4VY1j7MxZ9cUbC7R4YUAo=
