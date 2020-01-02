@@ -107,7 +107,7 @@ const getCheckoutLink = functions.https.onCall(
         chargebee.configure(getChargebeeOptions())
 
         const checkoutOptions = {
-            subscription: { plan_id: data.planId },
+            subscription: { plan_id: data.planId, plan_quantity: data.quantity || 1 },
             customer: getUser(context),
         }
 
