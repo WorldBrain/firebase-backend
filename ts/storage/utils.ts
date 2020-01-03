@@ -13,6 +13,22 @@ export function isTermsField(params: {
     )
 }
 
+export function removeTermFieldsFromObject(
+    object: any,
+    options: { collectionName: string }
+) {
+    for (const fieldName of Object.keys(object)) {
+        if (
+            isTermsField({
+                collection: options.collectionName,
+                field: fieldName,
+            })
+        ) {
+            delete object[fieldName]
+        }
+    }
+}
+
 export function createPassiveDataChecker(dependencies: {
     storageManager: StorageManager
 }): (
