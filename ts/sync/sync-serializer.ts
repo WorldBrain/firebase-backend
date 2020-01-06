@@ -19,12 +19,15 @@ export class EncryptedSyncSerializer implements SyncSerializer {
 
     deserializeSharedSyncLogEntryData = async (
         serialized: string,
-    ): Promise<SharedSyncLogEntryData> => {
+    ): Promise<SharedSyncLogEntryData | null> => {
         const [type] = serialized.split(':', 1)
         const message = serialized.substr(type.length + 1)
         const jsonString = await this.options.secretStore.decryptSyncMessage({
             message,
         })
+        if (!jsonString) { // Could not decrypt
+            return null
+        }
 
         return JSON.parse(jsonString, jsonDateParser)
     }

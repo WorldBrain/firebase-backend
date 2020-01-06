@@ -48,7 +48,7 @@ export class TweetNaclSyncEncryption implements SyncEncyption {
 
     async decryptSyncMessage(encrypted: {
         message: string, nonce?: string
-    }, options: { key: string }): Promise<string> {
+    }, options: { key: string }): Promise<string | null> {
         const keyUint8Array = decodeBase64(options.key);
         const messageWithNonceAsUint8Array = decodeBase64(encrypted.message);
         const nonce = messageWithNonceAsUint8Array.slice(0, secretbox.nonceLength)
@@ -60,7 +60,7 @@ export class TweetNaclSyncEncryption implements SyncEncyption {
         const decrypted = secretbox.open(message, nonce, keyUint8Array);
 
         if (!decrypted) {
-            throw new Error("Could not decrypt message");
+            return null
         }
 
         const base64DecryptedMessage = encodeUTF8(decrypted);
