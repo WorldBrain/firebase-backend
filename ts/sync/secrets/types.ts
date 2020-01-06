@@ -6,5 +6,5 @@ export interface SyncEncyption {
     ): Promise<{ message: string; nonce?: string }>
     decryptSyncMessage(encrypted: {
         message: string, nonce?: string
-    }, options: { key: string }): Promise<string>
+    }, options: { key: string }): Promise<string | null>
 }
