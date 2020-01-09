@@ -16,6 +16,16 @@ export class WorldbrainAuthService implements AuthService {
         return this._getUserFromFirebaseUser(this.firebase.auth().currentUser)
     }
 
+    async getCurrentToken(): Promise<{ token: string | null }> {
+        const user = this.firebase.auth().currentUser
+
+        if (!user) {
+            return { token: null }
+        }
+
+        return { token: await user.getIdToken() }
+    }
+
     async refreshUserInfo() {
         const firebaseUser = this.firebase.auth().currentUser
         if (!firebaseUser) {
@@ -29,7 +39,9 @@ export class WorldbrainAuthService implements AuthService {
     }
 
     async generateLoginToken() {
-        const response: { data: string } = await this._callFirebaseFunction('getLoginToken')
+        const response: { data: string } = await this._callFirebaseFunction(
+            'getLoginToken',
+        )
         return { token: response.data }
     }
 

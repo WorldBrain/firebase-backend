@@ -14,6 +14,7 @@ export interface AuthService {
     loginWithToken(token: string): Promise<void>
     refreshUserInfo(): Promise<void>
     getCurrentUser(): Promise<AuthenticatedUser | null>
+    getCurrentToken(): Promise<{ token: string | null }>
     signOut(): void
 }
 

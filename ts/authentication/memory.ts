@@ -16,6 +16,10 @@ export class MemoryAuthService implements AuthService {
         return this.currentUser
     }
 
+    async getCurrentToken() {
+        return this.generateLoginToken()
+    }
+
     async generateLoginToken() {
         return {
             token: JSON.stringify({
@@ -33,7 +37,7 @@ export class MemoryAuthService implements AuthService {
         this.setUser(parsed.user)
     }
 
-    async refreshUserInfo(): Promise<void> { }
+    async refreshUserInfo(): Promise<void> {}
 
     signOut() {
         this.setUser(null)
