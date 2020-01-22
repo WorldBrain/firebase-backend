@@ -2,7 +2,7 @@ import * as admin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 import { CallableContext, Request } from 'firebase-functions/lib/providers/https'
 import { ChargebeeSubscriptionAPIClient, CustomClaimsSetter, refreshUserSubscriptionStatus } from "./subscriptions";
-
+import userSignupWelcomeEmail from './userSignupWelcomeEmail'
 const chargebee = require('chargebee')
 
 const runningInEmulator = process.env.FUNCTIONS_EMULATOR
@@ -12,6 +12,12 @@ const emulatedConfig = {
     projectId: "worldbrain-staging",
 }
 admin.initializeApp((runningInEmulator) ? emulatedConfig : undefined);
+
+
+/**
+ * When a new user signs up, send them a welcome email.
+ */
+const sendWelcomeEmail = functions.auth.user().onCreate(userSignupWelcomeEmail);
 
 
 /**
@@ -197,4 +203,5 @@ export {
     getCheckoutLink,
     refreshUserClaims,
     userSubscriptionChanged,
+    sendWelcomeEmail,
 }
