@@ -3,9 +3,12 @@ import {
     ContinuousSyncDependencies,
 } from '@worldbrain/storex-sync/lib/integration/continuous-sync'
 import { SyncPreSendProcessor, SyncPostReceiveProcessor, SyncSerializer, SyncOptions } from '@worldbrain/storex-sync'
-import { isTermsField, getCurrentSchemaVersion } from '../storage/utils'
+import extractTerms from '@worldbrain/memex-stemmer'
+import { isTermsField, getCurrentSchemaVersion, getTermsField } from '../storage/utils'
 import { SyncSecretStore } from './secrets'
 import { EncryptedSyncSerializer } from './sync-serializer'
+import { mergeTermFields } from '../page-indexing/utils'
+import { createMemexReconciliationProcessor } from './reconciliation'
 
 export interface MemexContinuousSyncDependencies extends ContinuousSyncDependencies {
     secretStore?: SyncSecretStore
@@ -13,6 +16,7 @@ export interface MemexContinuousSyncDependencies extends ContinuousSyncDependenc
     productVersion: string,
     useEncryption: boolean
     postReceiveProcessor?: SyncPostReceiveProcessor
+    processTermsFields?: boolean
 }
 export class MemexContinuousSync extends ContinuousSync {
     private syncSerializer?: SyncSerializer
@@ -52,6 +56,10 @@ export class MemexContinuousSync extends ContinuousSync {
             options.doubleCreateBehaviour = 'merge'
             const result = origReconciler(entries, options)
             return result
+        }
+        if (this.options.processTermsFields) {
+            const processor = createMemexReconciliationProcessor(this.options.storageManager)
+            syncOptions.reconciliationProcessor = processor
         }
         return syncOptions
     }

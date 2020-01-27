@@ -29,6 +29,26 @@ export function removeTermFieldsFromObject(
     }
 }
 
+export function getTermsField(collection: 'pages', fieldName: string) {
+    if (collection !== 'pages') {
+        return null
+    }
+
+    if (fieldName === 'text') {
+        return 'terms'
+    }
+
+    if (fieldName === 'fullTitle') {
+        return 'titleTerms'
+    }
+
+    if (fieldName === 'fullUrl') {
+        return 'urlTerms'
+    }
+
+    return null
+}
+
 export function createPassiveDataChecker(dependencies: {
     storageManager: StorageManager
 }): (

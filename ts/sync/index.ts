@@ -81,6 +81,7 @@ export default class SyncService {
             postReceiveProcessor: options.postReceiveProcessor,
             batchSize: options.continuousSyncBatchSize,
             singleBatch: options.continuousSyncSingleBatch,
+            processTermsFields: options.productType === 'ext',
             toggleSyncLogging: (enabled: boolean, deviceId?: string | number) => {
                 if (this.syncLoggingMiddleware) {
                     if (enabled && deviceId) {
