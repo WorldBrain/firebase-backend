@@ -18,7 +18,7 @@ export function createMemexReconciliationProcessor(storageManager: StorageManage
 
                 const termsField = getTermsField('pages', fieldName)
                 if (termsField) {
-                    step.updates[termsField] = extractTerms(fieldValue)
+                    step.updates[termsField] = extractTerms(fieldValue as string)
                     const merged = mergeTermFields(termsField, existingPage, step.updates)
                     step.updates[termsField] = merged
                 }
