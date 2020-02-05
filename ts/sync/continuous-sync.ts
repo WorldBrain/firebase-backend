@@ -85,26 +85,33 @@ export const _preSendProcessor: SyncPreSendProcessor = async ({
     entry,
     ...params
 }) => {
-    if (entry.operation === 'create') {
-        if (!Object.keys(entry.value).length) {
-            return { entry }
-        }
-
+    const removeTermFieldsFromEntry = () => {
         for (const field of Object.keys(entry.value)) {
             if (isTermsField({ field, collection: entry.collection })) {
                 delete entry.value[field]
             }
         }
+    }
+
+    if (entry.operation === 'create') {
         if (!Object.keys(entry.value).length) {
-            return { entry: null }
-        } else {
             return { entry }
         }
+
+        removeTermFieldsFromEntry()
+        return !Object.keys(entry.value).length ?
+            { entry: null } : { entry }
     } else if (entry.operation === 'modify') {
-        if (isTermsField(entry)) {
-            return { entry: null }
+        if ('field' in entry && entry.field) {
+            if (isTermsField(entry)) {
+                return { entry: null }
+            } else {
+                return { entry }
+            }
         } else {
-            return { entry }
+            removeTermFieldsFromEntry()
+            return !Object.keys(entry.value).length ?
+                { entry: null } : { entry }
         }
     } else {
         return { entry, ...params }

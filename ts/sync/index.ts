@@ -117,6 +117,7 @@ export default class SyncService {
             storageManager: this.options.storageManager,
             clientSyncLog: this.options.clientSyncLog,
             includeCollections: this.syncedCollections,
+            mergeModifications: true,
         })
         return this.syncLoggingMiddleware
     }
