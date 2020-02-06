@@ -86,6 +86,10 @@ export const _preSendProcessor: SyncPreSendProcessor = async ({
     ...params
 }) => {
     const removeTermFieldsFromEntry = () => {
+        if (!('value' in entry)) {
+            return
+        }
+
         for (const field of Object.keys(entry.value)) {
             if (isTermsField({ field, collection: entry.collection })) {
                 delete entry.value[field]
