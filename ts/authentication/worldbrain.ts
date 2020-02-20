@@ -26,15 +26,41 @@ export class WorldbrainAuthService implements AuthService {
         return { token: await user.getIdToken() }
     }
 
+    async _waitForCurrentUser(ms:number): Promise<any> {
+        let unsubscribe : () => void;
+
+        const currentUser = new Promise<void>((resolve,reject) => {
+            unsubscribe = this.firebase.auth().onAuthStateChanged(async () => {
+                const firebaseUser = this.firebase.auth().currentUser
+                if (!firebaseUser) {
+                    return
+                }
+                unsubscribe()
+                resolve(firebaseUser)
+            })
+
+        })
+        const timeout = new Promise(resolve => setTimeout(() => {
+            unsubscribe()
+            resolve(false)
+        }, ms));
+
+        return Promise.race([
+            currentUser,
+            timeout
+        ])
+    }
+
     async refreshUserInfo() {
-        const firebaseUser = this.firebase.auth().currentUser
+        const firebaseUser = await this._waitForCurrentUser(500)
         if (!firebaseUser) {
+            console.warn(`Failed to refreshUserInfo`)
             return
         }
 
         await this._callFirebaseFunction('refreshUserClaims')
         await firebaseUser.reload()
-        const newToken = await firebaseUser.getIdToken(true)
+        await firebaseUser.getIdToken(true)
         this.events.emit('changed', { user: await this.getCurrentUser() })
     }
 
