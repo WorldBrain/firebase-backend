@@ -3,7 +3,6 @@ import {
     ContinuousSyncDependencies,
 } from '@worldbrain/storex-sync/lib/integration/continuous-sync'
 import { SyncPreSendProcessor, SyncPostReceiveProcessor, SyncSerializer, SyncOptions } from '@worldbrain/storex-sync'
-import extractTerms from '@worldbrain/memex-stemmer'
 import { isTermsField, getCurrentSchemaVersion, getTermsField } from '../storage/utils'
 import { SyncSecretStore } from './secrets'
 import { EncryptedSyncSerializer } from './sync-serializer'

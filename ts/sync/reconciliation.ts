@@ -1,5 +1,5 @@
 import StorageManager, { OperationBatch } from '@worldbrain/storex'
-import extractTerms from '@worldbrain/memex-stemmer'
+import extractTerms from '@worldbrain/memex-stemmer/lib/index'
 import { getTermsField } from '../storage/utils'
 import { mergeTermFields } from '../page-indexing/utils'
 
