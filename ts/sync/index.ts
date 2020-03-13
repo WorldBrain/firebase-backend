@@ -79,7 +79,9 @@ export default class SyncService {
             productType: options.productType,
             productVersion: options.productVersion,
             postReceiveProcessor: options.postReceiveProcessor,
-            batchSize: options.continuousSyncBatchSize,
+            uploadBatchSize: options.continuousSyncBatchSize,
+            uploadBatchByteLimit: 1000 * 600,
+            downloadBatchSize: options.continuousSyncBatchSize,
             singleBatch: options.continuousSyncSingleBatch,
             processTermsFields: options.productType === 'ext',
             toggleSyncLogging: (enabled: boolean, deviceId?: string | number) => {
