@@ -1,6 +1,6 @@
 import 'mocha';
-import {expect} from 'chai';
-import {refreshUserSubscriptionStatus} from '../src/subscriptions';
+import { expect } from 'chai';
+import { refreshUserSubscriptionStatus } from '../src/subscriptions/subscriptions';
 
 describe('Subscriptions', async () => {
 
@@ -24,8 +24,8 @@ describe('Subscriptions', async () => {
             setClaims: (userId, claims) => {
                 expect(userId).to.equal('testUser');
                 expect(claims).to.deep.equal({
-                    subscriptions: {'backup-monthly': {expiry: time}},
-                    features: {'backup': {expiry: time}},
+                    subscriptions: { 'backup-monthly': { expiry: time } },
+                    features: { 'backup': { expiry: time } },
                     lastSubscribed: now,
                 })
             }

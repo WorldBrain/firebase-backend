@@ -1,4 +1,4 @@
-import {Claims, UserFeature, UserPlan} from './external/memex-common/ts/subscriptions/types'
+import { Claims, UserFeature, UserPlan } from '../external/memex-common/ts/subscriptions/types'
 
 export interface SusbcriptionQuery {
     'customer_id[is]': string,
@@ -16,7 +16,7 @@ export type CustomClaimsSetter = (userId: string, claims: Claims) => any;
  * then updates the value in the JWT auth token's user claims.
  *
  */
-export const refreshUserSubscriptionStatus = async (userId: string, {getSubscriptions, setClaims}: {getSubscriptions: ChargebeeSubscriptionAPIClient, setClaims: CustomClaimsSetter}) => {
+export const refreshUserSubscriptionStatus = async (userId: string, { getSubscriptions, setClaims }: { getSubscriptions: ChargebeeSubscriptionAPIClient, setClaims: CustomClaimsSetter }) => {
 
     const claims: Claims = {
         subscriptions: {},
@@ -57,7 +57,7 @@ export const refreshUserSubscriptionStatus = async (userId: string, {getSubscrip
                 // N.B. In case a user has more than one subscription to the same plan,
                 // (e.g. newly configured plan or an old trial) make sure that the furthest expiry date is set.
                 if (existingSubscription == null || existingSubscription.expiry < expiry) {
-                    claims.subscriptions[subPlanId] = {expiry}
+                    claims.subscriptions[subPlanId] = { expiry }
                 }
             }
         }
@@ -69,7 +69,7 @@ export const refreshUserSubscriptionStatus = async (userId: string, {getSubscrip
     // N.B. Claims are always reset, not additive
     // console.log(`setCustomUserClaims(${userId},${JSON.stringify(claims)})`)
     const setClaimResult = await setClaims(userId, claims)
-    return {"result": {claims, setClaimResult}};
+    return { "result": { claims, setClaimResult } };
 }
 
 const setFeaturesFromSubscriptions = (claims: Claims) => {
@@ -79,14 +79,14 @@ const setFeaturesFromSubscriptions = (claims: Claims) => {
         const subscriptionFeatures = subscriptionToFeatures.get(subscriptionKey as UserPlan)
         if (subscriptionFeatures != null && subscription != null) {
             for (const feature of subscriptionFeatures) {
-                claims.features[feature] = {expiry: subscription.expiry}
+                claims.features[feature] = { expiry: subscription.expiry }
             }
         }
     }
 }
 
-export const subscriptionToFeatures = new Map<UserPlan,UserFeature[]>([
-    ["pro-yearly",  ['backup','sync']],
-    ["pro-monthly",  ['backup','sync']],
+export const subscriptionToFeatures = new Map<UserPlan, UserFeature[]>([
+    ["pro-yearly", ['backup', 'sync']],
+    ["pro-monthly", ['backup', 'sync']],
 ])
 
