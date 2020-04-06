@@ -21,7 +21,7 @@ chargebee.configure(getChargebeeOptions())
  * Calls the Chargebee API to return a link to a hosted page,
  * to Checkout a plan for the authenticated user.
  */
-const getCheckoutLink = functions.https.onCall(
+export const getCheckoutLink = functions.https.onCall(
     async (data: any, _context: CallableContext) => {
         const context = helpTesting(_context)
         if (context.auth == null) {
@@ -49,7 +49,7 @@ const getCheckoutLink = functions.https.onCall(
  * Calls the Chargebee API to return a link to a hosted page,
  * to manage subscriptions for the authenticated user.
  */
-const getManageLink = functions.https.onCall(
+export const getManageLink = functions.https.onCall(
     async (data: any, _context: CallableContext) => {
         const context = helpTesting(_context)
         if (context.auth == null) {
@@ -78,13 +78,14 @@ const firebaseAuthClaimsSetter: CustomClaimsSetter = async (userId, claims) => a
 const _refreshUserSubscriptionStatus = async (userId: string) => refreshUserSubscriptionStatus(userId, {
     getSubscriptions: chargebeeSubscriptionAPIClient,
     setClaims: firebaseAuthClaimsSetter,
-});
+})
+
 /**
  * Firebase Function
  *
  * Calls the refresh function above with the authenticated user's details
  */
-const refreshUserClaims = functions.https.onCall(
+export const refreshUserClaims = functions.https.onCall(
     async (data: any, _context: CallableContext) => {
         const context = helpTesting(_context)
         if (context.auth == null) {
@@ -103,7 +104,7 @@ const refreshUserClaims = functions.https.onCall(
  * Calls the refresh function above with the specified user's details
  *
  */
-const userSubscriptionChanged = functions.https.onRequest(
+export const userSubscriptionChanged = functions.https.onRequest(
     async (req: Request, resp: any) => {
         // TODO: Verify secret or host
         // TODO: Filter types of subscription change
@@ -115,10 +116,3 @@ const userSubscriptionChanged = functions.https.onRequest(
 
     },
 )
-
-export {
-    getManageLink,
-    getCheckoutLink,
-    refreshUserClaims,
-    userSubscriptionChanged,
-}

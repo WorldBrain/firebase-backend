@@ -336,11 +336,6 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.49.tgz#f331afc5efed0796798e5591d6e0ece636969b7b"
   integrity sha512-YX30JVx0PvSmJ3Eqr74fYLGeBxD+C7vIL20ek+GGGLJeUbVYRUW3EzyAXpIRA0K8c8o0UWqR/GwEFYiFoz1T8w==
 
-"@types/q@^0":
-  version "0.0.37"
-  resolved "https://registry.yarnpkg.com/@types/q/-/q-0.0.37.tgz#7d6a934b35ee2f0ed0646d286eba559599021c9e"
-  integrity sha512-vjFGX1zMTMz/kUp3xgfJcxMVLkMWVMrdlyc0RwVyve1y9jxwqNaT8wTcv6M51ylq2a/zn5lm8g7qPSoIS4uvZQ==
-
 "@types/qs@*":
   version "6.9.1"
   resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.1.tgz#937fab3194766256ee09fcd40b781740758617e7"
@@ -373,15 +368,6 @@
   version "2.3.5"
   resolved "https://registry.yarnpkg.com/@types/tough-cookie/-/tough-cookie-2.3.5.tgz#9da44ed75571999b65c37b60c9b2b88db54c585d"
   integrity sha512-SCcK7mvGi3+ZNz833RRjFIxrn4gI1PPR3NtuIS+6vMkvmsGjosqTJwRt5bAEFLRz+wtJMWv8+uOnZf2hi2QXTg==
-
-"@types/twilio@^2.11.0":
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/@types/twilio/-/twilio-2.11.0.tgz#b98afd6312436a096f47de55b14d0bf852eadfec"
-  integrity sha512-hPuujay9boqWQuDdcnT02DnINl1tSz6m8K/o1gY31fjRDGybTC4s3mPbFSlF1LQ9H0yo3tzgYfa0cERRYsZiqA==
-  dependencies:
-    "@types/express" "*"
-    "@types/node" "*"
-    "@types/q" "^0"
 
 abbrev@1:
   version "1.1.1"
