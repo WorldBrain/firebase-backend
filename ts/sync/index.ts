@@ -49,6 +49,7 @@ export default class SyncService {
             disableEncryption?: boolean
             continuousSyncBatchSize?: number
             continuousSyncSingleBatch?: boolean
+            getIceServers?: () => Promise<string[]>
         },
     ) {
         const useEncryption = !options.disableEncryption
@@ -98,6 +99,7 @@ export default class SyncService {
                 }
             },
         })
+
         this.initialSync = new MemexInitialSync({
             useEncryption,
             storageManager: options.storageManager,
@@ -108,6 +110,7 @@ export default class SyncService {
             secretStore: this.secretStore,
             productType: options.productType,
             devicePlatform: options.devicePlatform,
+            getIceServers: options.getIceServers,
             generateLoginToken: async () =>
                 (await options.auth.generateLoginToken()).token,
             loginWithToken: async (token: string) => options.auth.loginWithToken(token),
