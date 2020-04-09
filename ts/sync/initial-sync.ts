@@ -12,7 +12,7 @@ import { MemexContinuousSync } from './continuous-sync';
 import { SyncInfoStorage } from './storage';
 import { MemexSyncDevicePlatform, MemexSyncProductType } from './types';
 
-export {
+export type {
     SignalTransportFactory,
 } from '@worldbrain/storex-sync/lib/integration/initial-sync'
 
