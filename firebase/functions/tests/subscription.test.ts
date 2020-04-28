@@ -14,7 +14,7 @@ describe('Subscriptions', async () => {
                     {
                         subscription: {
                             status: 'active',
-                            plan_id: 'backup-monthly',
+                            plan_id: 'pro-monthly',
                             created_at: now,
                             next_billing_at: time,
                         },
@@ -24,8 +24,21 @@ describe('Subscriptions', async () => {
             setClaims: (userId, claims) => {
                 expect(userId).to.equal('testUser');
                 expect(claims).to.deep.equal({
-                    subscriptions: { 'backup-monthly': { expiry: time } },
-                    features: { 'backup': { expiry: time } },
+                    subscriptionExpiry: time,
+                    subscriptionStatus: "active",
+                    subscriptions: { 'pro-monthly': {
+                        expiry: time,
+                        status: 'active',
+                        },
+                    },
+                    features: {
+                        'backup': {
+                            expiry: time,
+                        } ,
+                        'sync': {
+                            expiry: time,
+                        }
+                    },
                     lastSubscribed: now,
                 })
             }

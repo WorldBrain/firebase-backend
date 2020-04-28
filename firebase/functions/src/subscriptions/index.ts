@@ -109,10 +109,13 @@ export const userSubscriptionChanged = functions.https.onRequest(
         // TODO: Verify secret or host
         // TODO: Filter types of subscription change
 
+        // @ts-ignore (Some issues with peer dep of Express https://github.com/DefinitelyTyped/DefinitelyTyped/issues/40905)
         if (req.is('json') && req.body != null && req.body.content != null && req.body.content.customer != null) {
+            // @ts-ignore
             const userId = req.body.content.customer.id
             await _refreshUserSubscriptionStatus(userId)
         }
+
 
     },
 )
