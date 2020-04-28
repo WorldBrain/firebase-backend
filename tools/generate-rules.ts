@@ -44,7 +44,8 @@ export async function main() {
     const storage = await createStorage()
     const firestoreRulesPath = path.join(firebaseRootDir, firebaseConfig['firestore']['rules'])
     const ast = await generateRulesAstFromStorageModules(storage.server.modules as any, {
-        storageRegistry: storage.server.manager.registry
+        storageRegistry: storage.server.manager.registry,
+        excludeTypeChecks: true,
     })
     const serialized = serializeRulesAST(ast)
     fs.writeFileSync(firestoreRulesPath, serialized)
