@@ -20,6 +20,8 @@ export const refreshUserSubscriptionStatus = async (userId: string, { getSubscri
 
     const claims: Claims = {
         subscriptions: {},
+        subscriptionStatus: null,
+        subscriptionExpiry: null,
         features: {},
         lastSubscribed: null,
     }
@@ -57,10 +59,18 @@ export const refreshUserSubscriptionStatus = async (userId: string, { getSubscri
                 // N.B. In case a user has more than one subscription to the same plan,
                 // (e.g. newly configured plan or an old trial) make sure that the furthest expiry date is set.
                 if (existingSubscription == null || existingSubscription.expiry < expiry) {
-                    claims.subscriptions[subPlanId] = { expiry }
+                    // Set subscription specific expiry and status
+                    claims.subscriptions[subPlanId] = {
+                        expiry,
+                        status: entry.subscription.status,
+                    }
+                    // Update overall subscription status
+                    claims.subscriptionStatus = entry.subscription.status
+                    claims.subscriptionExpiry = expiry
                 }
             }
         }
+
     }
 
 
