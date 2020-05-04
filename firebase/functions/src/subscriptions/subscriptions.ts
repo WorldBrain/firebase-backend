@@ -9,6 +9,10 @@ export type ChargebeeSubscriptionAPIClient = (subscriptionQuery: SusbcriptionQue
 
 export type CustomClaimsSetter = (userId: string, claims: Claims) => any;
 
+// The grace period we add to Chargebee expiry dates, before marking as expired to us.
+// to give them time to refresh the user's subscription / payment status.
+const expiryGraceSecs = 60 * 5
+
 /**
  * Shared Function
  *
@@ -51,7 +55,7 @@ export const refreshUserSubscriptionStatus = async (userId: string, { getSubscri
                 // that still has 'time left' being subscribed.
                 // next_billing_at will be present when a subscription is active or in trial, and will
                 // indicate up till when we can trust the the user is subscribed.
-                const expiry = entry.subscription['current_term_end'] || entry.subscription['next_billing_at']
+                const expiry = (entry.subscription['current_term_end'] || entry.subscription['next_billing_at']) + expiryGraceSecs
                 const subPlanId = entry.subscription.plan_id as UserPlan
                 // console.log(`Valid subscription for UserId:${userId}, planId:${subPlanId}, expiry:${expiry}`);
 
