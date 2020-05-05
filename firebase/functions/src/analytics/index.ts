@@ -18,5 +18,5 @@ export const uninstall = functions.https.onRequest(async (req: Request, resp: ex
 
     console.log(`Logging uninstall event: ${url}`)
     await fetch(url)
-    resp.redirect(`https://forms.gle/t9VwLFhx9QYGDbcd6`)
+    resp.redirect(`https://airtable.com/shrZ987GUsOWWMH7L`)
 })
