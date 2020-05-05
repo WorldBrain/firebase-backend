@@ -7,4 +7,5 @@ export { getLoginToken } from './auth'
 export { getCheckoutLink, getManageLink, userSubscriptionChanged, refreshUserClaims } from './subscriptions'
 export { generateTwilioNTSToken } from './twilio'
 export { sendWelcomeEmailOnSignUp } from "./user"
-export { uninstall } from "./analytics"
+export { uninstall, uninstallLog } from "./analytics"
+
