@@ -18,10 +18,10 @@ export const uninstall = functions.https.onRequest(async (req: Request, resp: ex
 export const uninstallLog = functions.https.onRequest(async (req: Request, resp: express.Response) => {
 
     const user = req.query.user
-    const events = JSON.stringify({
+    const events = JSON.stringify([{
         "key": "Global::uninstallExtension",
         "count": 1
-    })
+    }])
     const analyticsUrl = `https://analytics.worldbrain.io/i?app_key=${appKey}&device_id=${user}&events=${events}`;
     await fetch(analyticsUrl)
     console.log(`Logged uninstall event: ${analyticsUrl}`)
