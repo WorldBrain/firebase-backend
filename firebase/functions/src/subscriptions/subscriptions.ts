@@ -77,7 +77,7 @@ export const refreshUserSubscriptionStatus = async (userId: string, { getSubscri
                 if (existingSubscription == null || existingSubscription.expiry < expiry) {
 
                     const donationAddOnObject = entry.subscription?.addons?.find(
-                        (addOn: any) => addOn.id === 'pioneer'
+                        (addOn: any) => addOn.id === 'pioneer' || addOn.id === 'pioneer-yearly'
                     )
                     const donation = (donationAddOnObject) ? {
                         donation: donationAddOnObject.unit_price * donationAddOnObject.amount

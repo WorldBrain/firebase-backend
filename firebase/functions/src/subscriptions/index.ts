@@ -44,7 +44,7 @@ export const getCheckoutLink = functions.https.onCall(
 
         if (data?.pioneerDonationAmount) {
             checkoutOptions.addons = [{
-                "id": "pioneer",
+                "id": `pioneer${data.planId.includes('yearly') ? '-yearly' : ''}`,
                 unit_price: Math.max(data.pioneerDonationAmount * 100,100),
                 quantity: 1,
             }]
