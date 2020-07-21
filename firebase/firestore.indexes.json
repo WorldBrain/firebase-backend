@@ -21,6 +21,21 @@
   //    },
   //   ]
   // ]
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "sharedListEntry",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "sharedList",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdWhen",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
   "fieldOverrides": []
 }
