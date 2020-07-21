@@ -9,6 +9,8 @@ import { FirestoreStorageBackend } from '@worldbrain/storex-backend-firestore'
 import { generateRulesAstFromStorageModules } from '@worldbrain/storex-backend-firestore/lib/security-rules'
 import { serializeRulesAST } from '@worldbrain/storex-backend-firestore/lib/security-rules/ast';
 import { SharedSyncLogStorage } from '@worldbrain/storex-sync/lib/shared-sync-log/storex'
+import ContentSharingStorage from '@worldbrain/memex-common/lib/content-sharing/storage'
+import UserManagementStorage from '@worldbrain/memex-common/lib/user-management/storage'
 import { registerModuleMapCollections } from '@worldbrain/storex-pattern-modules'
 
 async function createStorage() {
@@ -18,7 +20,9 @@ async function createStorage() {
     const serverBackend = { configure: () => { } } as any as StorageBackend
     const serverStorageManager = new StorageManager({ backend: serverBackend })
     const serverModules = {
-        sharedSyncLog: new SharedSyncLogStorage({ storageManager: serverStorageManager, autoPkType: 'string' })
+        sharedSyncLog: new SharedSyncLogStorage({ storageManager: serverStorageManager, autoPkType: 'string' }),
+        contentSharing: new ContentSharingStorage({ storageManager: serverStorageManager, autoPkType: 'string' }),
+        userManagement: new UserManagementStorage({ storageManager: serverStorageManager }),
     }
     registerModuleMapCollections(serverStorageManager.registry, serverModules)
     await serverStorageManager.finishInitialization()
@@ -45,7 +49,7 @@ export async function main() {
     const firestoreRulesPath = path.join(firebaseRootDir, firebaseConfig['firestore']['rules'])
     const ast = await generateRulesAstFromStorageModules(storage.server.modules as any, {
         storageRegistry: storage.server.manager.registry,
-        excludeTypeChecks: true,
+        excludeTypeChecks: ['sharedSyncLogDeviceInfo', 'sharedSyncLogEntryBatch'],
     })
     const serialized = serializeRulesAST(ast)
     fs.writeFileSync(firestoreRulesPath, serialized)
