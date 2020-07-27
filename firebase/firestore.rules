@@ -10,14 +10,8 @@ service cloud.firestore {
                   // Ownership rules
                   request.auth.uid == userId
                 ;
-                allow create: if 
-                  // Ownership rules
-                  request.auth.uid == userId
-                ;
-                allow update: if 
-                  // Ownership rules
-                  request.auth.uid == userId
-                ;
+                allow create: if true;
+                allow update: if true;
                 allow delete: if 
                   // Ownership rules
                   request.auth.uid == userId
