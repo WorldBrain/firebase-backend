@@ -79,6 +79,7 @@ export const refreshUserSubscriptionStatus = async (userId: string, { getSubscri
                     claims.subscriptions[subPlanId] = {
                         expiry,
                         status: entry.subscription.status,
+                        id: entry.subscription.id,
                     }
                     // Update overall subscription status
                     claims.subscriptionStatus = entry.subscription.status

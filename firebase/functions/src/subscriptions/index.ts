@@ -64,19 +64,22 @@ export const getManageLink = functions.https.onCall(
 
         chargebee.configure(getChargebeeOptions())
 
+        // If the client has passed `subscription_id` as a placeholder in the `forward_url`, replace it with the latest subscription they have.
+        if (data["forward_url"] && data["forward_url"]?.includes('subscription_id')) {
+            const subscriptionId = await getLatestUserSubscriptionId(context.auth.uid,chargebeeSubscriptionAPIClient )
+            if (!subscriptionId) {
+                console.error(`Error replacing forward_url - No Subscription Id for user ${context.auth.uid} returned from chargebee`)
+            }
+            data["forward_url"] = data["forward_url"].replace('subscription_id',subscriptionId)
+        }
+
         const portalOptions = {
             customer: getUser(context),
-            "redirect_url": undefined,
-            "access_url": undefined,
+            "redirect_url": data["redirect_url"],
+            "forward_url": data["forward_url"],
         }
 
-        if (data["redirect_url"]) {
-            portalOptions["redirect_url"] = data["redirect_url"]
-        }
-
-        if (data["access_url"]) {
-            portalOptions["access_url"] = data["access_url"]
-        }
+        console.log("Portal opened with",{portalOptions})
 
         const result = await chargebee.portal_session
             .create(portalOptions)
@@ -85,6 +88,16 @@ export const getManageLink = functions.https.onCall(
         return result
     },
 )
+
+const getLatestUserSubscriptionId = async (userId : string, getSubscriptions : ChargebeeSubscriptionAPIClient) : Promise<string> => {
+    const subscriptionQuery = {
+        'customer_id[is]': userId,
+        'sort_by[desc]': 'created_at',
+        'limit': 100,
+    }
+    const resp = await getSubscriptions(subscriptionQuery)
+    return resp.list.pop()?.subscription.id;
+}
 
 const chargebeeSubscriptionAPIClient: ChargebeeSubscriptionAPIClient = async (subscriptionQuery) => {
     return chargebee.subscription.list(subscriptionQuery).request()
