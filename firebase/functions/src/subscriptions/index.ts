@@ -3,6 +3,7 @@ import * as functions from 'firebase-functions'
 import { CallableContext, Request } from 'firebase-functions/lib/providers/https'
 import { ChargebeeSubscriptionAPIClient, CustomClaimsSetter, refreshUserSubscriptionStatus } from "./subscriptions";
 import { helpTesting, notAuthenticatedResponse, getUser, resultFormatter } from '../utils';
+import * as express from "express";
 
 const chargebee = require('chargebee')
 
@@ -33,6 +34,11 @@ export const getCheckoutLink = functions.https.onCall(
         const checkoutOptions = {
             subscription: { plan_id: data.planId },
             customer: getUser(context),
+            "redirect_url": undefined,
+        }
+
+        if (data["redirect_url"]) {
+            checkoutOptions["redirect_url"] = data["redirect_url"]
         }
 
         const result = await chargebee.hosted_page
@@ -60,6 +66,16 @@ export const getManageLink = functions.https.onCall(
 
         const portalOptions = {
             customer: getUser(context),
+            "redirect_url": undefined,
+            "access_url": undefined,
+        }
+
+        if (data["redirect_url"]) {
+            portalOptions["redirect_url"] = data["redirect_url"]
+        }
+
+        if (data["access_url"]) {
+            portalOptions["access_url"] = data["access_url"]
         }
 
         const result = await chargebee.portal_session
@@ -105,17 +121,15 @@ export const refreshUserClaims = functions.https.onCall(
  *
  */
 export const userSubscriptionChanged = functions.https.onRequest(
-    async (req: Request, resp: any) => {
+    async (req: Request, resp: express.Response) => {
         // TODO: Verify secret or host
         // TODO: Filter types of subscription change
 
-        // @ts-ignore (Some issues with peer dep of Express https://github.com/DefinitelyTyped/DefinitelyTyped/issues/40905)
-        if (req.is('json') && req.body != null && req.body.content != null && req.body.content.customer != null) {
-            // @ts-ignore
-            const userId = req.body.content.customer.id
-            await _refreshUserSubscriptionStatus(userId)
-        }
+        resp.send();
 
-
+        // if (req.is('json') && req.body != null && req.body.content != null && req.body.content.customer != null) {
+        //     const userId = req.body.content.customer.id
+        //     await _refreshUserSubscriptionStatus(userId)
+        // }
     },
 )
