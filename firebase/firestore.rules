@@ -92,6 +92,14 @@ service cloud.firestore {
                   // Ownership rules
                   request.auth.uid == creator
                 ;
+                allow update: if 
+                  // Type checks
+                  request.resource.data.localListId is timestamp &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == creator
+                ;
                 allow delete: if 
                   // Ownership rules
                   request.auth.uid == creator
@@ -126,6 +134,84 @@ service cloud.firestore {
               request.resource.data.entryTitle is string &&
               request.resource.data.normalizedUrl is string &&
               request.resource.data.originalUrl is string &&
+            
+            
+              // Ownership rules
+              request.auth.uid == resource.data.creator && (request.auth.uid == request.resource.data.creator || (!('creator' in request.resource.data.keys())))
+            ;
+            allow delete: if 
+              // Ownership rules
+              request.auth.uid == resource.data.creator
+            ;
+        }
+        match /sharedAnnotation/{sharedAnnotation} {
+            allow list: if 
+              // Permission rules
+              true
+            ;
+            allow get: if 
+              // Permission rules
+              true
+            ;
+            allow create: if 
+              // Type checks
+              request.resource.data.normalizedPageUrl is string &&
+              request.resource.data.createdWhen is timestamp &&
+              request.resource.data.uploadedWhen is timestamp &&
+              request.resource.data.updatedWhen is timestamp &&
+              (!('body' in request.resource.data.keys()) || request.resource.data.body is string) &&
+              (!('comment' in request.resource.data.keys()) || request.resource.data.comment is string) &&
+              (!('selector' in request.resource.data.keys()) || request.resource.data.selector is string) &&
+            
+            
+              // Ownership rules
+              request.auth.uid == request.resource.data.creator
+            ;
+            allow update: if 
+              // Type checks
+              request.resource.data.normalizedPageUrl is string &&
+              request.resource.data.createdWhen is timestamp &&
+              request.resource.data.uploadedWhen is timestamp &&
+              request.resource.data.updatedWhen is timestamp &&
+              (!('body' in request.resource.data.keys()) || request.resource.data.body is string) &&
+              (!('comment' in request.resource.data.keys()) || request.resource.data.comment is string) &&
+              (!('selector' in request.resource.data.keys()) || request.resource.data.selector is string) &&
+            
+            
+              // Ownership rules
+              request.auth.uid == resource.data.creator && (request.auth.uid == request.resource.data.creator || (!('creator' in request.resource.data.keys())))
+            ;
+            allow delete: if 
+              // Ownership rules
+              request.auth.uid == resource.data.creator
+            ;
+        }
+        match /sharedAnnotationListEntry/{sharedAnnotationListEntry} {
+            allow list: if 
+              // Permission rules
+              true
+            ;
+            allow get: if 
+              // Permission rules
+              true
+            ;
+            allow create: if 
+              // Type checks
+              request.resource.data.createdWhen is timestamp &&
+              request.resource.data.uploadedWhen is timestamp &&
+              request.resource.data.updatedWhen is timestamp &&
+              request.resource.data.normalizedPageUrl is string &&
+            
+            
+              // Ownership rules
+              request.auth.uid == request.resource.data.creator
+            ;
+            allow update: if 
+              // Type checks
+              request.resource.data.createdWhen is timestamp &&
+              request.resource.data.uploadedWhen is timestamp &&
+              request.resource.data.updatedWhen is timestamp &&
+              request.resource.data.normalizedPageUrl is string &&
             
             
               // Ownership rules
