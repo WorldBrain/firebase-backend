@@ -34,11 +34,20 @@ export const getCheckoutLink = functions.https.onCall(
         const checkoutOptions = {
             subscription: { plan_id: data.planId },
             customer: getUser(context),
-            "redirect_url": undefined,
+            redirect_url: undefined,
+            addons: {},
         }
 
-        if (data["redirect_url"]) {
-            checkoutOptions["redirect_url"] = data["redirect_url"]
+        if (data.redirect_url) {
+            checkoutOptions.redirect_url = data.redirect_url
+        }
+
+        if (data?.pioneerDonationAmount) {
+            checkoutOptions.addons = [{
+                "id": `pioneer${data.planId.includes('yearly') ? '-yearly' : ''}`,
+                unit_price: Math.max(data.pioneerDonationAmount * 100,100),
+                quantity: 1,
+            }]
         }
 
         const result = await chargebee.hosted_page
