@@ -10,14 +10,8 @@ service cloud.firestore {
                   // Ownership rules
                   request.auth.uid == userId
                 ;
-                allow create: if 
-                  // Ownership rules
-                  request.auth.uid == userId
-                ;
-                allow update: if 
-                  // Ownership rules
-                  request.auth.uid == userId
-                ;
+                allow create: if true;
+                allow update: if true;
                 allow delete: if 
                   // Ownership rules
                   request.auth.uid == userId
@@ -43,6 +37,212 @@ service cloud.firestore {
                   request.auth.uid == userId
                 ;
             }
+        }
+        match /sharedList/{sharedList} {
+            allow list: if 
+              // Permission rules
+              true
+            ;
+            allow get: if 
+              // Permission rules
+              true
+            ;
+            allow create: if 
+              // Type checks
+              request.resource.data.createdWhen is timestamp &&
+              request.resource.data.updatedWhen is timestamp &&
+              request.resource.data.title is string &&
+              (!('description' in request.resource.data.keys()) || request.resource.data.description is string) &&
+            
+            
+              // Ownership rules
+              request.auth.uid == request.resource.data.creator
+            ;
+            allow update: if 
+              // Type checks
+              request.resource.data.createdWhen is timestamp &&
+              request.resource.data.updatedWhen is timestamp &&
+              request.resource.data.title is string &&
+              (!('description' in request.resource.data.keys()) || request.resource.data.description is string) &&
+            
+            
+              // Ownership rules
+              request.auth.uid == resource.data.creator && (request.auth.uid == request.resource.data.creator || (!('creator' in request.resource.data.keys())))
+            ;
+            allow delete: if 
+              // Ownership rules
+              request.auth.uid == resource.data.creator
+            ;
+        }
+        match /sharedListCreatorInfo/{creator} {
+            match /lists/{sharedListCreatorInfo} {
+                allow list: if 
+                  // Permission rules
+                  true
+                ;
+                allow get: if 
+                  // Permission rules
+                  true
+                ;
+                allow create: if 
+                  // Type checks
+                  request.resource.data.localListId is timestamp &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == creator
+                ;
+                allow update: if 
+                  // Type checks
+                  request.resource.data.localListId is timestamp &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == creator
+                ;
+                allow delete: if 
+                  // Ownership rules
+                  request.auth.uid == creator
+                ;
+            }
+        }
+        match /sharedListEntry/{sharedListEntry} {
+            allow list: if 
+              // Permission rules
+              true
+            ;
+            allow get: if 
+              // Permission rules
+              true
+            ;
+            allow create: if 
+              // Type checks
+              request.resource.data.createdWhen is timestamp &&
+              request.resource.data.updatedWhen is timestamp &&
+              request.resource.data.entryTitle is string &&
+              request.resource.data.normalizedUrl is string &&
+              request.resource.data.originalUrl is string &&
+            
+            
+              // Ownership rules
+              request.auth.uid == request.resource.data.creator
+            ;
+            allow update: if 
+              // Type checks
+              request.resource.data.createdWhen is timestamp &&
+              request.resource.data.updatedWhen is timestamp &&
+              request.resource.data.entryTitle is string &&
+              request.resource.data.normalizedUrl is string &&
+              request.resource.data.originalUrl is string &&
+            
+            
+              // Ownership rules
+              request.auth.uid == resource.data.creator && (request.auth.uid == request.resource.data.creator || (!('creator' in request.resource.data.keys())))
+            ;
+            allow delete: if 
+              // Ownership rules
+              request.auth.uid == resource.data.creator
+            ;
+        }
+        match /sharedAnnotation/{sharedAnnotation} {
+            allow list: if 
+              // Permission rules
+              true
+            ;
+            allow get: if 
+              // Permission rules
+              true
+            ;
+            allow create: if 
+              // Type checks
+              request.resource.data.normalizedPageUrl is string &&
+              request.resource.data.createdWhen is timestamp &&
+              request.resource.data.uploadedWhen is timestamp &&
+              request.resource.data.updatedWhen is timestamp &&
+              (!('body' in request.resource.data.keys()) || request.resource.data.body is string) &&
+              (!('comment' in request.resource.data.keys()) || request.resource.data.comment is string) &&
+              (!('selector' in request.resource.data.keys()) || request.resource.data.selector is string) &&
+            
+            
+              // Ownership rules
+              request.auth.uid == request.resource.data.creator
+            ;
+            allow update: if 
+              // Type checks
+              request.resource.data.normalizedPageUrl is string &&
+              request.resource.data.createdWhen is timestamp &&
+              request.resource.data.uploadedWhen is timestamp &&
+              request.resource.data.updatedWhen is timestamp &&
+              (!('body' in request.resource.data.keys()) || request.resource.data.body is string) &&
+              (!('comment' in request.resource.data.keys()) || request.resource.data.comment is string) &&
+              (!('selector' in request.resource.data.keys()) || request.resource.data.selector is string) &&
+            
+            
+              // Ownership rules
+              request.auth.uid == resource.data.creator && (request.auth.uid == request.resource.data.creator || (!('creator' in request.resource.data.keys())))
+            ;
+            allow delete: if 
+              // Ownership rules
+              request.auth.uid == resource.data.creator
+            ;
+        }
+        match /sharedAnnotationListEntry/{sharedAnnotationListEntry} {
+            allow list: if 
+              // Permission rules
+              true
+            ;
+            allow get: if 
+              // Permission rules
+              true
+            ;
+            allow create: if 
+              // Type checks
+              request.resource.data.createdWhen is timestamp &&
+              request.resource.data.uploadedWhen is timestamp &&
+              request.resource.data.updatedWhen is timestamp &&
+              request.resource.data.normalizedPageUrl is string &&
+            
+            
+              // Ownership rules
+              request.auth.uid == request.resource.data.creator
+            ;
+            allow update: if 
+              // Type checks
+              request.resource.data.createdWhen is timestamp &&
+              request.resource.data.uploadedWhen is timestamp &&
+              request.resource.data.updatedWhen is timestamp &&
+              request.resource.data.normalizedPageUrl is string &&
+            
+            
+              // Ownership rules
+              request.auth.uid == resource.data.creator && (request.auth.uid == request.resource.data.creator || (!('creator' in request.resource.data.keys())))
+            ;
+            allow delete: if 
+              // Ownership rules
+              request.auth.uid == resource.data.creator
+            ;
+        }
+        match /user/{id} {
+            allow get: if 
+              // Permission rules
+              true
+            ;
+            allow create: if 
+              // Type checks
+              (!('displayName' in request.resource.data.keys()) || request.resource.data.displayName is string) &&
+            
+            
+              // Ownership rules
+              request.auth.uid == id
+            ;
+            allow update: if 
+              // Type checks
+              (!('displayName' in request.resource.data.keys()) || request.resource.data.displayName is string) &&
+            
+            
+              // Ownership rules
+              request.auth.uid == id
+            ;
         }
     }
 }
