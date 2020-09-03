@@ -144,6 +144,44 @@ service cloud.firestore {
               request.auth.uid == resource.data.creator
             ;
         }
+        match /sharedPageInfo/{sharedPageInfo} {
+            allow list: if 
+              // Permission rules
+              true
+            ;
+            allow get: if 
+              // Permission rules
+              true
+            ;
+            allow create: if 
+              // Type checks
+              request.resource.data.createdWhen is timestamp &&
+              request.resource.data.updatedWhen is timestamp &&
+              request.resource.data.normalizedUrl is string &&
+              request.resource.data.originalUrl is string &&
+              request.resource.data.fullTitle is string &&
+            
+            
+              // Ownership rules
+              request.auth.uid == request.resource.data.creator
+            ;
+            allow update: if 
+              // Type checks
+              request.resource.data.createdWhen is timestamp &&
+              request.resource.data.updatedWhen is timestamp &&
+              request.resource.data.normalizedUrl is string &&
+              request.resource.data.originalUrl is string &&
+              request.resource.data.fullTitle is string &&
+            
+            
+              // Ownership rules
+              request.auth.uid == resource.data.creator && (request.auth.uid == request.resource.data.creator || (!('creator' in request.resource.data.keys())))
+            ;
+            allow delete: if 
+              // Ownership rules
+              request.auth.uid == resource.data.creator
+            ;
+        }
         match /sharedAnnotation/{sharedAnnotation} {
             allow list: if 
               // Permission rules
