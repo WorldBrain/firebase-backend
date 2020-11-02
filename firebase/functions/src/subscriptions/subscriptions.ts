@@ -55,7 +55,19 @@ export const refreshUserSubscriptionStatus = async (userId: string, { getSubscri
                 // that still has 'time left' being subscribed.
                 // next_billing_at will be present when a subscription is active or in trial, and will
                 // indicate up till when we can trust the the user is subscribed.
-                const expiry = (entry.subscription['current_term_end'] || entry.subscription['next_billing_at']) + expiryGraceSecs
+                // trial_end or cancelled_at if the subscription is cancelled and there are no more days left
+                let expiry = (
+                    entry.subscription['current_term_end'] ||
+                    entry.subscription['next_billing_at'] ||
+                    entry.subscription['trial_end'] ||
+                    entry.subscription['cancelled_at']
+                )
+                if (!expiry) {
+                    console.error("Could not determine expiry for subscription:",entry.subscription)
+                } else {
+                    expiry += expiryGraceSecs
+                }
+
                 const subPlanId = entry.subscription.plan_id as UserPlan
                 // console.log(`Valid subscription for UserId:${userId}, planId:${subPlanId}, expiry:${expiry}`);
 
@@ -63,11 +75,21 @@ export const refreshUserSubscriptionStatus = async (userId: string, { getSubscri
                 // N.B. In case a user has more than one subscription to the same plan,
                 // (e.g. newly configured plan or an old trial) make sure that the furthest expiry date is set.
                 if (existingSubscription == null || existingSubscription.expiry < expiry) {
+
+                    const donationAddOnObject = entry.subscription?.addons?.find(
+                        (addOn: any) => addOn.id === 'pioneer' || addOn.id === 'pioneer-yearly'
+                    )
+                    const donation = (donationAddOnObject) ? {
+                        donation: donationAddOnObject.unit_price * donationAddOnObject.amount
+                    } : {}
+
                     // Set subscription specific expiry and status
                     claims.subscriptions[subPlanId] = {
                         expiry,
                         status: entry.subscription.status,
+                        ...donation
                     }
+
                     // Update overall subscription status
                     claims.subscriptionStatus = entry.subscription.status
                     claims.subscriptionExpiry = expiry
@@ -79,10 +101,12 @@ export const refreshUserSubscriptionStatus = async (userId: string, { getSubscri
 
 
     setFeaturesFromSubscriptions(claims);
+    setFeaturesIfDonated(claims);
 
     // N.B. Claims are always reset, not additive
     // console.log(`setCustomUserClaims(${userId},${JSON.stringify(claims)})`)
     const setClaimResult = await setClaims(userId, claims)
+    // console.log("result",{ "result": { claims, setClaimResult } })
     return { "result": { claims, setClaimResult } };
 }
 
@@ -95,6 +119,15 @@ const setFeaturesFromSubscriptions = (claims: Claims) => {
             for (const feature of subscriptionFeatures) {
                 claims.features[feature] = { expiry: subscription.expiry }
             }
+        }
+    }
+}
+
+const setFeaturesIfDonated = (claims: Claims) => {
+    for (const subscriptionKey of Object.keys(claims.subscriptions)) {
+        const subscription = claims.subscriptions[subscriptionKey as UserPlan]
+        if (subscription && (subscription?.donation ?? 0) > 0){
+            claims.features.beta = { expiry: subscription.expiry }
         }
     }
 }

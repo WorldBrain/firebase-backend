@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin'
 import { runningInEmulator, emulatedConfig } from './constants';
+
 admin.initializeApp((runningInEmulator) ? emulatedConfig : undefined);
 
 export { getLoginToken } from './auth'
@@ -7,3 +8,4 @@ export { getCheckoutLink, getManageLink, userSubscriptionChanged, refreshUserCla
 export { generateTwilioNTSToken } from './twilio'
 export { sendWelcomeEmailOnSignUp } from "./user";
 export { scheduledFirestoreExport } from "./backup";
+export { uninstall, uninstallLog } from "./analytics"
