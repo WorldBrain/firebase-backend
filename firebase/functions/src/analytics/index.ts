@@ -5,6 +5,8 @@ const fetch = require('node-fetch');
 
 const config = functions.config();
 const appKey = config.countly['app_key']
+const appDomain = config.countly['app_domain']
+
 
 const redirectUrl = "https://airtable.com/shrZ987GUsOWWMH7L"
 
@@ -22,7 +24,7 @@ export const uninstallLog = functions.https.onRequest(async (req: Request, resp:
         "key": "Global::uninstallExtension",
         "count": 1
     })
-    const analyticsUrl = `https://analytics.worldbrain.io/i?app_key=${appKey}&device_id=${user}&events=${events}`;
+    const analyticsUrl = `https://${appDomain}/i?app_key=${appKey}&device_id=${user}&events=${events}`;
     await fetch(analyticsUrl)
     console.log(`Logged uninstall event: ${analyticsUrl}`)
     resp.send('Done')
