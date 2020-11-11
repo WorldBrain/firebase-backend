@@ -1,15 +1,14 @@
 import * as functions from 'firebase-functions';
 import * as firestore from '@google-cloud/firestore'
 import { COLLECTIONS_TO_BACKUP } from './constants';
-const client = new firestore.v1.FirestoreAdminClient();
 
-// Replace BUCKET_NAME
 const bucket = 'gs://worldbrain-firestore-backup';
 
 export const scheduledFirestoreExport = functions.pubsub
     .schedule('0 2 * * *') // every day at 2am
     .onRun(() => {
 
+        const client = new firestore.v1.FirestoreAdminClient();
         const projectId = process.env.GCP_PROJECT || process.env.GCLOUD_PROJECT;
         const databaseName =
             client.databasePath(projectId, '(default)');

@@ -14,6 +14,8 @@ const COLLECTION_BACKUP_CONFIGS: { [collectionName: string]: boolean } = {
     sharedAnnotationListEntry: true,
     user: true,
     userEmail: true,
+    conversationThread: true,
+    conversationReply: true,
 }
 
 export async function main() {

@@ -1,4 +1,4 @@
-import { Claims, UserFeature, UserPlan } from '../external/memex-common/ts/subscriptions/types'
+import { Claims, UserFeature, UserPlan } from '@worldbrain/memex-common/lib/subscriptions/types'
 
 export interface SusbcriptionQuery {
     'customer_id[is]': string,

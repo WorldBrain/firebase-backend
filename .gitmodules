@@ -1,30 +1,27 @@
-[submodule "firebase/functions/src/external/memex-common"]
-	path = firebase/functions/src/external/memex-common
-	url = https://github.com/WorldBrain/memex-common.git
 [submodule "external/@worldbrain/memex-common"]
-	path = external/@worldbrain/memex-common
+	path = firebase/functions/external/@worldbrain/memex-common
 	url = https://github.com/WorldBrain/memex-common.git
 [submodule "external/@worldbrain/memex-storage"]
-	path = external/@worldbrain/memex-storage
+	path = firebase/functions/external/@worldbrain/memex-storage
 	url = https://github.com/WorldBrain/memex-storage.git
 [submodule "external/@worldbrain/storex"]
-	path = external/@worldbrain/storex
+	path = firebase/functions/external/@worldbrain/storex
 	url = https://github.com/WorldBrain/storex.git
 [submodule "external/@worldbrain/storex-backend-dexie"]
-	path = external/@worldbrain/storex-backend-dexie
+	path = firebase/functions/external/@worldbrain/storex-backend-dexie
 	url = https://github.com/WorldBrain/storex-backend-dexie.git
 [submodule "external/@worldbrain/storex-backend-firestore"]
-	path = external/@worldbrain/storex-backend-firestore
+	path = firebase/functions/external/@worldbrain/storex-backend-firestore
 	url = https://github.com/WorldBrain/storex-backend-firestore.git
 [submodule "external/@worldbrain/storex-pattern-modules"]
-	path = external/@worldbrain/storex-pattern-modules
+	path = firebase/functions/external/@worldbrain/storex-pattern-modules
 	url = https://github.com/WorldBrain/storex-pattern-modules.git
 [submodule "external/@worldbrain/storex-sync"]
-	path = external/@worldbrain/storex-sync
+	path = firebase/functions/external/@worldbrain/storex-sync
 	url = https://github.com/WorldBrain/storex-sync.git
 [submodule "external/user-logic"]
-	path = external/user-logic
+	path = firebase/functions/external/user-logic
 	url = https://github.com/ShishKabab/user-logic.git
 [submodule "external/simple-signalling"]
-	path = external/simple-signalling
+	path = firebase/functions/external/simple-signalling
 	url = https://github.com/WorldBrain/simple-signalling.git

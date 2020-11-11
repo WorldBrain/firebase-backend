@@ -10,8 +10,14 @@ service cloud.firestore {
                   // Ownership rules
                   request.auth.uid == userId
                 ;
-                allow create: if true;
-                allow update: if true;
+                allow create: if 
+                  // Ownership rules
+                  request.auth.uid == userId
+                ;
+                allow update: if 
+                  // Ownership rules
+                  request.auth.uid == userId
+                ;
                 allow delete: if 
                   // Ownership rules
                   request.auth.uid == userId
@@ -259,6 +265,47 @@ service cloud.firestore {
               // Ownership rules
               request.auth.uid == resource.data.creator
             ;
+        }
+        match /conversationThread/{conversationThread} {
+            allow list: if 
+              // Permission rules
+              true
+            ;
+            allow get: if 
+              // Permission rules
+              true
+            ;
+            allow create: if 
+              // Type checks
+              request.resource.data.updatedWhen is timestamp &&
+              request.resource.data.normalizedPageUrl is string &&
+            
+            
+              // Permission rules
+              true
+            ;
+        }
+        match /conversationReply/{sharedAnnotation} {
+            match /replies/{conversationReply} {
+                allow list: if 
+                  // Permission rules
+                  true
+                ;
+                allow get: if 
+                  // Permission rules
+                  true
+                ;
+                allow create: if 
+                  // Type checks
+                  request.resource.data.createdWhen is timestamp &&
+                  request.resource.data.normalizedPageUrl is string &&
+                  request.resource.data.content is string &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == request.resource.data.user
+                ;
+            }
         }
         match /user/{id} {
             allow get: if 
