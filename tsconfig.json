@@ -63,10 +63,12 @@
       "@worldbrain/storex-sync/lib/*": [
         "firebase/functions/external/@worldbrain/storex-sync/ts/*"
       ],
-      "user-logic": ["external/user-logic/ts"],
-      "user-logic/lib/*": ["external/user-logic/ts/*"],
-      "simple-signalling": ["external/simple-signalling/ts"],
-      "simple-signalling/lib/*": ["external/simple-signalling/ts/*"]
+      "user-logic": ["firebase/functions/external/user-logic/ts"],
+      "user-logic/lib/*": ["firebase/functions/external/user-logic/ts/*"],
+      "simple-signalling": ["firebase/functions/external/simple-signalling/ts"],
+      "simple-signalling/lib/*": [
+        "firebase/functions/external/simple-signalling/ts/*"
+      ]
     },
     "lib": ["es2017", "dom", "dom.iterable", "esnext.asynciterable"]
   },

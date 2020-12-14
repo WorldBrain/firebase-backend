@@ -1,3 +1,4 @@
+rules_version = '2';
 service cloud.firestore {
     match /databases/{database}/documents {
         match /sharedSyncLogDeviceInfo/{userId} {
@@ -43,6 +44,28 @@ service cloud.firestore {
                   request.auth.uid == userId
                 ;
             }
+        }
+        match /homeFeedInfo/{user} {
+            allow get: if 
+              // Ownership rules
+              request.auth.uid == user
+            ;
+            allow create: if 
+              // Type checks
+              request.resource.data.lastSeen is timestamp &&
+            
+            
+              // Ownership rules
+              request.auth.uid == user
+            ;
+            allow update: if 
+              // Type checks
+              request.resource.data.lastSeen is timestamp &&
+            
+            
+              // Ownership rules
+              request.auth.uid == user
+            ;
         }
         match /sharedList/{sharedList} {
             allow list: if 

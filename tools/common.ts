@@ -2,6 +2,7 @@ import StorageManager, { StorageBackend } from '@worldbrain/storex'
 import { DexieStorageBackend } from '@worldbrain/storex-backend-dexie'
 import inMemory from '@worldbrain/storex-backend-dexie/lib/in-memory'
 import { SharedSyncLogStorage } from '@worldbrain/storex-sync/lib/shared-sync-log/storex'
+import ActivityStreamStorage from '@worldbrain/memex-common/lib/activity-streams/storage'
 import ContentSharingStorage from '@worldbrain/memex-common/lib/content-sharing/storage'
 import ContentConversationStorage from '@worldbrain/memex-common/lib/content-conversations/storage'
 import UserManagementStorage from '@worldbrain/memex-common/lib/user-management/storage'
@@ -16,6 +17,7 @@ export async function createStorage() {
     const contentSharing = new ContentSharingStorage({ storageManager: serverStorageManager, autoPkType: 'string' })
     const serverModules = {
         sharedSyncLog: new SharedSyncLogStorage({ storageManager: serverStorageManager, autoPkType: 'string' }),
+        activityStream: new ActivityStreamStorage({ storageManager: serverStorageManager }),
         contentSharing: contentSharing,
         contentConversations: new ContentConversationStorage({
             contentSharing,
