@@ -67,6 +67,30 @@ service cloud.firestore {
               request.auth.uid == user
             ;
         }
+        match /activityFollow/{activityFollow} {
+            allow list: if 
+              // Permission rules
+              true
+            ;
+            allow get: if 
+              // Permission rules
+              true
+            ;
+            allow create: if 
+              // Type checks
+              request.resource.data.objectId is string &&
+              request.resource.data.collection is string &&
+              request.resource.data.createdWhen is timestamp &&
+            
+            
+              // Ownership rules
+              request.auth.uid == request.resource.data.user
+            ;
+            allow delete: if 
+              // Ownership rules
+              request.auth.uid == resource.data.user
+            ;
+        }
         match /sharedList/{sharedList} {
             allow list: if 
               // Permission rules
