@@ -376,5 +376,39 @@ service cloud.firestore {
               request.auth.uid == id
             ;
         }
+        match /userPublicProfile/{user} {
+            allow get: if 
+              // Permission rules
+              true
+            ;
+            allow create: if 
+              // Type checks
+              request.resource.data.websiteURL is string &&
+              request.resource.data.mediumURL is string &&
+              request.resource.data.twitterURL is string &&
+              request.resource.data.substackURL is string &&
+              request.resource.data.bio is string &&
+              request.resource.data.avatarURL is string &&
+              request.resource.data.paymentPointer is string &&
+            
+            
+              // Ownership rules
+              request.auth.uid == user
+            ;
+            allow update: if 
+              // Type checks
+              request.resource.data.websiteURL is string &&
+              request.resource.data.mediumURL is string &&
+              request.resource.data.twitterURL is string &&
+              request.resource.data.substackURL is string &&
+              request.resource.data.bio is string &&
+              request.resource.data.avatarURL is string &&
+              request.resource.data.paymentPointer is string &&
+            
+            
+              // Ownership rules
+              request.auth.uid == user
+            ;
+        }
     }
 }
