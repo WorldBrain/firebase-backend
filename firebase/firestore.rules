@@ -383,13 +383,13 @@ service cloud.firestore {
             ;
             allow create: if 
               // Type checks
-              request.resource.data.websiteURL is string &&
-              request.resource.data.mediumURL is string &&
-              request.resource.data.twitterURL is string &&
-              request.resource.data.substackURL is string &&
-              request.resource.data.bio is string &&
-              request.resource.data.avatarURL is string &&
-              request.resource.data.paymentPointer is string &&
+              (!('websiteURL' in request.resource.data.keys()) || request.resource.data.websiteURL is string) &&
+              (!('mediumURL' in request.resource.data.keys()) || request.resource.data.mediumURL is string) &&
+              (!('twitterURL' in request.resource.data.keys()) || request.resource.data.twitterURL is string) &&
+              (!('substackURL' in request.resource.data.keys()) || request.resource.data.substackURL is string) &&
+              (!('bio' in request.resource.data.keys()) || request.resource.data.bio is string) &&
+              (!('avatarURL' in request.resource.data.keys()) || request.resource.data.avatarURL is string) &&
+              (!('paymentPointer' in request.resource.data.keys()) || request.resource.data.paymentPointer is string) &&
             
             
               // Ownership rules
@@ -397,13 +397,13 @@ service cloud.firestore {
             ;
             allow update: if 
               // Type checks
-              request.resource.data.websiteURL is string &&
-              request.resource.data.mediumURL is string &&
-              request.resource.data.twitterURL is string &&
-              request.resource.data.substackURL is string &&
-              request.resource.data.bio is string &&
-              request.resource.data.avatarURL is string &&
-              request.resource.data.paymentPointer is string &&
+              (!('websiteURL' in request.resource.data.keys()) || request.resource.data.websiteURL is string) &&
+              (!('mediumURL' in request.resource.data.keys()) || request.resource.data.mediumURL is string) &&
+              (!('twitterURL' in request.resource.data.keys()) || request.resource.data.twitterURL is string) &&
+              (!('substackURL' in request.resource.data.keys()) || request.resource.data.substackURL is string) &&
+              (!('bio' in request.resource.data.keys()) || request.resource.data.bio is string) &&
+              (!('avatarURL' in request.resource.data.keys()) || request.resource.data.avatarURL is string) &&
+              (!('paymentPointer' in request.resource.data.keys()) || request.resource.data.paymentPointer is string) &&
             
             
               // Ownership rules
