@@ -18,7 +18,7 @@
   "dependencies": {
     "@josephg/resolvable": "^1.0.0",
     "airtable": "^0.10.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bcrypt": "^3.0.6",
     "chargebee": "^2.5.5",
     "dexie": "^3.0.2",
