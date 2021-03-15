@@ -1,8 +1,9 @@
 import fs from 'fs'
 import path from 'path'
 import { getSignallingRules } from 'simple-signalling/lib/firebase'
-import { generateRulesAstFromStorageModules } from '@worldbrain/storex-backend-firestore/lib/security-rules'
+import { getUserMessageRules } from '@worldbrain/memex-common/lib/user-messages/service/firebase'
 import { serializeRulesAST } from '@worldbrain/storex-backend-firestore/lib/security-rules/ast';
+import { generateRulesAstFromStorageModules } from '@worldbrain/storex-backend-firestore/lib/security-rules'
 import { createStorage } from './common';
 
 export async function main() {
@@ -26,7 +27,8 @@ export async function main() {
     const singallingCollectionName = 'signalling'
     fs.writeFileSync(firebaseRulesPath, JSON.stringify({
         "rules": {
-            [singallingCollectionName]: getSignallingRules()
+            [singallingCollectionName]: getSignallingRules(),
+            ...getUserMessageRules(),
         }
     }, null, 2))
     console.log(`Real-time database security rules successfully written to file '${firebaseRulesPath}'`)
