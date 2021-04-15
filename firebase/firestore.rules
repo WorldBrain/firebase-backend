@@ -172,7 +172,7 @@ service cloud.firestore {
               // Type checks
               request.resource.data.createdWhen is timestamp &&
               request.resource.data.updatedWhen is timestamp &&
-              request.resource.data.entryTitle is string &&
+              (!('entryTitle' in request.resource.data.keys()) || request.resource.data.entryTitle == null || request.resource.data.entryTitle is string) &&
               request.resource.data.normalizedUrl is string &&
               request.resource.data.originalUrl is string &&
             
@@ -184,7 +184,7 @@ service cloud.firestore {
               // Type checks
               (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
               (!('updatedWhen' in request.resource.data.keys()) || request.resource.data.updatedWhen is timestamp) &&
-              (!('entryTitle' in request.resource.data.keys()) || request.resource.data.entryTitle is string) &&
+              (!('entryTitle' in request.resource.data.keys()) || request.resource.data.entryTitle == null || request.resource.data.entryTitle is string) &&
               (!('normalizedUrl' in request.resource.data.keys()) || request.resource.data.normalizedUrl is string) &&
               (!('originalUrl' in request.resource.data.keys()) || request.resource.data.originalUrl is string) &&
             
@@ -294,7 +294,7 @@ service cloud.firestore {
               request.resource.data.updatedWhen is timestamp &&
               request.resource.data.normalizedUrl is string &&
               request.resource.data.originalUrl is string &&
-              request.resource.data.fullTitle is string &&
+              (!('fullTitle' in request.resource.data.keys()) || request.resource.data.fullTitle == null || request.resource.data.fullTitle is string) &&
             
             
               // Ownership rules
@@ -306,7 +306,7 @@ service cloud.firestore {
               (!('updatedWhen' in request.resource.data.keys()) || request.resource.data.updatedWhen is timestamp) &&
               (!('normalizedUrl' in request.resource.data.keys()) || request.resource.data.normalizedUrl is string) &&
               (!('originalUrl' in request.resource.data.keys()) || request.resource.data.originalUrl is string) &&
-              (!('fullTitle' in request.resource.data.keys()) || request.resource.data.fullTitle is string) &&
+              (!('fullTitle' in request.resource.data.keys()) || request.resource.data.fullTitle == null || request.resource.data.fullTitle is string) &&
             
             
               // Ownership rules
