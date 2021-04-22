@@ -10,4 +10,4 @@ const aliases = Object.entries(tsconfig.compilerOptions.paths).reduce(
     {}
 ); ModuleAlias.addAliases(aliases);
 
-export * from './main'
+module.exports = require('./main')

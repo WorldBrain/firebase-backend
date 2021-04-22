@@ -68,10 +68,6 @@ service cloud.firestore {
             ;
         }
         match /activityFollow/{activityFollow} {
-            allow list: if 
-              // Permission rules
-              true
-            ;
             allow get: if 
               // Permission rules
               true
@@ -92,10 +88,6 @@ service cloud.firestore {
             ;
         }
         match /sharedList/{sharedList} {
-            allow list: if 
-              // Permission rules
-              true
-            ;
             allow get: if 
               // Permission rules
               true
@@ -129,10 +121,6 @@ service cloud.firestore {
         }
         match /sharedListCreatorInfo/{creator} {
             match /lists/{sharedListCreatorInfo} {
-                allow list: if 
-                  // Permission rules
-                  true
-                ;
                 allow get: if 
                   // Permission rules
                   true
@@ -160,10 +148,6 @@ service cloud.firestore {
             }
         }
         match /sharedListEntry/{sharedListEntry} {
-            allow list: if 
-              // Permission rules
-              true
-            ;
             allow get: if 
               // Permission rules
               true
@@ -199,10 +183,6 @@ service cloud.firestore {
         }
         match /sharedListRole/{sharedList} {
             match /users/{user} {
-                allow list: if 
-                  // Permission rules
-                  true
-                ;
                 allow get: if 
                   // Permission rules
                   true
@@ -221,10 +201,6 @@ service cloud.firestore {
         }
         match /sharedListRoleByUser/{user} {
             match /lists/{sharedList} {
-                allow list: if 
-                  // Permission rules
-                  true
-                ;
                 allow get: if 
                   // Permission rules
                   true
@@ -280,10 +256,6 @@ service cloud.firestore {
             }
         }
         match /sharedPageInfo/{sharedPageInfo} {
-            allow list: if 
-              // Permission rules
-              true
-            ;
             allow get: if 
               // Permission rules
               true
@@ -318,10 +290,6 @@ service cloud.firestore {
             ;
         }
         match /sharedAnnotation/{sharedAnnotation} {
-            allow list: if 
-              // Permission rules
-              true
-            ;
             allow get: if 
               // Permission rules
               true
@@ -360,10 +328,6 @@ service cloud.firestore {
             ;
         }
         match /sharedAnnotationListEntry/{sharedAnnotationListEntry} {
-            allow list: if 
-              // Permission rules
-              true
-            ;
             allow get: if 
               // Permission rules
               true
@@ -396,10 +360,6 @@ service cloud.firestore {
             ;
         }
         match /conversationThread/{conversationThread} {
-            allow list: if 
-              // Permission rules
-              true
-            ;
             allow get: if 
               // Permission rules
               true
@@ -416,10 +376,6 @@ service cloud.firestore {
         }
         match /conversationReply/{sharedAnnotation} {
             match /replies/{conversationReply} {
-                allow list: if 
-                  // Permission rules
-                  true
-                ;
                 allow get: if 
                   // Permission rules
                   true
