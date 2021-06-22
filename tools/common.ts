@@ -7,6 +7,7 @@ import ActivityFollowsStorage from '@worldbrain/memex-common/lib/activity-follow
 import ContentSharingStorage from '@worldbrain/memex-common/lib/content-sharing/storage'
 import ContentConversationStorage from '@worldbrain/memex-common/lib/content-conversations/storage'
 import UserManagementStorage from '@worldbrain/memex-common/lib/user-management/storage'
+import PersonalCloudStorage from '@worldbrain/memex-common/lib/personal-cloud/storage'
 import { registerModuleMapCollections } from '@worldbrain/storex-pattern-modules'
 
 export async function createStorage() {
@@ -27,6 +28,7 @@ export async function createStorage() {
             autoPkType: 'string'
         }),
         userManagement: new UserManagementStorage({ storageManager: serverStorageManager }),
+        personalCloud: new PersonalCloudStorage({ storageManager: serverStorageManager, autoPkType: 'string' })
     }
     registerModuleMapCollections(serverStorageManager.registry, serverModules)
     await serverStorageManager.finishInitialization()
