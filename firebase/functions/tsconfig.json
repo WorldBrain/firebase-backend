@@ -37,6 +37,12 @@
       "@worldbrain/storex-middleware-change-watcher": [
         "external/@worldbrain/storex-middleware-change-watcher/ts"
       ],
+      "@worldbrain/memex-url-utils": [
+        "external/@worldbrain/memex-url-utils/ts"
+      ],
+      "@worldbrain/memex-url-utils/lib/*": [
+        "external/@worldbrain/memex-url-utils/ts/*"
+      ],
       "@worldbrain/memex-storage": ["external/@worldbrain/memex-storage/ts"],
       "@worldbrain/memex-storage/lib/*": [
         "external/@worldbrain/memex-storage/ts/*"

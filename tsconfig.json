@@ -45,6 +45,12 @@
       "@worldbrain/storex-pattern-modules/lib/*": [
         "firebase/functions/external/@worldbrain/storex-pattern-modules/ts/*"
       ],
+      "@worldbrain/memex-url-utils": [
+        "firebase/functions/external/@worldbrain/memex-url-utils/ts"
+      ],
+      "@worldbrain/memex-url-utils/lib/*": [
+        "firebase/functions/external/@worldbrain/memex-url-utils/ts/*"
+      ],
       "@worldbrain/memex-common": [
         "firebase/functions/external/@worldbrain/memex-common/ts"
       ],
