@@ -462,7 +462,7 @@ service cloud.firestore {
                   // Type checks
                   request.resource.data.type is string &&
                   request.resource.data.os is string &&
-                  request.resource.data.browser is string &&
+                  (!('browser' in request.resource.data.keys()) || request.resource.data.browser == null || request.resource.data.browser is string) &&
                   request.resource.data.product is string &&
                   (!('name' in request.resource.data.keys()) || request.resource.data.name == null || request.resource.data.name is string) &&
                   request.resource.data.createdWhen is timestamp &&
@@ -476,7 +476,7 @@ service cloud.firestore {
                   // Type checks
                   (!('type' in request.resource.data.keys()) || request.resource.data.type is string) &&
                   (!('os' in request.resource.data.keys()) || request.resource.data.os is string) &&
-                  (!('browser' in request.resource.data.keys()) || request.resource.data.browser is string) &&
+                  (!('browser' in request.resource.data.keys()) || request.resource.data.browser == null || request.resource.data.browser is string) &&
                   (!('product' in request.resource.data.keys()) || request.resource.data.product is string) &&
                   (!('name' in request.resource.data.keys()) || request.resource.data.name == null || request.resource.data.name is string) &&
                   (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
@@ -525,6 +525,18 @@ service cloud.firestore {
                   request.auth.uid == user
                 ;
                 allow delete: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+            }
+        }
+        match /personalBlockStats/{user} {
+            match /objects/{personalBlockStats} {
+                allow list: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow get: if 
                   // Ownership rules
                   request.auth.uid == user
                 ;
@@ -1151,6 +1163,42 @@ service cloud.firestore {
                   // Type checks
                   (!('collection' in request.resource.data.keys()) || request.resource.data.collection is string) &&
                   (!('objectId' in request.resource.data.keys()) || request.resource.data.objectId is string) &&
+                  (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
+                  (!('updatedWhen' in request.resource.data.keys()) || request.resource.data.updatedWhen is timestamp) &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow delete: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+            }
+        }
+        match /personalMemexExtensionSetting/{user} {
+            match /objects/{personalMemexExtensionSetting} {
+                allow list: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow get: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow create: if 
+                  // Type checks
+                  request.resource.data.name is string &&
+                  request.resource.data.createdWhen is timestamp &&
+                  request.resource.data.updatedWhen is timestamp &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow update: if 
+                  // Type checks
+                  (!('name' in request.resource.data.keys()) || request.resource.data.name is string) &&
                   (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
                   (!('updatedWhen' in request.resource.data.keys()) || request.resource.data.updatedWhen is timestamp) &&
                 
