@@ -1176,8 +1176,8 @@ service cloud.firestore {
                 ;
             }
         }
-        match /personalMemexExtensionSetting/{user} {
-            match /objects/{personalMemexExtensionSetting} {
+        match /personalMemexSetting/{user} {
+            match /objects/{personalMemexSetting} {
                 allow list: if 
                   // Ownership rules
                   request.auth.uid == user
