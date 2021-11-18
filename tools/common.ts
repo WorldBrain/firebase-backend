@@ -2,6 +2,7 @@ import StorageManager, { StorageBackend } from '@worldbrain/storex'
 import { DexieStorageBackend } from '@worldbrain/storex-backend-dexie'
 import inMemory from '@worldbrain/storex-backend-dexie/lib/in-memory'
 import { SharedSyncLogStorage } from '@worldbrain/storex-sync/lib/shared-sync-log/storex'
+import PersonalAnalyticsStorage from '@worldbrain/memex-common/lib/analytics/storage'
 import ActivityStreamStorage from '@worldbrain/memex-common/lib/activity-streams/storage'
 import ActivityFollowsStorage from '@worldbrain/memex-common/lib/activity-follows/storage'
 import ContentSharingStorage from '@worldbrain/memex-common/lib/content-sharing/storage'
@@ -28,7 +29,8 @@ export async function createStorage() {
             autoPkType: 'string'
         }),
         userManagement: new UserManagementStorage({ storageManager: serverStorageManager }),
-        personalCloud: new PersonalCloudStorage({ storageManager: serverStorageManager, autoPkType: 'string' })
+        personalCloud: new PersonalCloudStorage({ storageManager: serverStorageManager, autoPkType: 'string' }),
+        personalAnalytics: new PersonalAnalyticsStorage({ storageManager: serverStorageManager })
     }
     registerModuleMapCollections(serverStorageManager.registry, serverModules)
     await serverStorageManager.finishInitialization()
