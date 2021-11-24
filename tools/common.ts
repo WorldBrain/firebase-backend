@@ -8,6 +8,7 @@ import ContentSharingStorage from '@worldbrain/memex-common/lib/content-sharing/
 import ContentConversationStorage from '@worldbrain/memex-common/lib/content-conversations/storage'
 import UserManagementStorage from '@worldbrain/memex-common/lib/user-management/storage'
 import PersonalCloudStorage from '@worldbrain/memex-common/lib/personal-cloud/storage'
+import PersonalAnalyticsStorage from '@worldbrain/memex-common/lib/analytics/storage'
 import { registerModuleMapCollections } from '@worldbrain/storex-pattern-modules'
 
 export async function createStorage() {
@@ -21,6 +22,7 @@ export async function createStorage() {
         sharedSyncLog: new SharedSyncLogStorage({ storageManager: serverStorageManager, autoPkType: 'string' }),
         activityStream: new ActivityStreamStorage({ storageManager: serverStorageManager }),
         activityFollows: new ActivityFollowsStorage({ storageManager: serverStorageManager }),
+        analytics: new PersonalAnalyticsStorage({ storageManager: serverStorageManager }),
         contentSharing: contentSharing,
         contentConversations: new ContentConversationStorage({
             contentSharing,

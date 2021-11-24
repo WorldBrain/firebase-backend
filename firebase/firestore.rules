@@ -87,6 +87,72 @@ service cloud.firestore {
               request.auth.uid == resource.data.user
             ;
         }
+        match /personalAnalyticEvent/{user} {
+            match /objects/{personalAnalyticEvent} {
+                allow create: if 
+                  // Type checks
+                  request.resource.data.createdWhen is timestamp &&
+                  request.resource.data.type is string &&
+                  (!('str1' in request.resource.data.keys()) || request.resource.data.str1 == null || request.resource.data.str1 is string) &&
+                  (!('str2' in request.resource.data.keys()) || request.resource.data.str2 == null || request.resource.data.str2 is string) &&
+                  (!('str3' in request.resource.data.keys()) || request.resource.data.str3 == null || request.resource.data.str3 is string) &&
+                  (!('float1' in request.resource.data.keys()) || request.resource.data.float1 == null || request.resource.data.float1 is float) &&
+                  (!('float2' in request.resource.data.keys()) || request.resource.data.float2 == null || request.resource.data.float2 is float) &&
+                  (!('float3' in request.resource.data.keys()) || request.resource.data.float3 == null || request.resource.data.float3 is float) &&
+                  (!('time1' in request.resource.data.keys()) || request.resource.data.time1 == null || request.resource.data.time1 is timestamp) &&
+                  (!('time2' in request.resource.data.keys()) || request.resource.data.time2 == null || request.resource.data.time2 is timestamp) &&
+                  (!('time3' in request.resource.data.keys()) || request.resource.data.time3 == null || request.resource.data.time3 is timestamp) &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow update: if 
+                  // Type checks
+                  (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
+                  (!('type' in request.resource.data.keys()) || request.resource.data.type is string) &&
+                  (!('str1' in request.resource.data.keys()) || request.resource.data.str1 == null || request.resource.data.str1 is string) &&
+                  (!('str2' in request.resource.data.keys()) || request.resource.data.str2 == null || request.resource.data.str2 is string) &&
+                  (!('str3' in request.resource.data.keys()) || request.resource.data.str3 == null || request.resource.data.str3 is string) &&
+                  (!('float1' in request.resource.data.keys()) || request.resource.data.float1 == null || request.resource.data.float1 is float) &&
+                  (!('float2' in request.resource.data.keys()) || request.resource.data.float2 == null || request.resource.data.float2 is float) &&
+                  (!('float3' in request.resource.data.keys()) || request.resource.data.float3 == null || request.resource.data.float3 is float) &&
+                  (!('time1' in request.resource.data.keys()) || request.resource.data.time1 == null || request.resource.data.time1 is timestamp) &&
+                  (!('time2' in request.resource.data.keys()) || request.resource.data.time2 == null || request.resource.data.time2 is timestamp) &&
+                  (!('time3' in request.resource.data.keys()) || request.resource.data.time3 == null || request.resource.data.time3 is timestamp) &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+            }
+        }
+        match /personalAnalyticStats/{user} {
+            allow get: if 
+              // Ownership rules
+              request.auth.uid == user
+            ;
+            allow create: if 
+              // Type checks
+              request.resource.data.installedWhen is timestamp &&
+              request.resource.data.registeredWhen is timestamp &&
+              (!('uninstalledWhen' in request.resource.data.keys()) || request.resource.data.uninstalledWhen == null || request.resource.data.uninstalledWhen is timestamp) &&
+            
+            
+              // Ownership rules
+              request.auth.uid == user
+            ;
+            allow update: if 
+              // Type checks
+              (!('installedWhen' in request.resource.data.keys()) || request.resource.data.installedWhen is timestamp) &&
+              (!('registeredWhen' in request.resource.data.keys()) || request.resource.data.registeredWhen is timestamp) &&
+              (!('uninstalledWhen' in request.resource.data.keys()) || request.resource.data.uninstalledWhen == null || request.resource.data.uninstalledWhen is timestamp) &&
+            
+            
+              // Ownership rules
+              request.auth.uid == user
+            ;
+        }
         match /sharedList/{sharedList} {
             allow get: if 
               // Permission rules
@@ -146,6 +212,64 @@ service cloud.firestore {
                   request.auth.uid == creator
                 ;
             }
+        }
+        match /sharedContentFingerprint/{sharedContentFingerprint} {
+            allow get: if 
+              // Permission rules
+              true
+            ;
+            allow create: if 
+              // Type checks
+              request.resource.data.normalizedUrl is string &&
+              request.resource.data.fingerprintScheme is string &&
+              request.resource.data.fingerprint is string &&
+            
+            
+              // Permission rules
+              (request.auth.uid == request.resource.data.creator && ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+            ;
+            allow update: if 
+              // Type checks
+              (!('normalizedUrl' in request.resource.data.keys()) || request.resource.data.normalizedUrl is string) &&
+              (!('fingerprintScheme' in request.resource.data.keys()) || request.resource.data.fingerprintScheme is string) &&
+              (!('fingerprint' in request.resource.data.keys()) || request.resource.data.fingerprint is string) &&
+            
+            
+              // Permission rules
+              (request.auth.uid == resource.data.creator && ((!('creator' in request.resource.data.keys())) || request.auth.uid == request.resource.data.creator) && ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+            ;
+            allow delete: if 
+              // Permission rules
+              (request.auth.uid == resource.data.creator && ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+            ;
+        }
+        match /sharedContentLocator/{sharedContentLocator} {
+            allow get: if 
+              // Permission rules
+              true
+            ;
+            allow create: if 
+              // Type checks
+              request.resource.data.normalizedUrl is string &&
+              request.resource.data.originalUrl is string &&
+            
+            
+              // Permission rules
+              (request.auth.uid == request.resource.data.creator && ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+            ;
+            allow update: if 
+              // Type checks
+              (!('normalizedUrl' in request.resource.data.keys()) || request.resource.data.normalizedUrl is string) &&
+              (!('originalUrl' in request.resource.data.keys()) || request.resource.data.originalUrl is string) &&
+            
+            
+              // Permission rules
+              (request.auth.uid == resource.data.creator && ((!('creator' in request.resource.data.keys())) || request.auth.uid == request.resource.data.creator) && ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+            ;
+            allow delete: if 
+              // Permission rules
+              (request.auth.uid == resource.data.creator && ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+            ;
         }
         match /sharedListEntry/{sharedListEntry} {
             allow get: if 
@@ -980,6 +1104,8 @@ service cloud.firestore {
                   request.resource.data.primary is bool &&
                   request.resource.data.valid is bool &&
                   request.resource.data.version is timestamp &&
+                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId == null || request.resource.data.localId is string) &&
+                  (!('fingerprintScheme' in request.resource.data.keys()) || request.resource.data.fingerprintScheme == null || request.resource.data.fingerprintScheme is string) &&
                   (!('fingerprint' in request.resource.data.keys()) || request.resource.data.fingerprint == null || request.resource.data.fingerprint is string) &&
                   (!('lastVisited' in request.resource.data.keys()) || request.resource.data.lastVisited == null || request.resource.data.lastVisited is timestamp) &&
                   (!('contentSize' in request.resource.data.keys()) || request.resource.data.contentSize == null || request.resource.data.contentSize is number) &&
@@ -1000,6 +1126,8 @@ service cloud.firestore {
                   (!('primary' in request.resource.data.keys()) || request.resource.data.primary is bool) &&
                   (!('valid' in request.resource.data.keys()) || request.resource.data.valid is bool) &&
                   (!('version' in request.resource.data.keys()) || request.resource.data.version is timestamp) &&
+                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId == null || request.resource.data.localId is string) &&
+                  (!('fingerprintScheme' in request.resource.data.keys()) || request.resource.data.fingerprintScheme == null || request.resource.data.fingerprintScheme is string) &&
                   (!('fingerprint' in request.resource.data.keys()) || request.resource.data.fingerprint == null || request.resource.data.fingerprint is string) &&
                   (!('lastVisited' in request.resource.data.keys()) || request.resource.data.lastVisited == null || request.resource.data.lastVisited is timestamp) &&
                   (!('contentSize' in request.resource.data.keys()) || request.resource.data.contentSize == null || request.resource.data.contentSize is number) &&
@@ -1176,8 +1304,8 @@ service cloud.firestore {
                 ;
             }
         }
-        match /personalMemexExtensionSetting/{user} {
-            match /objects/{personalMemexExtensionSetting} {
+        match /personalMemexSetting/{user} {
+            match /objects/{personalMemexSetting} {
                 allow list: if 
                   // Ownership rules
                   request.auth.uid == user
