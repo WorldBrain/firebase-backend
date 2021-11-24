@@ -96,9 +96,9 @@ service cloud.firestore {
                   (!('str1' in request.resource.data.keys()) || request.resource.data.str1 == null || request.resource.data.str1 is string) &&
                   (!('str2' in request.resource.data.keys()) || request.resource.data.str2 == null || request.resource.data.str2 is string) &&
                   (!('str3' in request.resource.data.keys()) || request.resource.data.str3 == null || request.resource.data.str3 is string) &&
-                  (!('float1' in request.resource.data.keys()) || request.resource.data.float1 == null || request.resource.data.float1 is float) &&
-                  (!('float2' in request.resource.data.keys()) || request.resource.data.float2 == null || request.resource.data.float2 is float) &&
-                  (!('float3' in request.resource.data.keys()) || request.resource.data.float3 == null || request.resource.data.float3 is float) &&
+                  (!('float1' in request.resource.data.keys()) || request.resource.data.float1 == null || request.resource.data.float1 is number) &&
+                  (!('float2' in request.resource.data.keys()) || request.resource.data.float2 == null || request.resource.data.float2 is number) &&
+                  (!('float3' in request.resource.data.keys()) || request.resource.data.float3 == null || request.resource.data.float3 is number) &&
                   (!('time1' in request.resource.data.keys()) || request.resource.data.time1 == null || request.resource.data.time1 is timestamp) &&
                   (!('time2' in request.resource.data.keys()) || request.resource.data.time2 == null || request.resource.data.time2 is timestamp) &&
                   (!('time3' in request.resource.data.keys()) || request.resource.data.time3 == null || request.resource.data.time3 is timestamp) &&
@@ -114,9 +114,9 @@ service cloud.firestore {
                   (!('str1' in request.resource.data.keys()) || request.resource.data.str1 == null || request.resource.data.str1 is string) &&
                   (!('str2' in request.resource.data.keys()) || request.resource.data.str2 == null || request.resource.data.str2 is string) &&
                   (!('str3' in request.resource.data.keys()) || request.resource.data.str3 == null || request.resource.data.str3 is string) &&
-                  (!('float1' in request.resource.data.keys()) || request.resource.data.float1 == null || request.resource.data.float1 is float) &&
-                  (!('float2' in request.resource.data.keys()) || request.resource.data.float2 == null || request.resource.data.float2 is float) &&
-                  (!('float3' in request.resource.data.keys()) || request.resource.data.float3 == null || request.resource.data.float3 is float) &&
+                  (!('float1' in request.resource.data.keys()) || request.resource.data.float1 == null || request.resource.data.float1 is number) &&
+                  (!('float2' in request.resource.data.keys()) || request.resource.data.float2 == null || request.resource.data.float2 is number) &&
+                  (!('float3' in request.resource.data.keys()) || request.resource.data.float3 == null || request.resource.data.float3 is number) &&
                   (!('time1' in request.resource.data.keys()) || request.resource.data.time1 == null || request.resource.data.time1 is timestamp) &&
                   (!('time2' in request.resource.data.keys()) || request.resource.data.time2 == null || request.resource.data.time2 is timestamp) &&
                   (!('time3' in request.resource.data.keys()) || request.resource.data.time3 == null || request.resource.data.time3 is timestamp) &&
@@ -135,7 +135,7 @@ service cloud.firestore {
             allow create: if 
               // Type checks
               request.resource.data.installedWhen is timestamp &&
-              request.resource.data.registeredWhen is timestamp &&
+              (!('registeredWhen' in request.resource.data.keys()) || request.resource.data.registeredWhen == null || request.resource.data.registeredWhen is timestamp) &&
               (!('uninstalledWhen' in request.resource.data.keys()) || request.resource.data.uninstalledWhen == null || request.resource.data.uninstalledWhen is timestamp) &&
             
             
@@ -145,7 +145,7 @@ service cloud.firestore {
             allow update: if 
               // Type checks
               (!('installedWhen' in request.resource.data.keys()) || request.resource.data.installedWhen is timestamp) &&
-              (!('registeredWhen' in request.resource.data.keys()) || request.resource.data.registeredWhen is timestamp) &&
+              (!('registeredWhen' in request.resource.data.keys()) || request.resource.data.registeredWhen == null || request.resource.data.registeredWhen is timestamp) &&
               (!('uninstalledWhen' in request.resource.data.keys()) || request.resource.data.uninstalledWhen == null || request.resource.data.uninstalledWhen is timestamp) &&
             
             
