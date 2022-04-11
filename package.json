@@ -10,6 +10,7 @@
     "generate-backup-collections": "TS_NODE_PROJECT=tsconfig.json ts-node -r tsconfig-paths/register tools/generate-backup-collections.ts ./firebase/"
   },
   "dependencies": {
+    "@sentry/node": "^6.15.0",
     "firebase": "^7.20.0"
   },
   "devDependencies": {
