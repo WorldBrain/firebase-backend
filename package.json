@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "test": "echo 'No tests yet...'",
-    "firebase": "cd firebase && firebase",
+    "firebase": "cd ./firebase && firebase",
     "generate-rules": "TS_NODE_PROJECT=tsconfig.json ts-node -r tsconfig-paths/register tools/generate-rules.ts ./firebase/",
     "generate-backup-collections": "TS_NODE_PROJECT=tsconfig.json ts-node -r tsconfig-paths/register tools/generate-backup-collections.ts ./firebase/"
   },
