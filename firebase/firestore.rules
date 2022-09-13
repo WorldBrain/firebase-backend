@@ -1,50 +1,6 @@
 rules_version = '2';
 service cloud.firestore {
     match /databases/{database}/documents {
-        match /sharedSyncLogDeviceInfo/{userId} {
-            match /devices/{sharedSyncLogDeviceInfo} {
-                allow list: if 
-                  // Ownership rules
-                  request.auth.uid == userId
-                ;
-                allow get: if 
-                  // Ownership rules
-                  request.auth.uid == userId
-                ;
-                allow create: if 
-                  // Ownership rules
-                  request.auth.uid == userId
-                ;
-                allow update: if 
-                  // Ownership rules
-                  request.auth.uid == userId
-                ;
-                allow delete: if 
-                  // Ownership rules
-                  request.auth.uid == userId
-                ;
-            }
-        }
-        match /sharedSyncLogEntryBatch/{userId} {
-            match /entries/{sharedSyncLogEntryBatch} {
-                allow list: if 
-                  // Ownership rules
-                  request.auth.uid == userId
-                ;
-                allow get: if 
-                  // Ownership rules
-                  request.auth.uid == userId
-                ;
-                allow create: if 
-                  // Ownership rules
-                  request.auth.uid == userId
-                ;
-                allow delete: if 
-                  // Ownership rules
-                  request.auth.uid == userId
-                ;
-            }
-        }
         match /homeFeedInfo/{user} {
             allow get: if 
               // Ownership rules
@@ -516,7 +472,7 @@ service cloud.firestore {
                 ;
             }
         }
-        match /user/{id} {
+        match /user/{user} {
             allow get: if 
               // Permission rules
               true
@@ -524,6 +480,7 @@ service cloud.firestore {
             allow create: if 
               // Type checks
               (!('displayName' in request.resource.data.keys()) || request.resource.data.displayName == null || request.resource.data.displayName is string) &&
+              (!('firebaseId' in request.resource.data.keys()) || request.resource.data.firebaseId == null || request.resource.data.firebaseId is string) &&
             
             
               // Ownership rules
@@ -532,11 +489,46 @@ service cloud.firestore {
             allow update: if 
               // Type checks
               (!('displayName' in request.resource.data.keys()) || request.resource.data.displayName == null || request.resource.data.displayName is string) &&
+              (!('firebaseId' in request.resource.data.keys()) || request.resource.data.firebaseId == null || request.resource.data.firebaseId is string) &&
             
             
               // Ownership rules
               request.auth.uid == id
             ;
+        }
+        match /userFCMRegistration/{user} {
+            match /objects/{userFCMRegistration} {
+                allow list: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow get: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow create: if 
+                  // Type checks
+                  request.resource.data.token is string &&
+                  request.resource.data.createdWhen is timestamp &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow update: if 
+                  // Type checks
+                  (!('token' in request.resource.data.keys()) || request.resource.data.token is string) &&
+                  (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow delete: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+            }
         }
         match /userPublicProfile/{user} {
             allow get: if 
@@ -584,6 +576,7 @@ service cloud.firestore {
                 ;
                 allow create: if 
                   // Type checks
+                  (!('firebaseId' in request.resource.data.keys()) || request.resource.data.firebaseId == null || request.resource.data.firebaseId is string) &&
                   request.resource.data.type is string &&
                   request.resource.data.os is string &&
                   (!('browser' in request.resource.data.keys()) || request.resource.data.browser == null || request.resource.data.browser is string) &&
@@ -598,6 +591,7 @@ service cloud.firestore {
                 ;
                 allow update: if 
                   // Type checks
+                  (!('firebaseId' in request.resource.data.keys()) || request.resource.data.firebaseId == null || request.resource.data.firebaseId is string) &&
                   (!('type' in request.resource.data.keys()) || request.resource.data.type is string) &&
                   (!('os' in request.resource.data.keys()) || request.resource.data.os is string) &&
                   (!('browser' in request.resource.data.keys()) || request.resource.data.browser == null || request.resource.data.browser is string) &&
@@ -630,7 +624,7 @@ service cloud.firestore {
                   // Type checks
                   request.resource.data.type is string &&
                   request.resource.data.collection is string &&
-                  request.resource.data.objectId is string &&
+                  request.resource.data.objectId is number &&
                   request.resource.data.createdWhen is timestamp &&
                 
                 
@@ -641,7 +635,7 @@ service cloud.firestore {
                   // Type checks
                   (!('type' in request.resource.data.keys()) || request.resource.data.type is string) &&
                   (!('collection' in request.resource.data.keys()) || request.resource.data.collection is string) &&
-                  (!('objectId' in request.resource.data.keys()) || request.resource.data.objectId is string) &&
+                  (!('objectId' in request.resource.data.keys()) || request.resource.data.objectId is number) &&
                   (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
                 
                 
@@ -794,7 +788,7 @@ service cloud.firestore {
                 ;
                 allow create: if 
                   // Type checks
-                  request.resource.data.localId is string &&
+                  request.resource.data.localId is number &&
                   request.resource.data.privacyLevel is number &&
                   request.resource.data.createdWhen is timestamp &&
                   request.resource.data.updatedWhen is timestamp &&
@@ -805,7 +799,7 @@ service cloud.firestore {
                 ;
                 allow update: if 
                   // Type checks
-                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId is string) &&
+                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId is number) &&
                   (!('privacyLevel' in request.resource.data.keys()) || request.resource.data.privacyLevel is number) &&
                   (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
                   (!('updatedWhen' in request.resource.data.keys()) || request.resource.data.updatedWhen is timestamp) &&
@@ -907,7 +901,7 @@ service cloud.firestore {
                 allow create: if 
                   // Type checks
                   request.resource.data.name is string &&
-                  request.resource.data.localId is string &&
+                  request.resource.data.localId is number &&
                   request.resource.data.isDeletable is bool &&
                   request.resource.data.isNestable is bool &&
                   request.resource.data.createdWhen is timestamp &&
@@ -920,7 +914,7 @@ service cloud.firestore {
                 allow update: if 
                   // Type checks
                   (!('name' in request.resource.data.keys()) || request.resource.data.name is string) &&
-                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId is string) &&
+                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId is number) &&
                   (!('isDeletable' in request.resource.data.keys()) || request.resource.data.isDeletable is bool) &&
                   (!('isNestable' in request.resource.data.keys()) || request.resource.data.isNestable is bool) &&
                   (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
@@ -1042,6 +1036,40 @@ service cloud.firestore {
                 ;
             }
         }
+        match /personalAnnotationListEntry/{user} {
+            match /objects/{personalAnnotationListEntry} {
+                allow list: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow get: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow create: if 
+                  // Type checks
+                  request.resource.data.createdWhen is timestamp &&
+                  request.resource.data.updatedWhen is timestamp &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow update: if 
+                  // Type checks
+                  (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
+                  (!('updatedWhen' in request.resource.data.keys()) || request.resource.data.updatedWhen is timestamp) &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow delete: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+            }
+        }
         match /personalContentMetadata/{user} {
             match /objects/{personalContentMetadata} {
                 allow list: if 
@@ -1104,7 +1132,7 @@ service cloud.firestore {
                   request.resource.data.primary is bool &&
                   request.resource.data.valid is bool &&
                   request.resource.data.version is timestamp &&
-                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId == null || request.resource.data.localId is string) &&
+                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId == null || request.resource.data.localId is number) &&
                   (!('fingerprintScheme' in request.resource.data.keys()) || request.resource.data.fingerprintScheme == null || request.resource.data.fingerprintScheme is string) &&
                   (!('fingerprint' in request.resource.data.keys()) || request.resource.data.fingerprint == null || request.resource.data.fingerprint is string) &&
                   (!('lastVisited' in request.resource.data.keys()) || request.resource.data.lastVisited == null || request.resource.data.lastVisited is timestamp) &&
@@ -1126,7 +1154,7 @@ service cloud.firestore {
                   (!('primary' in request.resource.data.keys()) || request.resource.data.primary is bool) &&
                   (!('valid' in request.resource.data.keys()) || request.resource.data.valid is bool) &&
                   (!('version' in request.resource.data.keys()) || request.resource.data.version is timestamp) &&
-                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId == null || request.resource.data.localId is string) &&
+                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId == null || request.resource.data.localId is number) &&
                   (!('fingerprintScheme' in request.resource.data.keys()) || request.resource.data.fingerprintScheme == null || request.resource.data.fingerprintScheme is string) &&
                   (!('fingerprint' in request.resource.data.keys()) || request.resource.data.fingerprint == null || request.resource.data.fingerprint is string) &&
                   (!('lastVisited' in request.resource.data.keys()) || request.resource.data.lastVisited == null || request.resource.data.lastVisited is timestamp) &&
@@ -1304,6 +1332,40 @@ service cloud.firestore {
                 ;
             }
         }
+        match /personalTwitterAction/{user} {
+            match /objects/{personalTwitterAction} {
+                allow list: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow get: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow create: if 
+                  // Type checks
+                  request.resource.data.createdWhen is timestamp &&
+                  request.resource.data.updatedWhen is timestamp &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow update: if 
+                  // Type checks
+                  (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
+                  (!('updatedWhen' in request.resource.data.keys()) || request.resource.data.updatedWhen is timestamp) &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow delete: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+            }
+        }
         match /personalMemexSetting/{user} {
             match /objects/{personalMemexSetting} {
                 allow list: if 
@@ -1340,20 +1402,56 @@ service cloud.firestore {
                 ;
             }
         }
-        match /personalAnalytics/{user} {
+        match /personalAnalyticEvent/{user} {
+            match /objects/{personalAnalyticEvent} {
+                allow create: if 
+                  // Type checks
+                  request.resource.data.createdWhen is timestamp &&
+                  request.resource.data.type is string &&
+                  (!('str1' in request.resource.data.keys()) || request.resource.data.str1 == null || request.resource.data.str1 is string) &&
+                  (!('str2' in request.resource.data.keys()) || request.resource.data.str2 == null || request.resource.data.str2 is string) &&
+                  (!('str3' in request.resource.data.keys()) || request.resource.data.str3 == null || request.resource.data.str3 is string) &&
+                  (!('float1' in request.resource.data.keys()) || request.resource.data.float1 == null || request.resource.data.float1 is number) &&
+                  (!('float2' in request.resource.data.keys()) || request.resource.data.float2 == null || request.resource.data.float2 is number) &&
+                  (!('float3' in request.resource.data.keys()) || request.resource.data.float3 == null || request.resource.data.float3 is number) &&
+                  (!('time1' in request.resource.data.keys()) || request.resource.data.time1 == null || request.resource.data.time1 is timestamp) &&
+                  (!('time2' in request.resource.data.keys()) || request.resource.data.time2 == null || request.resource.data.time2 is timestamp) &&
+                  (!('time3' in request.resource.data.keys()) || request.resource.data.time3 == null || request.resource.data.time3 is timestamp) &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow update: if 
+                  // Type checks
+                  (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
+                  (!('type' in request.resource.data.keys()) || request.resource.data.type is string) &&
+                  (!('str1' in request.resource.data.keys()) || request.resource.data.str1 == null || request.resource.data.str1 is string) &&
+                  (!('str2' in request.resource.data.keys()) || request.resource.data.str2 == null || request.resource.data.str2 is string) &&
+                  (!('str3' in request.resource.data.keys()) || request.resource.data.str3 == null || request.resource.data.str3 is string) &&
+                  (!('float1' in request.resource.data.keys()) || request.resource.data.float1 == null || request.resource.data.float1 is number) &&
+                  (!('float2' in request.resource.data.keys()) || request.resource.data.float2 == null || request.resource.data.float2 is number) &&
+                  (!('float3' in request.resource.data.keys()) || request.resource.data.float3 == null || request.resource.data.float3 is number) &&
+                  (!('time1' in request.resource.data.keys()) || request.resource.data.time1 == null || request.resource.data.time1 is timestamp) &&
+                  (!('time2' in request.resource.data.keys()) || request.resource.data.time2 == null || request.resource.data.time2 is timestamp) &&
+                  (!('time3' in request.resource.data.keys()) || request.resource.data.time3 == null || request.resource.data.time3 is timestamp) &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+            }
+        }
+        match /personalAnalyticStats/{user} {
+            allow get: if 
+              // Ownership rules
+              request.auth.uid == user
+            ;
             allow create: if 
               // Type checks
-              (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen == null || request.resource.data.createdWhen is timestamp) &&
-              request.resource.data.type is string &&
-              (!('str1' in request.resource.data.keys()) || request.resource.data.str1 == null || request.resource.data.str1 is string) &&
-              (!('str2' in request.resource.data.keys()) || request.resource.data.str2 == null || request.resource.data.str2 is string) &&
-              (!('str3' in request.resource.data.keys()) || request.resource.data.str3 == null || request.resource.data.str3 is string) &&
-              (!('float1' in request.resource.data.keys()) || request.resource.data.float1 == null || request.resource.data.float1 is float) &&
-              (!('float2' in request.resource.data.keys()) || request.resource.data.float2 == null || request.resource.data.float2 is float) &&
-              (!('float3' in request.resource.data.keys()) || request.resource.data.float3 == null || request.resource.data.float3 is float) &&
-              (!('time1' in request.resource.data.keys()) || request.resource.data.time1 == null || request.resource.data.time1 is timestamp) &&
-              (!('time2' in request.resource.data.keys()) || request.resource.data.time2 == null || request.resource.data.time2 is timestamp) &&
-              (!('time3' in request.resource.data.keys()) || request.resource.data.time3 == null || request.resource.data.time3 is timestamp) &&
+              request.resource.data.installedWhen is timestamp &&
+              (!('registeredWhen' in request.resource.data.keys()) || request.resource.data.registeredWhen == null || request.resource.data.registeredWhen is timestamp) &&
+              (!('uninstalledWhen' in request.resource.data.keys()) || request.resource.data.uninstalledWhen == null || request.resource.data.uninstalledWhen is timestamp) &&
             
             
               // Ownership rules
@@ -1361,17 +1459,9 @@ service cloud.firestore {
             ;
             allow update: if 
               // Type checks
-              (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen == null || request.resource.data.createdWhen is timestamp) &&
-              (!('type' in request.resource.data.keys()) || request.resource.data.type is string) &&
-              (!('str1' in request.resource.data.keys()) || request.resource.data.str1 == null || request.resource.data.str1 is string) &&
-              (!('str2' in request.resource.data.keys()) || request.resource.data.str2 == null || request.resource.data.str2 is string) &&
-              (!('str3' in request.resource.data.keys()) || request.resource.data.str3 == null || request.resource.data.str3 is string) &&
-              (!('float1' in request.resource.data.keys()) || request.resource.data.float1 == null || request.resource.data.float1 is float) &&
-              (!('float2' in request.resource.data.keys()) || request.resource.data.float2 == null || request.resource.data.float2 is float) &&
-              (!('float3' in request.resource.data.keys()) || request.resource.data.float3 == null || request.resource.data.float3 is float) &&
-              (!('time1' in request.resource.data.keys()) || request.resource.data.time1 == null || request.resource.data.time1 is timestamp) &&
-              (!('time2' in request.resource.data.keys()) || request.resource.data.time2 == null || request.resource.data.time2 is timestamp) &&
-              (!('time3' in request.resource.data.keys()) || request.resource.data.time3 == null || request.resource.data.time3 is timestamp) &&
+              (!('installedWhen' in request.resource.data.keys()) || request.resource.data.installedWhen is timestamp) &&
+              (!('registeredWhen' in request.resource.data.keys()) || request.resource.data.registeredWhen == null || request.resource.data.registeredWhen is timestamp) &&
+              (!('uninstalledWhen' in request.resource.data.keys()) || request.resource.data.uninstalledWhen == null || request.resource.data.uninstalledWhen is timestamp) &&
             
             
               // Ownership rules

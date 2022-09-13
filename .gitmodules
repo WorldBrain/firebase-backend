@@ -16,15 +16,9 @@
 [submodule "external/@worldbrain/storex-pattern-modules"]
 	path = firebase/functions/external/@worldbrain/storex-pattern-modules
 	url = https://github.com/WorldBrain/storex-pattern-modules.git
-[submodule "external/@worldbrain/storex-sync"]
-	path = firebase/functions/external/@worldbrain/storex-sync
-	url = https://github.com/WorldBrain/storex-sync.git
 [submodule "external/user-logic"]
 	path = firebase/functions/external/user-logic
 	url = https://github.com/ShishKabab/user-logic.git
-[submodule "external/simple-signalling"]
-	path = firebase/functions/external/simple-signalling
-	url = https://github.com/WorldBrain/simple-signalling.git
 [submodule "firebase/functions/external/@worldbrain/memex-url-utils"]
 	path = firebase/functions/external/@worldbrain/memex-url-utils
 	url = https://github.com/WorldBrain/memex-url-utils
