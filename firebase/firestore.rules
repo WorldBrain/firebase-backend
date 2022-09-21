@@ -472,7 +472,7 @@ service cloud.firestore {
                 ;
             }
         }
-        match /user/{user} {
+        match /user/{id} {
             allow get: if 
               // Permission rules
               true
@@ -788,7 +788,7 @@ service cloud.firestore {
                 ;
                 allow create: if 
                   // Type checks
-                  request.resource.data.localId is number &&
+                  request.resource.data.localId is string &&
                   request.resource.data.privacyLevel is number &&
                   request.resource.data.createdWhen is timestamp &&
                   request.resource.data.updatedWhen is timestamp &&
@@ -799,7 +799,7 @@ service cloud.firestore {
                 ;
                 allow update: if 
                   // Type checks
-                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId is number) &&
+                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId is string) &&
                   (!('privacyLevel' in request.resource.data.keys()) || request.resource.data.privacyLevel is number) &&
                   (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
                   (!('updatedWhen' in request.resource.data.keys()) || request.resource.data.updatedWhen is timestamp) &&
@@ -901,7 +901,7 @@ service cloud.firestore {
                 allow create: if 
                   // Type checks
                   request.resource.data.name is string &&
-                  request.resource.data.localId is number &&
+                  request.resource.data.localId is string &&
                   request.resource.data.isDeletable is bool &&
                   request.resource.data.isNestable is bool &&
                   request.resource.data.createdWhen is timestamp &&
@@ -914,7 +914,7 @@ service cloud.firestore {
                 allow update: if 
                   // Type checks
                   (!('name' in request.resource.data.keys()) || request.resource.data.name is string) &&
-                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId is number) &&
+                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId is string) &&
                   (!('isDeletable' in request.resource.data.keys()) || request.resource.data.isDeletable is bool) &&
                   (!('isNestable' in request.resource.data.keys()) || request.resource.data.isNestable is bool) &&
                   (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
@@ -1132,7 +1132,7 @@ service cloud.firestore {
                   request.resource.data.primary is bool &&
                   request.resource.data.valid is bool &&
                   request.resource.data.version is timestamp &&
-                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId == null || request.resource.data.localId is number) &&
+                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId == null || request.resource.data.localId is string) &&
                   (!('fingerprintScheme' in request.resource.data.keys()) || request.resource.data.fingerprintScheme == null || request.resource.data.fingerprintScheme is string) &&
                   (!('fingerprint' in request.resource.data.keys()) || request.resource.data.fingerprint == null || request.resource.data.fingerprint is string) &&
                   (!('lastVisited' in request.resource.data.keys()) || request.resource.data.lastVisited == null || request.resource.data.lastVisited is timestamp) &&
@@ -1154,7 +1154,7 @@ service cloud.firestore {
                   (!('primary' in request.resource.data.keys()) || request.resource.data.primary is bool) &&
                   (!('valid' in request.resource.data.keys()) || request.resource.data.valid is bool) &&
                   (!('version' in request.resource.data.keys()) || request.resource.data.version is timestamp) &&
-                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId == null || request.resource.data.localId is number) &&
+                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId == null || request.resource.data.localId is string) &&
                   (!('fingerprintScheme' in request.resource.data.keys()) || request.resource.data.fingerprintScheme == null || request.resource.data.fingerprintScheme is string) &&
                   (!('fingerprint' in request.resource.data.keys()) || request.resource.data.fingerprint == null || request.resource.data.fingerprint is string) &&
                   (!('lastVisited' in request.resource.data.keys()) || request.resource.data.lastVisited == null || request.resource.data.lastVisited is timestamp) &&
