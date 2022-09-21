@@ -624,7 +624,7 @@ service cloud.firestore {
                   // Type checks
                   request.resource.data.type is string &&
                   request.resource.data.collection is string &&
-                  request.resource.data.objectId is number &&
+                  request.resource.data.objectId is string &&
                   request.resource.data.createdWhen is timestamp &&
                 
                 
@@ -635,7 +635,7 @@ service cloud.firestore {
                   // Type checks
                   (!('type' in request.resource.data.keys()) || request.resource.data.type is string) &&
                   (!('collection' in request.resource.data.keys()) || request.resource.data.collection is string) &&
-                  (!('objectId' in request.resource.data.keys()) || request.resource.data.objectId is number) &&
+                  (!('objectId' in request.resource.data.keys()) || request.resource.data.objectId is string) &&
                   (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
                 
                 
