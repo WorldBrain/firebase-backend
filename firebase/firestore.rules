@@ -109,6 +109,12 @@ service cloud.firestore {
               request.auth.uid == user
             ;
         }
+        match /discordList/{sharedList} {
+            allow get: if 
+              // Permission rules
+              true
+            ;
+        }
         match /sharedList/{sharedList} {
             allow get: if 
               // Permission rules
@@ -120,6 +126,7 @@ service cloud.firestore {
               request.resource.data.updatedWhen is timestamp &&
               request.resource.data.title is string &&
               (!('description' in request.resource.data.keys()) || request.resource.data.description == null || request.resource.data.description is string) &&
+              (!('platform' in request.resource.data.keys()) || request.resource.data.platform == null || request.resource.data.platform is string) &&
             
             
               // Ownership rules
@@ -131,6 +138,7 @@ service cloud.firestore {
               (!('updatedWhen' in request.resource.data.keys()) || request.resource.data.updatedWhen is timestamp) &&
               (!('title' in request.resource.data.keys()) || request.resource.data.title is string) &&
               (!('description' in request.resource.data.keys()) || request.resource.data.description == null || request.resource.data.description is string) &&
+              (!('platform' in request.resource.data.keys()) || request.resource.data.platform == null || request.resource.data.platform is string) &&
             
             
               // Ownership rules
@@ -480,6 +488,8 @@ service cloud.firestore {
             allow create: if 
               // Type checks
               (!('displayName' in request.resource.data.keys()) || request.resource.data.displayName == null || request.resource.data.displayName is string) &&
+              (!('platform' in request.resource.data.keys()) || request.resource.data.platform == null || request.resource.data.platform is string) &&
+              (!('platformId' in request.resource.data.keys()) || request.resource.data.platformId == null || request.resource.data.platformId is string) &&
               (!('firebaseId' in request.resource.data.keys()) || request.resource.data.firebaseId == null || request.resource.data.firebaseId is string) &&
             
             
@@ -489,6 +499,8 @@ service cloud.firestore {
             allow update: if 
               // Type checks
               (!('displayName' in request.resource.data.keys()) || request.resource.data.displayName == null || request.resource.data.displayName is string) &&
+              (!('platform' in request.resource.data.keys()) || request.resource.data.platform == null || request.resource.data.platform is string) &&
+              (!('platformId' in request.resource.data.keys()) || request.resource.data.platformId == null || request.resource.data.platformId is string) &&
               (!('firebaseId' in request.resource.data.keys()) || request.resource.data.firebaseId == null || request.resource.data.firebaseId is string) &&
             
             
