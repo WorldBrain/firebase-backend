@@ -1,83 +1,85 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "target": "es5",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "strict": false,
-    "sourceMap": true,
-    "importHelpers": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "downlevelIteration": true,
-    "outDir": "tmp",
-    "types": ["node"],
-    "paths": {
-      "@worldbrain/storex": [
-        "firebase/functions/external/@worldbrain/storex/ts"
-      ],
-      "@worldbrain/storex/lib/*": [
-        "firebase/functions/external/@worldbrain/storex/ts/*"
-      ],
-      "@worldbrain/storex-backend-dexie": [
-        "firebase/functions/external/@worldbrain/storex-backend-dexie/ts"
-      ],
-      "@worldbrain/storex-backend-dexie/lib/*": [
-        "firebase/functions/external/@worldbrain/storex-backend-dexie/ts/*"
-      ],
-      "@worldbrain/storex-backend-firestore": [
-        "firebase/functions/external/@worldbrain/storex-backend-firestore/ts"
-      ],
-      "@worldbrain/storex-backend-firestore/lib/*": [
-        "firebase/functions/external/@worldbrain/storex-backend-firestore/ts/*"
-      ],
-      "@worldbrain/storex-backend-typeorm": [
-        "firebase/functions/external/@worldbrain/storex-backend-typeorm/ts"
-      ],
-      "@worldbrain/storex-backend-typeorm/lib/*": [
-        "firebase/functions/external/@worldbrain/storex-backend-typeorm/ts/*"
-      ],
-      "@worldbrain/storex-pattern-modules": [
-        "firebase/functions/external/@worldbrain/storex-pattern-modules/ts"
-      ],
-      "@worldbrain/storex-pattern-modules/lib/*": [
-        "firebase/functions/external/@worldbrain/storex-pattern-modules/ts/*"
-      ],
-      "@worldbrain/memex-url-utils": [
-        "firebase/functions/external/@worldbrain/memex-url-utils/ts"
-      ],
-      "@worldbrain/memex-url-utils/lib/*": [
-        "firebase/functions/external/@worldbrain/memex-url-utils/ts/*"
-      ],
-      "@worldbrain/memex-common": [
-        "firebase/functions/external/@worldbrain/memex-common/ts"
-      ],
-      "@worldbrain/memex-common/lib/*": [
-        "firebase/functions/external/@worldbrain/memex-common/ts/*"
-      ],
-      "@worldbrain/memex-storage": [
-        "firebase/functions/external/@worldbrain/memex-storage/ts"
-      ],
-      "@worldbrain/memex-storage/lib/*": [
-        "firebase/functions/external/@worldbrain/memex-storage/ts/*"
-      ],
-      "@worldbrain/storex-sync": [
-        "firebase/functions/external/@worldbrain/storex-sync/ts"
-      ],
-      "@worldbrain/storex-sync/lib/*": [
-        "firebase/functions/external/@worldbrain/storex-sync/ts/*"
-      ],
-      "user-logic": ["firebase/functions/external/user-logic/ts"],
-      "user-logic/lib/*": ["firebase/functions/external/user-logic/ts/*"],
-      "simple-signalling": ["firebase/functions/external/simple-signalling/ts"],
-      "simple-signalling/lib/*": [
-        "firebase/functions/external/simple-signalling/ts/*"
-      ]
+    "compilerOptions": {
+        "baseUrl": ".",
+        "target": "es5",
+        "module": "CommonJS",
+        "moduleResolution": "node",
+        "strict": false,
+        "sourceMap": true,
+        "importHelpers": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "downlevelIteration": true,
+        "outDir": "tmp",
+        "types": ["node"],
+        "paths": {
+            "@worldbrain/storex": [
+                "firebase/functions/external/@worldbrain/storex/ts"
+            ],
+            "@worldbrain/storex/lib/*": [
+                "firebase/functions/external/@worldbrain/storex/ts/*"
+            ],
+            "@worldbrain/storex-backend-dexie": [
+                "firebase/functions/external/@worldbrain/storex-backend-dexie/ts"
+            ],
+            "@worldbrain/storex-backend-dexie/lib/*": [
+                "firebase/functions/external/@worldbrain/storex-backend-dexie/ts/*"
+            ],
+            "@worldbrain/storex-backend-firestore": [
+                "firebase/functions/external/@worldbrain/storex-backend-firestore/ts"
+            ],
+            "@worldbrain/storex-backend-firestore/lib/*": [
+                "firebase/functions/external/@worldbrain/storex-backend-firestore/ts/*"
+            ],
+            "@worldbrain/storex-backend-typeorm": [
+                "firebase/functions/external/@worldbrain/storex-backend-typeorm/ts"
+            ],
+            "@worldbrain/storex-backend-typeorm/lib/*": [
+                "firebase/functions/external/@worldbrain/storex-backend-typeorm/ts/*"
+            ],
+            "@worldbrain/storex-pattern-modules": [
+                "firebase/functions/external/@worldbrain/storex-pattern-modules/ts"
+            ],
+            "@worldbrain/storex-pattern-modules/lib/*": [
+                "firebase/functions/external/@worldbrain/storex-pattern-modules/ts/*"
+            ],
+            "@worldbrain/memex-url-utils": [
+                "firebase/functions/external/@worldbrain/memex-url-utils/ts"
+            ],
+            "@worldbrain/memex-url-utils/lib/*": [
+                "firebase/functions/external/@worldbrain/memex-url-utils/ts/*"
+            ],
+            "@worldbrain/memex-common": [
+                "firebase/functions/external/@worldbrain/memex-common/ts"
+            ],
+            "@worldbrain/memex-common/lib/*": [
+                "firebase/functions/external/@worldbrain/memex-common/ts/*"
+            ],
+            "@worldbrain/memex-storage": [
+                "firebase/functions/external/@worldbrain/memex-storage/ts"
+            ],
+            "@worldbrain/memex-storage/lib/*": [
+                "firebase/functions/external/@worldbrain/memex-storage/ts/*"
+            ],
+            "@worldbrain/storex-sync": [
+                "firebase/functions/external/@worldbrain/storex-sync/ts"
+            ],
+            "@worldbrain/storex-sync/lib/*": [
+                "firebase/functions/external/@worldbrain/storex-sync/ts/*"
+            ],
+            "user-logic": ["firebase/functions/external/user-logic/ts"],
+            "user-logic/lib/*": ["firebase/functions/external/user-logic/ts/*"],
+            "simple-signalling": [
+                "firebase/functions/external/simple-signalling/ts"
+            ],
+            "simple-signalling/lib/*": [
+                "firebase/functions/external/simple-signalling/ts/*"
+            ]
+        },
+        "lib": ["es2021", "dom", "dom.iterable", "esnext.asynciterable"]
     },
-    "lib": ["es2017", "dom", "dom.iterable", "esnext.asynciterable"]
-  },
-  "include": ["./tools/**/*"],
-  "exclude": ["node_modules"]
+    "include": ["./tools/**/*"],
+    "exclude": ["node_modules"]
 }

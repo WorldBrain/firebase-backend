@@ -12,7 +12,8 @@
     "dependencies": {
         "@sentry/node": "^6.15.0",
         "@sentry/serverless": "^7.17.3",
-        "firebase": "^9.9.2"
+        "firebase": "^9.9.2",
+        "turndown": "^7.1.1"
     },
     "devDependencies": {
         "@josephg/resolvable": "^1.0.0",
