@@ -49,6 +49,7 @@
         "serialize-error": "^8.1.0",
         "source-map-support": "^0.5.19",
         "styled-components": "^5.2.1",
+        "turndown": "^7.1.1",
         "tweetnacl-async": "^2.0.0",
         "tweetnacl-util": "^0.15.1",
         "twilio": "^3.42.0",
