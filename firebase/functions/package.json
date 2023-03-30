@@ -18,8 +18,8 @@
     "dependencies": {
         "@grpc/grpc-js": "^1.4.6",
         "@josephg/resolvable": "^1.0.0",
-        "@sentry/node": "^6.15.0",
-        "@sentry/serverless": "^7.17.3",
+        "@sentry/node": "7.45.0",
+        "@sentry/serverless": "7.45.0",
         "airtable": "^0.10.0",
         "axios": "^0.19.2",
         "bcrypt": "^3.0.6",
