@@ -63,6 +63,12 @@
             "@worldbrain/memex-storage/lib/*": [
                 "firebase/functions/external/@worldbrain/memex-storage/ts/*"
             ],
+            "@worldbrain/memex-stemmer": [
+                "firebase/functions/external/@worldbrain/memex-stemmer/ts"
+            ],
+            "@worldbrain/memex-stemmer/lib/*": [
+                "firebase/functions/external/@worldbrain/memex-stemmer/ts/*"
+            ],
             "@worldbrain/storex-sync": [
                 "firebase/functions/external/@worldbrain/storex-sync/ts"
             ],

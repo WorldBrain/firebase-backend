@@ -25,3 +25,6 @@
 [submodule "firebase/functions/external/@worldbrain/storex-middleware-change-watcher"]
 	path = firebase/functions/external/@worldbrain/storex-middleware-change-watcher
 	url = https://github.com/WorldBrain/storex-middleware-change-watcher
+[submodule "firebase/functions/external/@worldbrain/memex-stemmer"]
+	path = firebase/functions/external/@worldbrain/memex-stemmer
+	url = git@github.com:WorldBrain/memex-stemmer.git
