@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "worldbrain-staging"
-  }
+    "default": "worldbrain-staging",
+    "production": "worldbrain-1057",
+    "staging": "worldbrain-staging"
+  },
+  "targets": {},
+  "etags": {}
 }
