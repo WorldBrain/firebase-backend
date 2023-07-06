@@ -7,12 +7,19 @@ import {
     onDocumentDeleted,
 } from 'firebase-functions/v2/firestore'
 import { main } from '@worldbrain/memex-common/lib/firebase-backend/main'
-import type { RequiredFunctionV2Modules } from '@worldbrain/memex-common/lib/firebase-backend/types'
+import type {
+    RequiredFunctionParamsModules,
+    RequiredFunctionV2Modules,
+} from '@worldbrain/memex-common/lib/firebase-backend/types'
 
 const functionsV2: RequiredFunctionV2Modules = {
     https: { onCall, onRequest },
-    params: { defineSecret, defineString },
     firestore: { onDocumentCreated, onDocumentDeleted },
 }
 
-module.exports = main(admin, functionsV1, functionsV2)
+const functionParams: RequiredFunctionParamsModules = {
+    defineSecret,
+    defineString,
+}
+
+module.exports = main(admin, functionsV1, functionsV2, functionParams)
