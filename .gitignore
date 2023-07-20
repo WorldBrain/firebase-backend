@@ -63,6 +63,8 @@ node_modules/
 
 # dotenv environment variables file
 .env
+.env.staging
+.env.production
 
 private
 
