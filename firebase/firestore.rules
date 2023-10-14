@@ -134,6 +134,7 @@ service cloud.firestore {
               request.resource.data.title is string &&
               (!('description' in request.resource.data.keys()) || request.resource.data.description == null || request.resource.data.description is string) &&
               (!('platform' in request.resource.data.keys()) || request.resource.data.platform == null || request.resource.data.platform is string) &&
+              (!('private' in request.resource.data.keys()) || request.resource.data.private == null || request.resource.data.private is bool) &&
             
             
               // Ownership rules
@@ -147,6 +148,7 @@ service cloud.firestore {
               (!('title' in request.resource.data.keys()) || request.resource.data.title is string) &&
               (!('description' in request.resource.data.keys()) || request.resource.data.description == null || request.resource.data.description is string) &&
               (!('platform' in request.resource.data.keys()) || request.resource.data.platform == null || request.resource.data.platform is string) &&
+              (!('private' in request.resource.data.keys()) || request.resource.data.private == null || request.resource.data.private is bool) &&
             
             
               // Ownership rules
@@ -188,7 +190,7 @@ service cloud.firestore {
         match /sharedContentFingerprint/{sharedContentFingerprint} {
             allow get: if 
               // Permission rules
-              true
+              ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.private != true) || (get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow create: if 
               // Type checks
@@ -198,7 +200,7 @@ service cloud.firestore {
             
             
               // Permission rules
-              (request.auth.uid == request.resource.data.creator && ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow update: if 
               // Type checks
@@ -208,17 +210,17 @@ service cloud.firestore {
             
             
               // Permission rules
-              (request.auth.uid == resource.data.creator && ((!('creator' in request.resource.data.keys())) || request.auth.uid == request.resource.data.creator) && ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow delete: if 
               // Permission rules
-              (request.auth.uid == resource.data.creator && ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+              ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
         }
         match /sharedContentLocator/{sharedContentLocator} {
             allow get: if 
               // Permission rules
-              true
+              ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.private != true) || (get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow create: if 
               // Type checks
@@ -227,7 +229,7 @@ service cloud.firestore {
             
             
               // Permission rules
-              (request.auth.uid == request.resource.data.creator && ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow update: if 
               // Type checks
@@ -236,17 +238,17 @@ service cloud.firestore {
             
             
               // Permission rules
-              (request.auth.uid == resource.data.creator && ((!('creator' in request.resource.data.keys())) || request.auth.uid == request.resource.data.creator) && ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow delete: if 
               // Permission rules
-              (request.auth.uid == resource.data.creator && ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+              ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
         }
         match /sharedListEntry/{sharedListEntry} {
             allow get: if 
               // Permission rules
-              true
+              ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.private != true) || (get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow create: if 
               // Type checks
@@ -258,7 +260,7 @@ service cloud.firestore {
             
             
               // Permission rules
-              (request.auth.uid == request.resource.data.creator && ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow update: if 
               // Type checks
@@ -270,11 +272,11 @@ service cloud.firestore {
             
             
               // Permission rules
-              (request.auth.uid == resource.data.creator && ((!('creator' in request.resource.data.keys())) || request.auth.uid == request.resource.data.creator) && ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow delete: if 
               // Permission rules
-              (request.auth.uid == resource.data.creator && ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+              ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
         }
         match /sharedListRole/{sharedList} {
@@ -327,6 +329,8 @@ service cloud.firestore {
                   // Type checks
                   request.resource.data.createdWhen is timestamp &&
                   request.resource.data.updatedWhen is timestamp &&
+                  (!('expiresWhen' in request.resource.data.keys()) || request.resource.data.expiresWhen == null || request.resource.data.expiresWhen is timestamp) &&
+                  (!('singleUse' in request.resource.data.keys()) || request.resource.data.singleUse == null || request.resource.data.singleUse is bool) &&
                   (!('disabled' in request.resource.data.keys()) || request.resource.data.disabled == null || request.resource.data.disabled is bool) &&
                   request.resource.data.roleID is number &&
                 
@@ -338,6 +342,8 @@ service cloud.firestore {
                   // Type checks
                   (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
                   (!('updatedWhen' in request.resource.data.keys()) || request.resource.data.updatedWhen is timestamp) &&
+                  (!('expiresWhen' in request.resource.data.keys()) || request.resource.data.expiresWhen == null || request.resource.data.expiresWhen is timestamp) &&
+                  (!('singleUse' in request.resource.data.keys()) || request.resource.data.singleUse == null || request.resource.data.singleUse is bool) &&
                   (!('disabled' in request.resource.data.keys()) || request.resource.data.disabled == null || request.resource.data.disabled is bool) &&
                   (!('roleID' in request.resource.data.keys()) || request.resource.data.roleID is number) &&
                 
@@ -426,7 +432,7 @@ service cloud.firestore {
         match /sharedAnnotationListEntry/{sharedAnnotationListEntry} {
             allow get: if 
               // Permission rules
-              true
+              ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.private != true) || (get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow create: if 
               // Type checks
@@ -437,7 +443,7 @@ service cloud.firestore {
             
             
               // Permission rules
-              (request.auth.uid == request.resource.data.creator && ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow update: if 
               // Type checks
@@ -448,11 +454,11 @@ service cloud.firestore {
             
             
               // Permission rules
-              (request.auth.uid == resource.data.creator && ((!('creator' in request.resource.data.keys())) || request.auth.uid == request.resource.data.creator) && ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow delete: if 
               // Permission rules
-              (request.auth.uid == resource.data.creator && ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400))))
+              ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
         }
         match /conversationThread/{conversationThread} {
@@ -901,6 +907,7 @@ service cloud.firestore {
                 allow create: if 
                   // Type checks
                   request.resource.data.remoteId is string &&
+                  (!('private' in request.resource.data.keys()) || request.resource.data.private == null || request.resource.data.private is bool) &&
                   request.resource.data.createdWhen is timestamp &&
                   request.resource.data.updatedWhen is timestamp &&
                 
@@ -911,6 +918,7 @@ service cloud.firestore {
                 allow update: if 
                   // Type checks
                   (!('remoteId' in request.resource.data.keys()) || request.resource.data.remoteId is string) &&
+                  (!('private' in request.resource.data.keys()) || request.resource.data.private == null || request.resource.data.private is bool) &&
                   (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
                   (!('updatedWhen' in request.resource.data.keys()) || request.resource.data.updatedWhen is timestamp) &&
                 
