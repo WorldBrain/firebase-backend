@@ -22,6 +22,7 @@
         "@sentry/node": "7.45.0",
         "@sentry/serverless": "7.45.0",
         "airtable": "^0.10.0",
+        "argon2": "^0.31.2",
         "axios": "^0.19.2",
         "bcrypt": "^3.0.6",
         "chargebee": "^2.5.5",
