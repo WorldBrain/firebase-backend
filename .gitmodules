@@ -1,6 +1,6 @@
 [submodule "external/@worldbrain/memex-common"]
 	path = firebase/functions/external/@worldbrain/memex-common
-	url = https://github.com/WorldBrain/memex-common.git
+	url = git@github.com:WorldBrain/memex-common.git
 [submodule "external/@worldbrain/memex-storage"]
 	path = firebase/functions/external/@worldbrain/memex-storage
 	url = https://github.com/WorldBrain/memex-storage.git
@@ -28,6 +28,3 @@
 [submodule "firebase/functions/external/@worldbrain/memex-stemmer"]
 	path = firebase/functions/external/@worldbrain/memex-stemmer
 	url = git@github.com:WorldBrain/memex-stemmer.git
-[submodule "firebase/functions/external/@worldbrain/storex-sync"]
-	path = firebase/functions/external/@worldbrain/storex-sync
-	url = git@github.com:WorldBrain/storex-sync.git
