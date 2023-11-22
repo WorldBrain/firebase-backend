@@ -28,3 +28,5 @@
 [submodule "firebase/functions/external/@worldbrain/memex-stemmer"]
 	path = firebase/functions/external/@worldbrain/memex-stemmer
 	url = git@github.com:WorldBrain/memex-stemmer.git
+[submodule "firebase/functions/external/@worldbrain/storex-sync"]
+	url = https://github.com/WorldBrain/storex-sync
