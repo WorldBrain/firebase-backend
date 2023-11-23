@@ -10,6 +10,9 @@
 [submodule "external/@worldbrain/storex-backend-dexie"]
 	path = firebase/functions/external/@worldbrain/storex-backend-dexie
 	url = https://github.com/WorldBrain/storex-backend-dexie.git
+[submodule "external/@worldbrain/storex-sync"]
+	path = firebase/functions/external/@worldbrain/storex-sync
+	url = https://github.com/WorldBrain/storex-sync.git
 [submodule "external/@worldbrain/storex-backend-firestore"]
 	path = firebase/functions/external/@worldbrain/storex-backend-firestore
 	url = https://github.com/WorldBrain/storex-backend-firestore.git
