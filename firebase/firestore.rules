@@ -226,6 +226,8 @@ service cloud.firestore {
               // Type checks
               request.resource.data.normalizedUrl is string &&
               request.resource.data.originalUrl is string &&
+              (!('location' in request.resource.data.keys()) || request.resource.data.location == null || request.resource.data.location is string) &&
+              request.resource.data.locationScheme is string &&
             
             
               // Permission rules
@@ -235,6 +237,8 @@ service cloud.firestore {
               // Type checks
               (!('normalizedUrl' in request.resource.data.keys()) || request.resource.data.normalizedUrl is string) &&
               (!('originalUrl' in request.resource.data.keys()) || request.resource.data.originalUrl is string) &&
+              (!('location' in request.resource.data.keys()) || request.resource.data.location == null || request.resource.data.location is string) &&
+              (!('locationScheme' in request.resource.data.keys()) || request.resource.data.locationScheme is string) &&
             
             
               // Permission rules
@@ -1221,6 +1225,7 @@ service cloud.firestore {
                   request.resource.data.valid is bool &&
                   request.resource.data.version is timestamp &&
                   (!('localId' in request.resource.data.keys()) || request.resource.data.localId == null || request.resource.data.localId is string) &&
+                  (!('status' in request.resource.data.keys()) || request.resource.data.status == null || request.resource.data.status is string) &&
                   (!('fingerprintScheme' in request.resource.data.keys()) || request.resource.data.fingerprintScheme == null || request.resource.data.fingerprintScheme is string) &&
                   (!('fingerprint' in request.resource.data.keys()) || request.resource.data.fingerprint == null || request.resource.data.fingerprint is string) &&
                   (!('lastVisited' in request.resource.data.keys()) || request.resource.data.lastVisited == null || request.resource.data.lastVisited is timestamp) &&
@@ -1243,6 +1248,7 @@ service cloud.firestore {
                   (!('valid' in request.resource.data.keys()) || request.resource.data.valid is bool) &&
                   (!('version' in request.resource.data.keys()) || request.resource.data.version is timestamp) &&
                   (!('localId' in request.resource.data.keys()) || request.resource.data.localId == null || request.resource.data.localId is string) &&
+                  (!('status' in request.resource.data.keys()) || request.resource.data.status == null || request.resource.data.status is string) &&
                   (!('fingerprintScheme' in request.resource.data.keys()) || request.resource.data.fingerprintScheme == null || request.resource.data.fingerprintScheme is string) &&
                   (!('fingerprint' in request.resource.data.keys()) || request.resource.data.fingerprint == null || request.resource.data.fingerprint is string) &&
                   (!('lastVisited' in request.resource.data.keys()) || request.resource.data.lastVisited == null || request.resource.data.lastVisited is timestamp) &&
