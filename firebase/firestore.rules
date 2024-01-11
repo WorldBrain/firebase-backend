@@ -1162,6 +1162,54 @@ service cloud.firestore {
                 ;
             }
         }
+        match /personalListTree/{user} {
+            match /objects/{personalListTree} {
+                allow list: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow get: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow create: if 
+                  // Type checks
+                  request.resource.data.path is string &&
+                  request.resource.data.order is number &&
+                  request.resource.data.localId is number &&
+                  request.resource.data.localListId is number &&
+                  request.resource.data.localPath is string &&
+                  request.resource.data.localParentId is number &&
+                  request.resource.data.localLinkTarget is number &&
+                  request.resource.data.createdWhen is timestamp &&
+                  request.resource.data.updatedWhen is timestamp &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow update: if 
+                  // Type checks
+                  (!('path' in request.resource.data.keys()) || request.resource.data.path is string) &&
+                  (!('order' in request.resource.data.keys()) || request.resource.data.order is number) &&
+                  (!('localId' in request.resource.data.keys()) || request.resource.data.localId is number) &&
+                  (!('localListId' in request.resource.data.keys()) || request.resource.data.localListId is number) &&
+                  (!('localPath' in request.resource.data.keys()) || request.resource.data.localPath is string) &&
+                  (!('localParentId' in request.resource.data.keys()) || request.resource.data.localParentId is number) &&
+                  (!('localLinkTarget' in request.resource.data.keys()) || request.resource.data.localLinkTarget is number) &&
+                  (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
+                  (!('updatedWhen' in request.resource.data.keys()) || request.resource.data.updatedWhen is timestamp) &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow delete: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+            }
+        }
         match /personalContentMetadata/{user} {
             match /objects/{personalContentMetadata} {
                 allow list: if 
