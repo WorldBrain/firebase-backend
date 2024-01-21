@@ -1179,7 +1179,7 @@ service cloud.firestore {
                   request.resource.data.localId is number &&
                   request.resource.data.localListId is number &&
                   request.resource.data.localPath is string &&
-                  request.resource.data.localParentId is number &&
+                  request.resource.data.localParentListId is number &&
                   request.resource.data.localLinkTarget is number &&
                   request.resource.data.createdWhen is timestamp &&
                   request.resource.data.updatedWhen is timestamp &&
@@ -1195,7 +1195,7 @@ service cloud.firestore {
                   (!('localId' in request.resource.data.keys()) || request.resource.data.localId is number) &&
                   (!('localListId' in request.resource.data.keys()) || request.resource.data.localListId is number) &&
                   (!('localPath' in request.resource.data.keys()) || request.resource.data.localPath is string) &&
-                  (!('localParentId' in request.resource.data.keys()) || request.resource.data.localParentId is number) &&
+                  (!('localParentListId' in request.resource.data.keys()) || request.resource.data.localParentListId is number) &&
                   (!('localLinkTarget' in request.resource.data.keys()) || request.resource.data.localLinkTarget is number) &&
                   (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
                   (!('updatedWhen' in request.resource.data.keys()) || request.resource.data.updatedWhen is timestamp) &&
