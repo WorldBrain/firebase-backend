@@ -16,6 +16,7 @@
     },
     "main": "lib/src/entry.js",
     "dependencies": {
+        "@apple/app-store-server-library": "^1.4.0",
         "@google-cloud/bigquery": "^6.2.0",
         "@grpc/grpc-js": "^1.4.6",
         "@josephg/resolvable": "^1.0.0",
