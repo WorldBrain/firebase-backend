@@ -793,6 +793,7 @@ service cloud.firestore {
                   request.resource.data.localId is string &&
                   request.resource.data.title is string &&
                   request.resource.data.code is string &&
+                  (!('order' in request.resource.data.keys()) || request.resource.data.order == null || request.resource.data.order is number) &&
                   request.resource.data.isFavourite is bool &&
                   (!('outputFormat' in request.resource.data.keys()) || request.resource.data.outputFormat == null || request.resource.data.outputFormat is string) &&
                   request.resource.data.createdWhen is timestamp &&
@@ -807,6 +808,7 @@ service cloud.firestore {
                   (!('localId' in request.resource.data.keys()) || request.resource.data.localId is string) &&
                   (!('title' in request.resource.data.keys()) || request.resource.data.title is string) &&
                   (!('code' in request.resource.data.keys()) || request.resource.data.code is string) &&
+                  (!('order' in request.resource.data.keys()) || request.resource.data.order == null || request.resource.data.order is number) &&
                   (!('isFavourite' in request.resource.data.keys()) || request.resource.data.isFavourite is bool) &&
                   (!('outputFormat' in request.resource.data.keys()) || request.resource.data.outputFormat == null || request.resource.data.outputFormat is string) &&
                   (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
@@ -1226,6 +1228,17 @@ service cloud.firestore {
                   (!('title' in request.resource.data.keys()) || request.resource.data.title == null || request.resource.data.title is string) &&
                   (!('lang' in request.resource.data.keys()) || request.resource.data.lang == null || request.resource.data.lang is string) &&
                   (!('description' in request.resource.data.keys()) || request.resource.data.description == null || request.resource.data.description is string) &&
+                  (!('doi' in request.resource.data.keys()) || request.resource.data.doi == null || request.resource.data.doi is string) &&
+                  (!('metadataTitle' in request.resource.data.keys()) || request.resource.data.metadataTitle == null || request.resource.data.metadataTitle is string) &&
+                  (!('annotation' in request.resource.data.keys()) || request.resource.data.annotation == null || request.resource.data.annotation is string) &&
+                  (!('sourceName' in request.resource.data.keys()) || request.resource.data.sourceName == null || request.resource.data.sourceName is string) &&
+                  (!('journalName' in request.resource.data.keys()) || request.resource.data.journalName == null || request.resource.data.journalName is string) &&
+                  (!('journalPage' in request.resource.data.keys()) || request.resource.data.journalPage == null || request.resource.data.journalPage is string) &&
+                  (!('journalIssue' in request.resource.data.keys()) || request.resource.data.journalIssue == null || request.resource.data.journalIssue is string) &&
+                  (!('journalVolume' in request.resource.data.keys()) || request.resource.data.journalVolume == null || request.resource.data.journalVolume is string) &&
+                  (!('previewImageUrl' in request.resource.data.keys()) || request.resource.data.previewImageUrl == null || request.resource.data.previewImageUrl is string) &&
+                  (!('releaseDate' in request.resource.data.keys()) || request.resource.data.releaseDate == null || request.resource.data.releaseDate is timestamp) &&
+                  (!('accessDate' in request.resource.data.keys()) || request.resource.data.accessDate == null || request.resource.data.accessDate is timestamp) &&
                   request.resource.data.createdWhen is timestamp &&
                   request.resource.data.updatedWhen is timestamp &&
                 
@@ -1239,6 +1252,17 @@ service cloud.firestore {
                   (!('title' in request.resource.data.keys()) || request.resource.data.title == null || request.resource.data.title is string) &&
                   (!('lang' in request.resource.data.keys()) || request.resource.data.lang == null || request.resource.data.lang is string) &&
                   (!('description' in request.resource.data.keys()) || request.resource.data.description == null || request.resource.data.description is string) &&
+                  (!('doi' in request.resource.data.keys()) || request.resource.data.doi == null || request.resource.data.doi is string) &&
+                  (!('metadataTitle' in request.resource.data.keys()) || request.resource.data.metadataTitle == null || request.resource.data.metadataTitle is string) &&
+                  (!('annotation' in request.resource.data.keys()) || request.resource.data.annotation == null || request.resource.data.annotation is string) &&
+                  (!('sourceName' in request.resource.data.keys()) || request.resource.data.sourceName == null || request.resource.data.sourceName is string) &&
+                  (!('journalName' in request.resource.data.keys()) || request.resource.data.journalName == null || request.resource.data.journalName is string) &&
+                  (!('journalPage' in request.resource.data.keys()) || request.resource.data.journalPage == null || request.resource.data.journalPage is string) &&
+                  (!('journalIssue' in request.resource.data.keys()) || request.resource.data.journalIssue == null || request.resource.data.journalIssue is string) &&
+                  (!('journalVolume' in request.resource.data.keys()) || request.resource.data.journalVolume == null || request.resource.data.journalVolume is string) &&
+                  (!('previewImageUrl' in request.resource.data.keys()) || request.resource.data.previewImageUrl == null || request.resource.data.previewImageUrl is string) &&
+                  (!('releaseDate' in request.resource.data.keys()) || request.resource.data.releaseDate == null || request.resource.data.releaseDate is timestamp) &&
+                  (!('accessDate' in request.resource.data.keys()) || request.resource.data.accessDate == null || request.resource.data.accessDate is timestamp) &&
                   (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
                   (!('updatedWhen' in request.resource.data.keys()) || request.resource.data.updatedWhen is timestamp) &&
                 
@@ -1301,6 +1325,48 @@ service cloud.firestore {
                   (!('fingerprint' in request.resource.data.keys()) || request.resource.data.fingerprint == null || request.resource.data.fingerprint is string) &&
                   (!('lastVisited' in request.resource.data.keys()) || request.resource.data.lastVisited == null || request.resource.data.lastVisited is timestamp) &&
                   (!('contentSize' in request.resource.data.keys()) || request.resource.data.contentSize == null || request.resource.data.contentSize is number) &&
+                  (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
+                  (!('updatedWhen' in request.resource.data.keys()) || request.resource.data.updatedWhen is timestamp) &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow delete: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+            }
+        }
+        match /personalContentEntity/{user} {
+            match /objects/{personalContentEntity} {
+                allow list: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow get: if 
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow create: if 
+                  // Type checks
+                  request.resource.data.order is number &&
+                  request.resource.data.name is string &&
+                  request.resource.data.isPrimary is bool &&
+                  (!('additionalName' in request.resource.data.keys()) || request.resource.data.additionalName == null || request.resource.data.additionalName is string) &&
+                  request.resource.data.createdWhen is timestamp &&
+                  request.resource.data.updatedWhen is timestamp &&
+                
+                
+                  // Ownership rules
+                  request.auth.uid == user
+                ;
+                allow update: if 
+                  // Type checks
+                  (!('order' in request.resource.data.keys()) || request.resource.data.order is number) &&
+                  (!('name' in request.resource.data.keys()) || request.resource.data.name is string) &&
+                  (!('isPrimary' in request.resource.data.keys()) || request.resource.data.isPrimary is bool) &&
+                  (!('additionalName' in request.resource.data.keys()) || request.resource.data.additionalName == null || request.resource.data.additionalName is string) &&
                   (!('createdWhen' in request.resource.data.keys()) || request.resource.data.createdWhen is timestamp) &&
                   (!('updatedWhen' in request.resource.data.keys()) || request.resource.data.updatedWhen is timestamp) &&
                 
