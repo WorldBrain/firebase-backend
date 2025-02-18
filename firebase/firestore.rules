@@ -109,6 +109,18 @@ service cloud.firestore {
               request.auth.uid == user
             ;
         }
+        match /blueskyUser/{user} {
+            allow get: if 
+              // Permission rules
+              true
+            ;
+        }
+        match /blueskyList/{sharedList} {
+            allow get: if 
+              // Permission rules
+              true
+            ;
+        }
         match /discordList/{sharedList} {
             allow get: if 
               // Permission rules

@@ -12,6 +12,7 @@ import DiscordStorage from '@worldbrain/memex-common/lib/discord/storage'
 import SlackStorage from '@worldbrain/memex-common/lib/slack/storage'
 import { SlackRetroSyncStorage } from '@worldbrain/memex-common/lib/slack/storage/retro-sync'
 import { registerModuleMapCollections } from '@worldbrain/storex-pattern-modules'
+import { BlueskyStorage } from '@worldbrain/memex-common/lib/bsky/storage'
 
 export async function createStorage() {
     const localBackend = new DexieStorageBackend({
@@ -36,6 +37,7 @@ export async function createStorage() {
         analytics: new PersonalAnalyticsStorage({
             storageManager: serverStorageManager,
         }),
+        bluesky: new BlueskyStorage({ storageManager: serverStorageManager }),
         discord: new DiscordStorage({ storageManager: serverStorageManager }),
         slack: new SlackStorage({ storageManager: serverStorageManager }),
         slackRetroSync: new SlackRetroSyncStorage({
