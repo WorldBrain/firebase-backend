@@ -212,7 +212,7 @@ service cloud.firestore {
             
             
               // Permission rules
-              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
+              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.platform == "bsky") || (get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow update: if 
               // Type checks
@@ -222,11 +222,11 @@ service cloud.firestore {
             
             
               // Permission rules
-              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
+              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.platform == "bsky") || (get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow delete: if 
               // Permission rules
-              ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
+              ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.platform == "bsky") || (get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
         }
         match /sharedContentLocator/{sharedContentLocator} {
@@ -243,7 +243,7 @@ service cloud.firestore {
             
             
               // Permission rules
-              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
+              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.platform == "bsky") || (get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow update: if 
               // Type checks
@@ -254,11 +254,11 @@ service cloud.firestore {
             
             
               // Permission rules
-              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
+              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.platform == "bsky") || (get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow delete: if 
               // Permission rules
-              ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
+              ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.platform == "bsky") || (get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
         }
         match /sharedListEntry/{sharedListEntry} {
@@ -276,7 +276,7 @@ service cloud.firestore {
             
             
               // Permission rules
-              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
+              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.platform == "bsky") || (get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow update: if 
               // Type checks
@@ -288,11 +288,11 @@ service cloud.firestore {
             
             
               // Permission rules
-              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
+              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.platform == "bsky") || (get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow delete: if 
               // Permission rules
-              ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
+              ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.platform == "bsky") || (get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
         }
         match /sharedListRole/{sharedList} {
@@ -459,7 +459,7 @@ service cloud.firestore {
             
             
               // Permission rules
-              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
+              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.platform == "bsky") || (get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow update: if 
               // Type checks
@@ -470,11 +470,11 @@ service cloud.firestore {
             
             
               // Permission rules
-              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
+              ((get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.platform == "bsky") || (get(/databases/$(database)/documents/sharedList/$(request.resource.data.sharedList)).data.creator == request.resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(request.resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
             allow delete: if 
               // Permission rules
-              ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
+              ((get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.platform == "bsky") || (get(/databases/$(database)/documents/sharedList/$(resource.data.sharedList)).data.creator == resource.data.creator) || (exists(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)) && (get(/databases/$(database)/documents/sharedListRole/$(resource.data.sharedList)/users/$(request.auth.uid)).data.roleID >= 400)))
             ;
         }
         match /conversationThread/{conversationThread} {
