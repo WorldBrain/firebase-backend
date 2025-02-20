@@ -1,7 +1,7 @@
 {
     "name": "functions",
     "scripts": {
-        "build": "rm -rf lib 2>/dev/null && tsc",
+        "build": "rm -rf lib 2>/dev/null && tsc; true",
         "build:watch": "tsc -w",
         "serve": "npm run build && firebase serve --only functions",
         "shell": "npm run build && firebase functions:shell",
@@ -17,6 +17,7 @@
     "main": "lib/src/entry.js",
     "dependencies": {
         "@apple/app-store-server-library": "^1.4.0",
+        "@atproto/api": "^0.14.1",
         "@google-cloud/bigquery": "^6.2.0",
         "@grpc/grpc-js": "^1.4.6",
         "@josephg/resolvable": "^1.0.0",

@@ -10,6 +10,7 @@
         "generate-backup-collections": "TS_NODE_PROJECT=tsconfig.json ts-node -r tsconfig-paths/register tools/generate-backup-collections.ts ./firebase/"
     },
     "dependencies": {
+        "@atproto/api": "^0.14.1",
         "firebase": "^9.9.2"
     },
     "devDependencies": {
