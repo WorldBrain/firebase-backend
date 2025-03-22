@@ -10,6 +10,7 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
+        "skipLibCheck": true,
         "esModuleInterop": true,
         "downlevelIteration": true,
         "outDir": "tmp",
