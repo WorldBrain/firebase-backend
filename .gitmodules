@@ -33,3 +33,6 @@
 	url = git@github.com:WorldBrain/memex-stemmer.git
 [submodule "firebase/functions/external/@worldbrain/storex-sync"]
 	url = https://github.com/WorldBrain/storex-sync
+[submodule "firebase/functions-py/external/dead_simple_rag"]
+	path = firebase/functions-py/external/dead_simple_rag
+	url = git@github.com:WorldBrain/dead-simple-rag.git
