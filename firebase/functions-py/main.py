@@ -13,11 +13,14 @@ app = initialize_app()
 def rag_ingest_documents(req: Request) -> Response:
     documents_str = req.args.get("document_locations")
     associated_ids_str = req.args.get("associated_ids")
+    shared_list_id = req.args.get("shared_list_id")
 
     if documents_str is None:
-        return Response("documents is required", status=400)
+        return Response("document_locations is required", status=400)
     if associated_ids_str is None:
         return Response("associated_ids is required", status=400)
+    if shared_list_id is None:
+        return Response("shared_list_id is required", status=400)
 
     try:
         documents = json.loads(documents_str)
@@ -46,6 +49,7 @@ def rag_ingest_documents(req: Request) -> Response:
                 session_id=FIRESTORE_SESSION_ID,
                 documents=documents,
                 associated_ids=associated_ids,
+                custom_metadata={"__shared_list_id": shared_list_id},
             )
         )
         return Response(result, status=200)
@@ -56,8 +60,12 @@ def rag_ingest_documents(req: Request) -> Response:
 @https_fn.on_request()
 def rag_query_documents(req: Request) -> Response:
     query = req.args.get("query")
+    shared_list_id = req.args.get("shared_list_id")
+
     if query is None:
         return Response("query is required", status=400)
+    if shared_list_id is None:
+        return Response("shared_list_id is required", status=400)
 
     document_manager = DocumentManager(
         provider="google",
@@ -68,6 +76,11 @@ def rag_query_documents(req: Request) -> Response:
             document_manager.query_documents(
                 session_id=FIRESTORE_SESSION_ID,
                 query=query,
+                filter={
+                    "field": "metadata.__shared_list_id",
+                    "op": "==",
+                    "value": shared_list_id,
+                },
             )
         )
         return Response(json.dumps(result), status=200)
