@@ -7,10 +7,8 @@
 ```bash
 nvm use
 
-cd firebase/
-
 # Ensure you check firestore, auth, functions, database
-firebase emulators:init
+yarn firebase emulators:init
 ```
 
 2. Start the Firebase emulators
@@ -18,9 +16,7 @@ firebase emulators:init
 ```bash
 nvm use
 
-cd firebase/
-
-firebase emulators:start
+yarn firebase emulators:start
 ```
 
 You should now see the addresses for all cloud functions available locally.
@@ -45,8 +41,6 @@ REACT_APP_BACKEND=firebase-emulator yarn start
 ## Deploying Node cloud functions
 
 ```bash
-cd firebase/functions/
-
 nvm use
 
 # Swap out `staging` for `production` as needed.
@@ -57,9 +51,7 @@ yarn firebase -P staging deploy --only functions:bsky-initiateOAuthFlow,function
 ## Deploying Python cloud functions
 
 ```bash
-cd firebase/
-
-./scripts/deploy-python-functions.sh
+scripts/deploy-python-functions.sh
 ```
 
 See bash script for more details.
