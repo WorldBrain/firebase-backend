@@ -19,6 +19,7 @@
         "@apple/app-store-server-library": "^1.4.0",
         "@atproto/api": "^0.14.1",
         "@google-cloud/bigquery": "^6.2.0",
+        "@google/genai": "^0.7.0",
         "@grpc/grpc-js": "^1.4.6",
         "@josephg/resolvable": "^1.0.0",
         "@sentry/node": "7.116.0",

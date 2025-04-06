@@ -689,6 +689,14 @@
     teeny-request "^9.0.0"
     uuid "^8.0.0"
 
+"@google/genai@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@google/genai/-/genai-0.7.0.tgz#b946246177f1e40ab672ae0dbc34c40588e17476"
+  integrity sha512-r+Fwj/emnXZN5R+4JCxDXboY4AGTmTn7+Wnori5dgyJiStP0P82f9YYL0CVsCnDIumNY2i0UIcZ1zGZdtHJ34w==
+  dependencies:
+    google-auth-library "^9.14.2"
+    ws "^8.18.0"
+
 "@googleapis/sqladmin@^24.0.0":
   version "24.0.0"
   resolved "https://registry.yarnpkg.com/@googleapis/sqladmin/-/sqladmin-24.0.0.tgz#5e8ee25d2b99f65108dd7b3642bb392a400ca32c"
@@ -7567,6 +7575,11 @@ ws@^8.13.0:
   version "8.18.0"
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.18.0.tgz#0d7505a6eafe2b0e712d232b42279f53bc289bbc"
   integrity sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==
+
+ws@^8.18.0:
+  version "8.18.1"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.18.1.tgz#ea131d3784e1dfdff91adb0a4a116b127515e3cb"
+  integrity sha512-RKW2aJZMXeMxVpnZ6bck+RswznaxmzdULiBr6KY7XkTnW8uvt0iT9H5DkHUChXrc+uurzwa0rVI16n/Xzjdz1w==
 
 xdg-basedir@^4.0.0:
   version "4.0.0"
