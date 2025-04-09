@@ -11,7 +11,9 @@ nvm use
 yarn firebase emulators:init
 ```
 
-2. Start the Firebase emulators
+2. Ensure env variables are set in `firebase/functions/.env`
+
+3. Start the Firebase emulators
 
 ```bash
 nvm use
@@ -23,7 +25,16 @@ You should now see the addresses for all cloud functions available locally.
 
 e.g., `http://127.0.0.1:5001/worldbrain-staging/us-central1/publicApi-getPersonalKeys`
 
-3. (optional) Set up Memex Social to point to the emulator
+4. Start the functions build watcher to automatically recompile the functions when you make changes
+
+In another terminal:
+
+```bash
+cd firebase/functions
+yarn build:watch
+```
+
+5. (optional) Set up Memex Social to point to the emulator
 
 In the **Memex Social repo**:
 
