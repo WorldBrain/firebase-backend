@@ -17,21 +17,21 @@ def rag_ingest_documents(req: Request) -> Response:
         return Response("Request body must be JSON", status=400)
         
     documents = data.get("document_locations")
-    associated_ids = data.get("associated_ids")
+    associated_doc_ids = data.get("associated_doc_ids")
     shared_list_id = data.get("shared_list_id")
 
     if documents is None:
         return Response("document_locations is required", status=400)
-    if associated_ids is None:
-        return Response("associated_ids is required", status=400)
+    if associated_doc_ids is None:
+        return Response("associated_doc_ids is required", status=400)
     if shared_list_id is None:
         return Response("shared_list_id is required", status=400)
 
     # No need for JSON parsing since we're already getting parsed JSON
     if not isinstance(documents, list) or not all(isinstance(x, str) for x in documents):
         return Response("documents must be a list of strings", status=400)
-    if not isinstance(associated_ids, list) or not all(isinstance(x, str) for x in associated_ids):
-        return Response("associated_ids must be a list of strings", status=400)
+    if not isinstance(associated_doc_ids, list) or not all(isinstance(x, str) for x in associated_doc_ids):
+        return Response("associated_doc_ids must be a list of strings", status=400)
 
     document_manager = DocumentManager(
         provider="google",
@@ -42,7 +42,7 @@ def rag_ingest_documents(req: Request) -> Response:
             document_manager.ingest_documents(
                 session_id=FIRESTORE_SESSION_ID,
                 documents=documents,
-                associated_ids=associated_ids,
+                associated_ids=associated_doc_ids,
                 custom_metadata={"__shared_list_id": shared_list_id},
             )
         )

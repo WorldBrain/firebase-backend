@@ -27,6 +27,82 @@
     "database": {
         "rules": "database.rules.json"
     },
+    "hosting": {
+        "public": "public",
+        "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+        "rewrites": [
+            {
+                "source": "/c/*/p/*",
+                "function": "generatePageSocialPreview",
+                "region": "us-central1",
+                "pinTag": true
+            },
+            {
+                "source": "/c/*",
+                "function": "generateListSocialPreview",
+                "region": "us-central1",
+                "pinTag": true
+            },
+            {
+                "source": "/a/*",
+                "function": "generateAnnotationSocialPreview",
+                "region": "us-central1",
+                "pinTag": true
+            },
+            {
+                "source": "/api/**",
+                "function": "publicApiHttp",
+                "region": "us-central1",
+                "pinTag": true
+            },
+            {
+                "source": "/oauth/bsky-redirect",
+                "function": {
+                    "functionId": "bsky-handleOAuthRedirect",
+                    "region": "us-central1",
+                    "pinTag": false
+                }
+            },
+            {
+                "source": "/bsky/handle-bot-mention",
+                "function": {
+                    "functionId": "bsky-handleBotMention",
+                    "region": "us-central1",
+                    "pinTag": false
+                }
+            },
+            {
+                "source": "/rag/ingest-documents",
+                "function": "rag_ingest_documents",
+                "region": "us-central1",
+                "pinTag": false
+            },
+            {
+                "source": "**",
+                "destination": "/index.html"
+            }
+        ],
+        "headers": [
+            {
+                "source": "/**",
+                "headers": [
+                    {
+                        "key": "Cache-Control",
+                        "value": "no-cache, no-store, must-revalidate"
+                    }
+                ]
+            },
+            {
+                "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|js|css|eot|otf|ttf|ttc|woff|woff2|font.css)",
+                "headers": [
+                    {
+                        "key": "Cache-Control",
+                        "value": "max-age=604800"
+                    }
+                ]
+            }
+        ]
+    },
     "emulators": {
         "auth": {
             "port": 9099
@@ -42,6 +118,9 @@
         },
         "storage": {
             "port": 9199
+        },
+        "hosting": {
+            "port": 5002
         },
         "ui": {
             "enabled": true
