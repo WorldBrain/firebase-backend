@@ -41,7 +41,7 @@ def rag_ingest_documents(req: Request) -> Response:
         result = asyncio.run(
             document_manager.ingest_documents(
                 session_id=FIRESTORE_SESSION_ID,
-                documents=documents,
+                document_locations=documents,
                 associated_ids=associated_doc_ids,
                 custom_metadata={"__shared_list_id": shared_list_id},
             )

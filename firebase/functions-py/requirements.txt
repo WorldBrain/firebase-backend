@@ -204,3 +204,5 @@ XlsxWriter==3.2.2
 yarl==1.18.3
 youtube-transcript-api==0.6.3
 zstandard==0.23.0
+langchain-apify==0.1.2
+firecrawl==1.17.0
