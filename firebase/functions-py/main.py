@@ -16,11 +16,11 @@ def rag_ingest_documents(req: Request) -> Response:
     if data is None:
         return Response("Request body must be JSON", status=400)
         
-    documents = data.get("document_locations")
+    document_locations = data.get("document_locations")
     associated_doc_ids = data.get("associated_doc_ids")
     shared_list_id = data.get("shared_list_id")
 
-    if documents is None:
+    if document_locations is None:
         return Response("document_locations is required", status=400)
     if associated_doc_ids is None:
         return Response("associated_doc_ids is required", status=400)
@@ -28,7 +28,7 @@ def rag_ingest_documents(req: Request) -> Response:
         return Response("shared_list_id is required", status=400)
 
     # No need for JSON parsing since we're already getting parsed JSON
-    if not isinstance(documents, list) or not all(isinstance(x, str) for x in documents):
+    if not isinstance(document_locations, list) or not all(isinstance(x, str) for x in document_locations):
         return Response("documents must be a list of strings", status=400)
     if not isinstance(associated_doc_ids, list) or not all(isinstance(x, str) for x in associated_doc_ids):
         return Response("associated_doc_ids must be a list of strings", status=400)
@@ -37,17 +37,24 @@ def rag_ingest_documents(req: Request) -> Response:
         provider="google",
         vector_store_type="firestore",
     )
-    try:
-        result = asyncio.run(
-            document_manager.ingest_documents(
-                session_id=FIRESTORE_SESSION_ID,
-                document_locations=documents,
-                associated_ids=associated_doc_ids,
-                custom_metadata={"__shared_list_id": shared_list_id},
-            )
+
+    async def ingest_content():
+        docs = await document_manager.process_content_into_documents(
+            document_locations=document_locations,
+            associated_ids=associated_doc_ids,
+            custom_metadata={"__shared_list_id": shared_list_id},
         )
+        return await document_manager.ingest_documents(
+            session_id=FIRESTORE_SESSION_ID,
+            docs=docs,
+        )
+
+    try:
+        result = asyncio.run(ingest_content())
         return Response(result, status=200)
     except Exception as e:
+        import traceback
+        print(traceback.format_exc())
         return Response(f"Error: {str(e)}", status=500)
 
 
