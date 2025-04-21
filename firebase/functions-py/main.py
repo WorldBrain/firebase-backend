@@ -4,6 +4,9 @@ from firebase_functions import https_fn
 from firebase_admin import initialize_app
 from external.dead_simple_rag.document_manager import DocumentManager, FIRESTORE_SESSION_ID
 from flask import Request, Response
+from pydantic import BaseModel
+from typing import List
+from ingest_annotations import MemexAnnotation, ingest_annotations
 
 
 app = initialize_app()
@@ -56,6 +59,49 @@ def rag_ingest_documents(req: Request) -> Response:
         import traceback
         print(traceback.format_exc())
         return Response(f"Error: {str(e)}", status=500)
+
+
+class MemexAnnotationRequest(BaseModel):
+    annotation_data: List[MemexAnnotation]
+    shared_list_id: str
+
+
+@https_fn.on_request()
+def rag_ingest_memex_annotations(req: Request) -> Response:
+    try:
+        # Parse and validate the entire request body
+        data = req.get_json()
+        if data is None:
+            return Response("Request body must be JSON", status=400)
+            
+        request_data = MemexAnnotationRequest(**data)
+
+        if len(request_data.annotation_data) == 0:
+            return Response("annotation_data must be a non-empty list", status=400)
+        
+        document_manager = DocumentManager(
+            provider="google",
+            vector_store_type="firestore",
+        )
+
+        result = asyncio.run(
+            ingest_annotations(
+                document_manager=document_manager,
+                annotation_data=request_data.annotation_data,
+                shared_list_id=request_data.shared_list_id,
+                comment_length_threshold=50,
+            )
+        )
+        return Response(result, status=200)
+    except ValueError as e:
+        # Log Pydantic validation error for debugging purposes
+        print(e)
+        return Response(f"Invalid request data", status=400)
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        return Response(f"Error: {str(e)}", status=500)
+
 
 
 @https_fn.on_request()
