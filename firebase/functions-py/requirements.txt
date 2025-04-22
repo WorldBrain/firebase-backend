@@ -62,6 +62,7 @@ langchain-google-genai==2.1.0
 langchain-groq==0.2.5
 langchain-ollama==0.2.3
 langchain-openai==0.3.9
+langchain-pymupdf4llm==0.3.1
 langchain-text-splitters==0.3.7
 langsmith==0.3.17
 markdown-it-py==3.0.0
@@ -77,6 +78,7 @@ ollama==0.4.7
 openai==1.66.5
 orjson==3.10.15
 packaging==24.2
+pillow==11.2.1
 propcache==0.3.0
 proto-plus==1.26.1
 protobuf==5.29.4
@@ -87,7 +89,8 @@ pydantic==2.10.6
 pydantic-core==2.27.2
 pydantic-settings==2.8.1
 pygments==2.19.1
-pypdf==5.4.0
+pymupdf==1.25.5
+pymupdf4llm==0.0.21
 python-dotenv==1.0.1
 pytube==15.0.0
 pyyaml==6.0.2
