@@ -1,4 +1,5 @@
 import asyncio
+import traceback
 import json
 from firebase_functions import https_fn
 from firebase_admin import initialize_app
@@ -12,56 +13,58 @@ from ingest_annotations import MemexAnnotation, ingest_annotations
 app = initialize_app()
 
 
+class RagIngestDocumentsRequest(BaseModel):
+    document_locations: List[str]
+    associated_doc_ids: List[str]
+    shared_list_id: str
+
+
 @https_fn.on_request()
 def rag_ingest_documents(req: Request) -> Response:
-    data = req.get_json()
-    
-    if data is None:
-        return Response("Request body must be JSON", status=400)
-        
-    document_locations = data.get("document_locations")
-    associated_doc_ids = data.get("associated_doc_ids")
-    shared_list_id = data.get("shared_list_id")
-
-    if document_locations is None:
-        return Response("document_locations is required", status=400)
-    if associated_doc_ids is None:
-        return Response("associated_doc_ids is required", status=400)
-    if shared_list_id is None:
-        return Response("shared_list_id is required", status=400)
-
-    # No need for JSON parsing since we're already getting parsed JSON
-    if not isinstance(document_locations, list) or not all(isinstance(x, str) for x in document_locations):
-        return Response("documents must be a list of strings", status=400)
-    if not isinstance(associated_doc_ids, list) or not all(isinstance(x, str) for x in associated_doc_ids):
-        return Response("associated_doc_ids must be a list of strings", status=400)
-
-    document_manager = DocumentManager(
-        provider="google",
-        vector_store_type="firestore",
-    )
-
-    async def ingest_content():
-        docs = await document_manager.process_content_into_documents(
-            document_locations=document_locations,
-            associated_ids=associated_doc_ids,
-            custom_metadata={"__shared_list_id": shared_list_id},
-        )
-        return await document_manager.ingest_documents(
-            session_id=FIRESTORE_SESSION_ID,
-            docs=docs,
-        )
-
     try:
+        data = req.get_json()
+        if data is None:
+            return Response("Request body must be JSON", status=400)
+
+        request_data = RagIngestDocumentsRequest(**data)
+            
+        if len(request_data.document_locations) == 0:
+            return Response("document_locations must be a non-empty list", status=400)
+        if len(request_data.associated_doc_ids) == 0:
+            return Response("associated_doc_ids must be a non-empty list", status=400)
+        if len(request_data.document_locations) != len(request_data.associated_doc_ids):
+            return Response("document_locations and associated_doc_ids must be the same length", status=400)
+        if len(request_data.shared_list_id) == 0:
+            return Response("shared_list_id must be a non-empty string", status=400)
+
+        document_manager = DocumentManager(
+            provider="google",
+            vector_store_type="firestore",
+        )
+
+        async def ingest_content():
+            docs = await document_manager.process_content_into_documents(
+                document_locations=request_data.document_locations,
+                associated_ids=request_data.associated_doc_ids,
+                custom_metadata={"__shared_list_id": request_data.shared_list_id},
+            )
+            return await document_manager.ingest_documents(
+                session_id=FIRESTORE_SESSION_ID,
+                docs=docs,
+            )
+
         result = asyncio.run(ingest_content())
         return Response(result, status=200)
+    except ValueError as e:
+        # Log Pydantic validation error for debugging purposes
+        print(e)
+        return Response(f"Invalid request data", status=400)
     except Exception as e:
-        import traceback
         print(traceback.format_exc())
         return Response(f"Error: {str(e)}", status=500)
 
 
-class MemexAnnotationRequest(BaseModel):
+class RagIngestMemexAnnotationsRequest(BaseModel):
     annotation_data: List[MemexAnnotation]
     shared_list_id: str
 
@@ -69,15 +72,16 @@ class MemexAnnotationRequest(BaseModel):
 @https_fn.on_request()
 def rag_ingest_memex_annotations(req: Request) -> Response:
     try:
-        # Parse and validate the entire request body
         data = req.get_json()
         if data is None:
             return Response("Request body must be JSON", status=400)
             
-        request_data = MemexAnnotationRequest(**data)
+        request_data = RagIngestMemexAnnotationsRequest(**data)
 
         if len(request_data.annotation_data) == 0:
             return Response("annotation_data must be a non-empty list", status=400)
+        if len(request_data.shared_list_id) == 0:
+            return Response("shared_list_id must be a non-empty string", status=400)
         
         document_manager = DocumentManager(
             provider="google",
@@ -98,38 +102,49 @@ def rag_ingest_memex_annotations(req: Request) -> Response:
         print(e)
         return Response(f"Invalid request data", status=400)
     except Exception as e:
-        import traceback
         print(traceback.format_exc())
         return Response(f"Error: {str(e)}", status=500)
 
 
+class RagQueryDocumentsRequest(BaseModel):
+    query: str
+    shared_list_id: str
+
 
 @https_fn.on_request()
 def rag_query_documents(req: Request) -> Response:
-    query = req.args.get("query")
-    shared_list_id = req.args.get("shared_list_id")
-
-    if query is None:
-        return Response("query is required", status=400)
-    if shared_list_id is None:
-        return Response("shared_list_id is required", status=400)
-
-    document_manager = DocumentManager(
-        provider="google",
-        vector_store_type="firestore",
-    )
     try:
+        data = req.get_json()
+        if data is None:
+            return Response("Request body must be JSON", status=400)
+            
+        request_data = RagQueryDocumentsRequest(**data)
+
+        if len(request_data.query) == 0:
+            return Response("query must be a non-empty string", status=400)
+        if len(request_data.shared_list_id) == 0:
+            return Response("shared_list_id must be a non-empty string", status=400)
+
+        document_manager = DocumentManager(
+            provider="google",
+            vector_store_type="firestore",
+        )
         result = asyncio.run(
             document_manager.query_documents(
                 session_id=FIRESTORE_SESSION_ID,
-                query=query,
+                query=request_data.query,
                 filter={
                     "field": "metadata.__shared_list_id",
                     "op": "==",
-                    "value": shared_list_id,
+                    "value": request_data.shared_list_id,
                 },
             )
         )
         return Response(json.dumps(result), status=200)
+    except ValueError as e:
+        # Log Pydantic validation error for debugging purposes
+        print(e)
+        return Response(f"Invalid request data", status=400)
     except Exception as e:
+        print(traceback.format_exc())
         return Response(f"Error: {str(e)}", status=500)
