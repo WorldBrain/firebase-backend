@@ -11,9 +11,8 @@
         {
             "source": "functions-py",
             "codebase": "dead-simple-rag",
-            "runtime": "python310",
+            "runtime": "python312",
             "ignore": [
-                "venv",
                 ".git",
                 "firebase-debug.log",
                 "firebase-debug.*.log",
