@@ -8,7 +8,7 @@ from external.dead_simple_rag.document_manager import (
     FIRESTORE_SESSION_ID,
 )
 from external.dead_simple_rag.rag_utils import ContentType
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 
 class MemexAnnotation(BaseModel):
@@ -117,12 +117,15 @@ def _extract_img_url_from_comment(comment: str) -> tuple[str, Optional[str]]:
         return "", None
 
     try:
-        soup = BeautifulSoup(comment, "html.parser")
-        img_tag = soup.find("img")
-        image_url = None
+        soup: BeautifulSoup = BeautifulSoup(comment, "html.parser")
+        img_tag: Optional[Tag] = soup.find("img")  # type: ignore
+        image_url: Optional[str] = None
 
         if img_tag:
-            image_url = img_tag.get("src")
+            url = img_tag.get("src")
+            # Only set image_url if it's a string (not a list or other type)
+            if isinstance(url, str):
+                image_url = url
             img_tag.decompose()  # Removes the img tag from the original text too
 
         return str(soup), image_url
