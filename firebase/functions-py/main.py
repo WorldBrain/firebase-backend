@@ -3,7 +3,10 @@ import traceback
 import json
 from firebase_functions import https_fn
 from firebase_admin import initialize_app
-from external.dead_simple_rag.document_manager import DocumentManager, FIRESTORE_SESSION_ID
+from external.dead_simple_rag.document_manager import (
+    DocumentManager,
+    FIRESTORE_SESSION_ID,
+)
 from flask import Request, Response
 from pydantic import BaseModel
 from typing import List
@@ -27,13 +30,16 @@ def rag_ingest_documents(req: Request) -> Response:
             return Response("Request body must be JSON", status=400)
 
         request_data = RagIngestDocumentsRequest(**data)
-            
+
         if len(request_data.document_locations) == 0:
             return Response("document_locations must be a non-empty list", status=400)
         if len(request_data.associated_doc_ids) == 0:
             return Response("associated_doc_ids must be a non-empty list", status=400)
         if len(request_data.document_locations) != len(request_data.associated_doc_ids):
-            return Response("document_locations and associated_doc_ids must be the same length", status=400)
+            return Response(
+                "document_locations and associated_doc_ids must be the same length",
+                status=400,
+            )
         if len(request_data.shared_list_id) == 0:
             return Response("shared_list_id must be a non-empty string", status=400)
 
@@ -71,14 +77,14 @@ def rag_ingest_memex_annotations(req: Request) -> Response:
         data = req.get_json()
         if data is None:
             return Response("Request body must be JSON", status=400)
-            
+
         request_data = RagIngestMemexAnnotationsRequest(**data)
 
         if len(request_data.annotation_data) == 0:
             return Response("annotation_data must be a non-empty list", status=400)
         if len(request_data.shared_list_id) == 0:
             return Response("shared_list_id must be a non-empty string", status=400)
-        
+
         document_manager = DocumentManager(
             provider="google",
             vector_store_type="firestore",
@@ -113,7 +119,7 @@ def rag_query_documents(req: Request) -> Response:
         data = req.get_json()
         if data is None:
             return Response("Request body must be JSON", status=400)
-            
+
         request_data = RagQueryDocumentsRequest(**data)
 
         if len(request_data.query) == 0:

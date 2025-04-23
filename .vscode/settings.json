@@ -1,0 +1,6 @@
+{
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.pythonPath": "./firebase/functions-py/.venv/bin/python3"
+}
