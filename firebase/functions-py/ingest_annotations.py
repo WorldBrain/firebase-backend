@@ -3,12 +3,15 @@ from pydantic_core.core_schema import FieldValidationInfo
 from typing import Optional, List
 from datetime import datetime
 from langchain_core.documents import Document
+from bs4 import BeautifulSoup, Tag
 from external.dead_simple_rag.document_manager import (
     DocumentManager,
     FIRESTORE_SESSION_ID,
 )
 from external.dead_simple_rag.rag_utils import ContentType
-from bs4 import BeautifulSoup, Tag
+from external.dead_simple_rag.content_analysis_utils import (
+    perform_concurrent_analysis_over_mixed_docs,
+)
 
 
 class MemexAnnotation(BaseModel):
@@ -59,7 +62,7 @@ async def ingest_annotations(
                 metadata={
                     "source": annot.normalized_page_url,
                     "__associated_id": annot.id,
-                    "__content_type": "memex_annotation",
+                    "__content_type": ContentType.MEMEX_ANNOTATION.value,
                     "__shared_list_id": shared_list_id,
                     "creator": annot.creator,
                     "created_when": annot.created_when,
@@ -96,9 +99,14 @@ async def ingest_annotations(
                     )
                 )
 
+    analysis_docs = await perform_concurrent_analysis_over_mixed_docs(
+        document_manager=document_manager,
+        docs=docs,
+    )
+
     return await document_manager.ingest_documents(
         session_id=FIRESTORE_SESSION_ID,
-        docs=docs,
+        docs=[*docs, *analysis_docs],
     )
 
 
