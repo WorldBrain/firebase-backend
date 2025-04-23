@@ -22,7 +22,7 @@ class RagIngestDocumentsRequest(BaseModel):
     shared_list_id: str
 
 
-@https_fn.on_request()
+@https_fn.on_request(timeout_sec=540)
 def rag_ingest_documents(req: Request) -> Response:
     try:
         data = req.get_json()
@@ -71,7 +71,7 @@ class RagIngestMemexAnnotationsRequest(BaseModel):
     shared_list_id: str
 
 
-@https_fn.on_request()
+@https_fn.on_request(timeout_sec=540)
 def rag_ingest_memex_annotations(req: Request) -> Response:
     try:
         data = req.get_json()
