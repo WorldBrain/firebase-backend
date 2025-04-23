@@ -8,7 +8,7 @@ from flask import Request, Response
 from pydantic import BaseModel
 from typing import List
 from ingest_annotations import MemexAnnotation, ingest_annotations
-
+from ingest_documents import ingest_remote_documents
 
 app = initialize_app()
 
@@ -42,18 +42,14 @@ def rag_ingest_documents(req: Request) -> Response:
             vector_store_type="firestore",
         )
 
-        async def ingest_content():
-            docs = await document_manager.process_content_into_documents(
+        result = asyncio.run(
+            ingest_remote_documents(
+                document_manager=document_manager,
                 document_locations=request_data.document_locations,
-                associated_ids=request_data.associated_doc_ids,
-                custom_metadata={"__shared_list_id": request_data.shared_list_id},
+                associated_doc_ids=request_data.associated_doc_ids,
+                shared_list_id=request_data.shared_list_id,
             )
-            return await document_manager.ingest_documents(
-                session_id=FIRESTORE_SESSION_ID,
-                docs=docs,
-            )
-
-        result = asyncio.run(ingest_content())
+        )
         return Response(result, status=200)
     except ValueError as e:
         # Log Pydantic validation error for debugging purposes
