@@ -136,7 +136,7 @@ def rag_query_documents(req: Request) -> Response:
                 session_id=FIRESTORE_SESSION_ID,
                 query=request_data.query,
                 filter={
-                    "field": "metadata.__shared_list_id",
+                    "field": "metadata._shared_list_id",
                     "op": "==",
                     "value": request_data.shared_list_id,
                 },

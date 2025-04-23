@@ -18,12 +18,13 @@ async def ingest_remote_documents(
     docs = await document_manager.process_content_into_documents(
         document_locations=document_locations,
         associated_ids=associated_doc_ids,
-        custom_metadata={"__shared_list_id": shared_list_id},
+        custom_metadata={"_shared_list_id": shared_list_id},
     )
 
     analysis_docs = await perform_concurrent_analysis_over_mixed_docs(
         document_manager=document_manager,
         docs=docs,
+        custom_metadata={"_shared_list_id": shared_list_id},
     )
 
     # Finally write all produced docs to vector store

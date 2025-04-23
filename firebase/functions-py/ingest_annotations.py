@@ -61,9 +61,9 @@ async def ingest_annotations(
                 page_content=content,
                 metadata={
                     "source": annot.normalized_page_url,
-                    "__associated_id": annot.id,
-                    "__content_type": ContentType.MEMEX_ANNOTATION.value,
-                    "__shared_list_id": shared_list_id,
+                    "_associated_id": annot.id,
+                    "_content_type": ContentType.MEMEX_ANNOTATION.value,
+                    "_shared_list_id": shared_list_id,
                     "creator": annot.creator,
                     "created_when": annot.created_when,
                     "updated_when": annot.updated_when,
@@ -89,9 +89,9 @@ async def ingest_annotations(
                         associated_ids=[annot.id],
                         custom_metadata={
                             "source": annot.normalized_page_url,
-                            "__associated_id": annot.id,
-                            "__content_type": ContentType.IMAGE.value,
-                            "__shared_list_id": shared_list_id,
+                            "_associated_id": annot.id,
+                            "_content_type": ContentType.IMAGE.value,
+                            "_shared_list_id": shared_list_id,
                             "creator": annot.creator,
                             "created_when": annot.created_when,
                             "updated_when": annot.updated_when,
@@ -102,6 +102,7 @@ async def ingest_annotations(
     analysis_docs = await perform_concurrent_analysis_over_mixed_docs(
         document_manager=document_manager,
         docs=docs,
+        custom_metadata={"_shared_list_id": shared_list_id},
     )
 
     return await document_manager.ingest_documents(
