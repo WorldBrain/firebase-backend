@@ -2,7 +2,8 @@ import asyncio
 import traceback
 import json
 from firebase_functions import https_fn
-from firebase_admin import initialize_app
+from firebase_admin import initialize_app, firestore
+from google.cloud.firestore import SERVER_TIMESTAMP
 from external.dead_simple_rag.document_manager import (
     DocumentManager,
     FIRESTORE_SESSION_ID,
@@ -43,9 +44,22 @@ def rag_ingest_documents(req: Request) -> Response:
         if len(request_data.shared_list_id) == 0:
             return Response("shared_list_id must be a non-empty string", status=400)
 
+        db = firestore.client()
+
+        async def on_full_content_available(source: str, full_content: str):
+            db.collection("documentContent").add(
+                {
+                    "source": source,
+                    "content": full_content,
+                    "sharedListId": request_data.shared_list_id,
+                    "createdWhen": SERVER_TIMESTAMP,
+                }
+            )
+
         document_manager = DocumentManager(
             provider="google",
             vector_store_type="firestore",
+            on_full_content_available=on_full_content_available,
         )
 
         result = asyncio.run(
@@ -85,9 +99,22 @@ def rag_ingest_memex_annotations(req: Request) -> Response:
         if len(request_data.shared_list_id) == 0:
             return Response("shared_list_id must be a non-empty string", status=400)
 
+        db = firestore.client()
+
+        async def on_full_content_available(source: str, full_content: str):
+            db.collection("documentContent").add(
+                {
+                    "source": source,
+                    "content": full_content,
+                    "sharedListId": request_data.shared_list_id,
+                    "createdWhen": SERVER_TIMESTAMP,
+                }
+            )
+
         document_manager = DocumentManager(
             provider="google",
             vector_store_type="firestore",
+            on_full_content_available=on_full_content_available,
         )
 
         result = asyncio.run(
